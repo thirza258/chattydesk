@@ -1,1 +1,1 @@
-export const apiBaseURL = "http://localhost:8000/api/v1"
+export const apiBaseURL = "https://whale-app-69iko.ondigitalocean.app/api/v1"
