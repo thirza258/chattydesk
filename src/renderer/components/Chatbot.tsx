@@ -1,22 +1,48 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import services from "../../services/services";
+import { Response } from "../../interface"
+import ReactMarkdown from "react-markdown";
 
-function Chatbot() {
-  const [messages, setMessages] = useState<{ text: string; user: string }[]>(
-    []
-  );
+function Chatbot({ selectedModel }: { selectedModel: string }) {
+  const [messages, setMessages] = useState<{ text: string; user: string }[]>([]);
   const [input, setInput] = useState("");
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (input.trim() !== "") {
-      setMessages([...messages, { text: input, user: "me" }]);
+      setMessages((prevMessages) => [...prevMessages, { text: input, user: "me" }]);
+      const userInput = input;
       setInput("");
-      // Simulate bot response
-      setTimeout(() => {
+
+      try {
+        let response: Response;
+        // Call the appropriate API based on the selected model
+        switch (selectedModel) {
+          case "GPT":
+            response = await services.getGPTResponse(userInput);
+            break;
+          case "Gemini":
+            response = await services.getGeminiResponse(userInput);
+            break;
+          case "Claude":
+            response = await services.getClaudeResponse(userInput);
+            break;
+          case "Mistral":
+            response = await services.getMistralResponse(userInput);
+            break;
+          default:
+            throw new Error("Model not supported");
+        }
         setMessages((prevMessages) => [
           ...prevMessages,
-          { text: "This is a bot response", user: "bot" },
+          { text: response.data.response, user: "bot" },
         ]);
-      }, 1000);
+      } catch (error) {
+        console.error("Error fetching AI response:", error);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: "Sorry, something went wrong.", user: "bot" },
+        ]);
+      }
     }
   };
 
@@ -35,7 +61,8 @@ function Chatbot() {
                   : "bg-gray-300 text-black"
               }`}
             >
-              {msg.text}
+
+             <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
           </div>
         ))}
