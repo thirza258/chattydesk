@@ -1,5 +1,7 @@
 # Chattydesk
 
+The Backend : https://github.com/thirza258/chattydesk_backend
+
 Chattydesk is a desktop application that integrates multiple AI models into one app, allowing users to seamlessly shuffle between various LLM models such as Mistral, Gemini, Claude, and OpenAI GPT.
 
 ## Features
