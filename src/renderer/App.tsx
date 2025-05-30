@@ -2,23 +2,29 @@ import React from 'react';
 import NavBar from './components/NavBar';
 import Chatbot from './components/Chatbot';
 import Sidebar from './components/Sidebar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import services from '../services/services';
 import './App.css';
 import 'tailwindcss/tailwind.css';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function App() {
   const [selectedModel, setSelectedModel] = useState("GPT");
   const [history, setHistory] = useState([]);
+
+  if (!localStorage.getItem('conversationId')) {
+    localStorage.setItem('conversationId', uuidv4());
+  }
 
   const fetchHistory = async () => {
     const response = await services.getHistory();
     setHistory(response.data);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [history]);
 
   return (
     <div className="h-screen flex flex-col">

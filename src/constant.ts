@@ -1,1 +1,1 @@
-export const apiBaseURL = "https://whale-app-69iko.ondigitalocean.app/api/v1"
+export const apiBaseURL = "https://web-production-7ffc1.up.railway.app/api/v1"

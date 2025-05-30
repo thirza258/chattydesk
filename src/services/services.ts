@@ -4,7 +4,8 @@ import { Response } from "../interface";
 
 const getGPTResponse = async (prompt: string) => {
     const response = await axios.post(`${apiBaseURL}/gpt_handler/`, {
-        message: prompt
+        message: prompt,
+        conversation_id: localStorage.getItem('conversationId')
     }, {
         headers: {
             'Content-Type': 'application/json'
@@ -15,7 +16,8 @@ const getGPTResponse = async (prompt: string) => {
 
 const getGeminiResponse = async (prompt: string) => {
     const response = await axios.post(`${apiBaseURL}/gemini_handler/`, {
-        message: prompt
+        message: prompt,
+        conversation_id: localStorage.getItem('conversationId')
     }, {
         headers: {
             'Content-Type': 'application/json'
@@ -26,7 +28,8 @@ const getGeminiResponse = async (prompt: string) => {
 
 const getClaudeResponse = async (prompt: string) => {
     const response = await axios.post(`${apiBaseURL}/claude_handler/`, {
-        message: prompt
+        message: prompt,
+        conversation_id: localStorage.getItem('conversationId')
     }, {
         headers: {
             'Content-Type': 'application/json'
@@ -37,7 +40,8 @@ const getClaudeResponse = async (prompt: string) => {
 
 const getMistralResponse = async (prompt: string) => {
     const response = await axios.post(`${apiBaseURL}/mistral_handler/`, {
-        message: prompt
+        message: prompt,
+        conversation_id: localStorage.getItem('conversationId')
     }, {
         headers: {
             'Content-Type': 'application/json'
