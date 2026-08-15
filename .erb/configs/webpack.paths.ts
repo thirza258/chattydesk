@@ -23,6 +23,9 @@ const distRendererPath = path.join(distPath, 'renderer');
 
 const buildPath = path.join(releasePath, 'build');
 
+// Static bundle for the browser ("ordinary web app") deployment.
+const webBuildPath = path.join(releasePath, 'web');
+
 export default {
   rootPath,
   erbNodeModulesPath,
@@ -39,4 +42,5 @@ export default {
   distMainPath,
   distRendererPath,
   buildPath,
+  webBuildPath,
 };

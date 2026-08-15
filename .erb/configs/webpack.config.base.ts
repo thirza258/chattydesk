@@ -52,6 +52,9 @@ const configuration: webpack.Configuration = {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
+      // Declared here (not only in the web config) so every bundle inlines a
+      // literal instead of leaving a bare `process.env` lookup behind.
+      API_BASE_URL: 'https://web-production-7ffc1.up.railway.app/api/v1',
     }),
   ],
 };

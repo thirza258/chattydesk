@@ -1,0 +1,12 @@
+node_modules
+release/app/node_modules
+release/app/dist
+release/build
+release/web
+.erb/dll
+.git
+.github
+.vscode
+*.log
+.DS_Store
+.eslintcache
