@@ -30,12 +30,15 @@ RUN npm run build:web
 FROM nginx:1.27-alpine AS serve
 
 # Overridable at run time: docker run -e BACKEND_ORIGIN=https://api.example.com
-ENV BACKEND_ORIGIN=https://web-production-7ffc1.up.railway.app
+# Defaults to the backend container on the compose network (host port 9001).
+ENV BACKEND_ORIGIN=http://backend:9001
 
 COPY --from=build /app/release/web /usr/share/nginx/html
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 
+# 127.0.0.1, not localhost: nginx binds IPv4 only, and busybox wget does
+# not fall back from ::1 when localhost resolves to IPv6 first.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
-  CMD wget -qO- http://localhost/ >/dev/null || exit 1
+  CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
