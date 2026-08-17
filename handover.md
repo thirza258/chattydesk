@@ -29,7 +29,52 @@ All responses use the same envelope you already handle:
 }
 ```
 
-No authentication is required by the API itself — the OpenRouter key lives on the server.
+## Authentication
+
+Chat and history now belong to an account and need a bearer token:
+
+```
+Authorization: Bearer <access token>
+```
+
+| Method | Path | Token needed |
+|---|---|---|
+| `POST` | `/api/v1/auth/register/` | no |
+| `POST` | `/api/v1/auth/login/`    | no |
+| `POST` | `/api/v1/auth/refresh/`  | no (send the refresh token in the body) |
+| `GET`  | `/api/v1/auth/me/`       | yes |
+| `GET`/`PATCH` | `/api/v1/auth/settings/` | yes |
+| `GET`  | `/api/v1/openrouter/models/` | no — public catalogue |
+| `POST` | `/api/v1/openrouter/chat/`    | yes |
+| `GET`  | `/api/v1/openrouter/history/` | yes |
+
+**Register / sign in** — `POST` `{"username": "ada", "password": "…"}` (register also
+takes an optional `email`):
+
+```jsonc
+{
+  "status": 200,
+  "message": "Signed in",
+  "data": {
+    "access": "eyJhbGciOi…",     // send on every request; expires in an hour
+    "refresh": "eyJhbGciOi…",    // exchange for a new access token; lasts a week
+    "user": { "id": 1, "username": "ada", "email": "", "date_joined": "2026-08-17T07:40:57Z" }
+  }
+}
+```
+
+**Refresh** — `POST /api/v1/auth/refresh/` with `{"refresh": "…"}` returns
+`{"data": {"access": "…"}}`. A `401` here means the session is over: sign in again.
+
+**Signing out** is entirely client-side — drop both tokens. There is no server-side
+token store, so nothing has to be told.
+
+Wrong password, unknown user, missing token and expired token all come back as `401`
+with the reason in `message`. Sign-in, sign-up and refresh are rate limited per IP
+(20/min by default) and answer `429` when that is exceeded.
+
+> The deprecated `/api/v1/<vendor>_handler/` chat routes need a token as well —
+> they are the same view with a preset model, and inference costs money either way.
 
 ---
 
@@ -113,7 +158,8 @@ Notes for the picker UI:
     "response": "## WebSockets\n\nA WebSocket is …",   // Markdown, render as before
     "model": "anthropic/claude-haiku-4.5",             // model that actually served it
     "conversation_id": "5f0f…",                        // store and send back on the next turn
-    "usage": { "prompt_tokens": 412, "completion_tokens": 380, "total_tokens": 792 }
+    "usage": { "prompt_tokens": 412, "completion_tokens": 380, "total_tokens": 792 },
+    "used_own_key": false                              // true when the caller's own key paid
   }
 }
 ```
@@ -158,15 +204,19 @@ If you'd rather own the conversation state client-side, send an OpenAI-style
 | HTTP | When | `message` |
 |---|---|---|
 | 400 | `message` missing/empty, or `temperature`/`max_tokens` not numeric | `Bad Request: …` |
-| 401 / 402 | Server key is invalid, or the OpenRouter account is out of credit | `OpenRouter error: …` |
+| 401 | **No or expired bearer token** — refresh, then retry | `Authentication credentials were not provided.` |
+| 402 | Every available OpenRouter key is out of credit | `OpenRouter error: …` |
+| 403 | OpenRouter's moderation refused the prompt | `OpenRouter error: …` |
 | 404 | The `model` id doesn't exist on OpenRouter | `OpenRouter error: …` |
 | 429 | Rate limited upstream | `OpenRouter error: …` |
-| 502 / 504 | OpenRouter unreachable or timed out (>120s) | `OpenRouter error: …` |
-| 500 | Server key not configured, or an unexpected failure | `Internal Server Error: …` |
+| 502 / 504 | OpenRouter unreachable, timed out (>120s), or it rejected our key | `OpenRouter error: …` |
+| 500 | No OpenRouter key available at all, or an unexpected failure | `Internal Server Error: …` / `OpenRouter error: …` |
 
 Upstream status codes are passed through, so a 402 or 429 is genuinely OpenRouter's and
-worth surfacing to the user ("out of credit", "too many requests"). Nothing is written
-to history when a request fails.
+worth surfacing to the user ("out of credit", "too many requests"). The one exception is
+an upstream **401**, which becomes a 502: a rejected OpenRouter key is not the client's
+session going stale, and a client that treats every 401 as "refresh my token" must not be
+told otherwise. Nothing is written to history when a request fails.
 
 ---
 
@@ -203,11 +253,64 @@ to history when a request fails.
 
 To rebuild a thread in the UI: `?conversation_id=<id>` and reverse the list.
 
+**History is per account.** Only rows belonging to the bearer token's user come back,
+and a `conversation_id` from somebody else's thread returns nothing rather than their
+conversation. Rows written before accounts existed have no owner and are no longer
+served to anyone.
+
 **Your existing history data was migrated** into the new table, timestamps intact. Rows
 created before this change carry the old display names in `model_name` (`ChatGPT`,
 `claude`, `gemini`, `Mistral`); new rows carry real OpenRouter ids
 (`openai/gpt-4o-mini`). Treat `model_name` as a label, not a key — if you filter by
 `?model=`, expect old rows not to match.
+
+---
+
+## 4. Settings — `GET`/`PATCH` `/api/v1/auth/settings/`
+
+Where a user hands over their own OpenRouter key, so their chats keep working when the
+server's key runs out of credit.
+
+```jsonc
+// GET
+{
+  "status": 200,
+  "message": "Success",
+  "data": {
+    "has_own_key": true,
+    "key_hint": "9f3a",        // last four characters of the saved key
+    "prefer_own_key": false,   // false: only used once the server's key fails
+    "updated_at": "2026-08-17T08:12:03Z"
+  }
+}
+```
+
+`PATCH` accepts either field, and only changes what it is sent:
+
+```jsonc
+{
+  "openrouter_key": "sk-or-v1-…",   // "" removes the saved key
+  "prefer_own_key": true            // rejected with 400 if no key is saved
+}
+```
+
+The key is **write-only** — it is stored encrypted and never returned, so the UI shows
+`key_hint` and offers an empty field for replacing it. A new key is checked against
+OpenRouter before it is saved: a rejected key is a `400` here rather than a failed chat
+later, and a successful save adds `data.key_check` with OpenRouter's own view of it
+(`label`, `usage`, `limit`, `limit_remaining`, `is_free_tier`).
+
+Which key pays for a chat:
+
+| Situation | Key used |
+|---|---|
+| No key saved | the server's |
+| Key saved, `prefer_own_key: false` | the server's, falling back to theirs on `401/402/429` |
+| Key saved, `prefer_own_key: true` | theirs, falling back to the server's |
+
+A `400` from OpenRouter (bad model, malformed request) is *not* retried with the other
+key — nothing about it would change. The chat response says which key paid via
+`used_own_key`.
 
 ---
 
@@ -267,7 +370,11 @@ export async function sendMessage(opts: {
 }) {
   const res = await fetch(`${API}/chat/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      // Required: chat is per account. On 401, refresh once, then retry.
+      Authorization: `Bearer ${localStorage.getItem("chattydesk.accessToken")}`,
+    },
     body: JSON.stringify({
       message: opts.message,
       model: opts.model,

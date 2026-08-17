@@ -149,6 +149,12 @@ const configuration: webpack.Configuration = {
       // Point this at a same-origin path (e.g. /api/v1) when a reverse proxy
       // fronts the backend, which is how the Docker target avoids CORS.
       API_BASE_URL: 'https://web-production-7ffc1.up.railway.app/api/v1',
+      // Set WEB_CHAT_URL to publish the landing page on its own, pointing at a
+      // chat hosted elsewhere (src/constant.ts).
+      WEB_CHAT_URL: '',
+      // Mirrors output.publicPath below: the router needs the same prefix the
+      // assets were built with, or a deep link under a sub-path 404s.
+      PUBLIC_PATH: process.env.PUBLIC_PATH || './',
     }),
 
     new MiniCssExtractPlugin({

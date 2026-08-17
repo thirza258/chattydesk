@@ -2,9 +2,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <!-- Required by the web build: without it a phone renders the landing page
+         at desktop width and scales it down. Harmless in the desktop app. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline'"
+    />
+    <meta
+      name="description"
+      content="ChattyDesk puts every model OpenRouter proxies — Claude, GPT, Gemini, Mistral and a few hundred more — behind one chat window."
     />
     <title>ChattyDesk</title>
   </head>

@@ -135,6 +135,10 @@ const configuration: webpack.Configuration = {
       NODE_ENV: 'development',
       // Same-origin by default so the devServer proxy below handles CORS.
       API_BASE_URL: '/api/v1',
+      // Empty: the chat is served from this dev server, so the landing page
+      // links to /chat rather than out to a hosted deployment.
+      WEB_CHAT_URL: process.env.WEB_CHAT_URL || '',
+      PUBLIC_PATH: '/',
     }),
 
     new HtmlWebpackPlugin({

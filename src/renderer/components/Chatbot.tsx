@@ -67,6 +67,8 @@ function Chatbot({
                   {msg.usage?.total_tokens
                     ? ` · ${msg.usage.total_tokens} tokens`
                     : ''}
+                  {/* Worth saying out loud when it is the user's credit. */}
+                  {msg.usedOwnKey ? ' · your key' : ''}
                 </p>
               )}
             </div>

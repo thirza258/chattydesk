@@ -8,12 +8,31 @@ source: as a desktop app (Electron) and as an ordinary web app in the browser.
 
 ## Features
 
+- A landing page that introduces the web version and points at the chat
+- Accounts: username and password, JWT-backed, with per-account history
 - One catalogue of 400+ models, searchable and grouped by provider
 - Switch models mid-conversation; your choice is remembered
 - Multi-turn conversations with server-side memory, and a history sidebar you
   can click to reopen an earlier thread
+- A settings page for saving your own OpenRouter key, used when the server's
+  key runs out of credit — or on every request, if you prefer
 - Markdown answers, token usage, and upstream errors surfaced verbatim
 - Ships as a Windows installer, a macOS/Linux desktop build, or a static website
+
+## Pages
+
+| Route | What it is |
+|---|---|
+| `/` | Landing page. The desktop app skips it and opens the chat instead |
+| `/login`, `/register` | Sign in and sign up — same forms in the browser and on the desktop |
+| `/chat` | The app. Needs an account; sends you to `/login` if you have none |
+| `/settings` | Account details and your own OpenRouter key |
+
+The browser build uses real URLs, so every page is linkable and the host must
+serve `index.html` for unknown paths (`deploy.sh` writes a `404.html` for the
+static targets, and the Docker image's nginx already does this). The desktop
+build routes on the hash instead: packaged, it loads from `file://`, where there
+is no server to answer a request for `/chat`.
 
 ## Configuring the backend
 
@@ -25,12 +44,20 @@ API_BASE_URL=https://your-backend.example.com/api/v1 npm run build:web
 
 It defaults to the URL in [`src/constant.ts`](src/constant.ts). Point it at your
 own deployment — the address hardcoded there is no longer live. Endpoints used
-are `GET /openrouter/models/`, `POST /openrouter/chat/` and
-`GET /openrouter/history/`; see [handover.md](handover.md) for the contract.
+are `/auth/{register,login,refresh,me,settings}/`, `GET /openrouter/models/`,
+`POST /openrouter/chat/` and `GET /openrouter/history/`; see
+[handover.md](handover.md) for the contract.
 
 > A same-origin value such as `/api/v1` is right when a proxy fronts the backend
 > (the Docker deployment below does this). The desktop build loads from
 > `file://`, where a relative URL means nothing, so leave it absolute there.
+
+Two other build-time variables:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `WEB_CHAT_URL` | – | Publishes the landing page pointing at a chat hosted elsewhere: every call to action becomes a link to this URL instead of the in-page `/chat` route |
+| `PUBLIC_PATH` | `./` | Asset prefix. A real sub-path (`/chattydesk/`, for a GitHub Pages project site) is used as the router basename too |
 
 ## Development
 

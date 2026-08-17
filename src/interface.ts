@@ -48,6 +48,8 @@ export interface ChatResult {
   /** Send this back on the next turn to keep the thread's memory. */
   conversation_id: string;
   usage?: Usage;
+  /** True when the answer was paid for with the account's own OpenRouter key. */
+  used_own_key?: boolean;
 }
 
 export interface HistoryEntry {
@@ -74,6 +76,7 @@ export interface ChatMessage {
   model?: string;
   usage?: Usage;
   error?: boolean;
+  usedOwnKey?: boolean;
 }
 
 export type Role = 'system' | 'user' | 'assistant';
@@ -107,4 +110,65 @@ export interface HistoryQuery {
   model?: string;
   limit?: number;
   offset?: number;
+}
+
+/** GET /auth/me/, and the `user` of a sign-in or sign-up reply. */
+export interface AuthUser {
+  id: number;
+  username: string;
+  email: string;
+  date_joined: string;
+}
+
+/**
+ * POST /auth/login/ and POST /auth/register/.
+ *
+ * `access` goes on every subsequent request and expires within the hour;
+ * `refresh` buys a new one without asking for the password again.
+ */
+export interface Session {
+  access: string;
+  refresh: string;
+  user: AuthUser;
+}
+
+export interface Credentials {
+  username: string;
+  password: string;
+}
+
+export interface SignUpDetails extends Credentials {
+  email?: string;
+}
+
+/** What OpenRouter says about a key, returned when one is saved. */
+export interface KeyCheck {
+  label: string;
+  /** USD spent on this key so far. */
+  usage: number | null;
+  /** USD ceiling, or null for "no limit". */
+  limit: number | null;
+  limit_remaining: number | null;
+  is_free_tier: boolean | null;
+}
+
+/**
+ * GET/PATCH /auth/settings/
+ *
+ * The key itself is write-only — the server reports whether one is saved and
+ * its last four characters, never the key.
+ */
+export interface UserSettings {
+  has_own_key: boolean;
+  key_hint: string;
+  /** False: the server's key pays until it runs out. True: always use theirs. */
+  prefer_own_key: boolean;
+  updated_at: string;
+  key_check?: KeyCheck;
+}
+
+export interface SettingsPatch {
+  /** An empty string removes the saved key. */
+  openrouterKey?: string;
+  preferOwnKey?: boolean;
 }
