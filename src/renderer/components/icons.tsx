@@ -132,3 +132,105 @@ export function IconSignOut({ className }: IconProps) {
     </Svg>
   );
 }
+
+export function IconSearch({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </Svg>
+  );
+}
+
+export function IconSend({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M21.5 2.5 10 14" />
+      <path d="m21.5 2.5-7 19-3.5-8.5-8.5-3.5 19-7Z" />
+    </Svg>
+  );
+}
+
+export function IconPlus({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 4.5v15m-7.5-7.5h15" />
+    </Svg>
+  );
+}
+
+export function IconSparkles({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="m12 3 1.9 5.6a2.2 2.2 0 0 0 1.5 1.5L21 12l-5.6 1.9a2.2 2.2 0 0 0-1.5 1.5L12 21l-1.9-5.6a2.2 2.2 0 0 0-1.5-1.5L3 12l5.6-1.9a2.2 2.2 0 0 0 1.5-1.5L12 3Z" />
+    </Svg>
+  );
+}
+
+export function IconCopy({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="8" y="8" width="12" height="12" rx="2" />
+      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+    </Svg>
+  );
+}
+
+export function IconBot({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="3" y="11" width="18" height="10" rx="3" />
+      <circle cx="9" cy="16" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="16" r="1.5" fill="currentColor" stroke="none" />
+      <path d="M12 2v4m-4-2h8M2 16h1m18 0h1" />
+    </Svg>
+  );
+}
+
+export function IconUser({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
+    </Svg>
+  );
+}
+
+export function IconCpu({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="5.5" y="5.5" width="13" height="13" rx="2" />
+      <path d="M9 9h6v6H9zM9 2v3.5m6-3.5v3.5M9 18.5V22m6-3.5V22M2 9h3.5m-3.5 6h3.5M18.5 9H22m-3.5 6H22" />
+    </Svg>
+  );
+}
+
+export function IconShield({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 2.5s7 2.5 7 8.5c0 6.5-7 10.5-7 10.5S5 17.5 5 11c0-6 7-8.5 7-8.5Z" />
+      <path d="m9 11.5 2 2 4-4" />
+    </Svg>
+  );
+}
+
+export function IconLogo({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <rect width="24" height="24" rx="6" className="fill-blue-600" />
+      <path
+        d="M6.5 7.5A1.5 1.5 0 0 1 8 6h8a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 15h-4l-3.5 3v-3H8a1.5 1.5 0 0 1-1.5-1.5v-6Z"
+        className="fill-white"
+      />
+      <circle cx="10" cy="10.5" r="1" className="fill-blue-600" />
+      <circle cx="12" cy="10.5" r="1" className="fill-blue-600" />
+      <circle cx="14" cy="10.5" r="1" className="fill-blue-600" />
+    </svg>
+  );
+}
+
