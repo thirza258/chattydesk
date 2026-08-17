@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import services from '../../services/services';
 import { KeyCheck, UserSettings } from '../../interface';
 import { useAuth } from '../AuthContext';
+import { usePageMeta } from '../pageMeta';
 import {
   IconArrowRight,
   IconExternal,
@@ -78,6 +79,11 @@ function Card({
  */
 function Settings() {
   const { user, signOut } = useAuth();
+  usePageMeta({
+    title: 'Settings · ChattyDesk',
+    path: '/settings',
+    noindex: true,
+  });
 
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loadError, setLoadError] = useState('');

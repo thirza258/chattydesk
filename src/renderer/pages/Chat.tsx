@@ -4,6 +4,7 @@ import Chatbot from '../components/Chatbot';
 import Sidebar from '../components/Sidebar';
 import services from '../../services/services';
 import { ChatMessage, HistoryEntry, Model } from '../../interface';
+import { usePageMeta } from '../pageMeta';
 import {
   CONVERSATION_KEY,
   MODEL_KEY,
@@ -22,6 +23,9 @@ const HISTORY_LIMIT = 100;
  * account's bearer token, and the history it shows is that account's own.
  */
 function Chat() {
+  // Nothing here is public, so there is nothing to index.
+  usePageMeta({ title: 'Chat · ChattyDesk', path: '/chat', noindex: true });
+
   const [models, setModels] = useState<Model[]>([]);
   const [defaultModel, setDefaultModel] = useState('');
   const [selectedModel, setSelectedModel] = useState('');

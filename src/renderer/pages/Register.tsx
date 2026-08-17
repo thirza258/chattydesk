@@ -9,6 +9,7 @@ import AuthShell, {
 } from '../components/AuthShell';
 import { IconEye, IconEyeOff } from '../components/icons';
 import { useAuth } from '../AuthContext';
+import { usePageMeta } from '../pageMeta';
 
 type Field = 'username' | 'password' | 'email';
 
@@ -29,6 +30,13 @@ const locateError = (
 
 function Register() {
   const { status, signUp } = useAuth();
+  usePageMeta({
+    title: 'Create an account · ChattyDesk',
+    description:
+      'Create a ChattyDesk account to chat with 400+ models in one window.',
+    path: '/register',
+    noindex: true,
+  });
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');

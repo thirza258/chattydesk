@@ -60,6 +60,7 @@ const configuration: webpack.Configuration = {
       // bundle needs the literal.
       WEB_CHAT_URL: '',
       PUBLIC_PATH: './',
+      SITE_URL: '',
     }),
   ],
 };

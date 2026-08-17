@@ -18,9 +18,15 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin';
 import webpackPaths from './webpack.paths';
+import SeoAssetsPlugin from './seo-assets';
 import checkNodeEnv from '../scripts/check-node-env';
 
 checkNodeEnv('production');
+
+// Public origin of the deployment. Everything a search engine or a link
+// preview needs is an absolute URL, and only the person building knows it:
+//   SITE_URL=https://chattydesk.example.com npm run build:web
+const siteURL = (process.env.SITE_URL || '').replace(/\/+$/, '');
 
 const configuration: webpack.Configuration = {
   devtool: 'source-map',
@@ -155,6 +161,7 @@ const configuration: webpack.Configuration = {
       // Mirrors output.publicPath below: the router needs the same prefix the
       // assets were built with, or a deep link under a sub-path 404s.
       PUBLIC_PATH: process.env.PUBLIC_PATH || './',
+      SITE_URL: siteURL,
     }),
 
     new MiniCssExtractPlugin({
@@ -171,12 +178,21 @@ const configuration: webpack.Configuration = {
       template: path.join(webpackPaths.srcRendererPath, 'index.ejs'),
       minify: {
         collapseWhitespace: true,
-        removeAttributeQuotes: true,
+        // Quotes stay: stripping them leaves `content=https://…` in the og:
+        // tags, which every browser parses correctly but the regex-based
+        // scrapers behind some link previews do not. A few bytes is a cheap
+        // price for a preview card that renders everywhere.
+        removeAttributeQuotes: false,
         removeComments: true,
       },
       isBrowser: true,
       isDevelopment: false,
+      // Read by index.ejs for the canonical, og: and JSON-LD tags.
+      siteURL,
     }),
+
+    // favicons, the social preview image, robots.txt and sitemap.xml.
+    new SeoAssetsPlugin({ siteURL }),
   ],
 };
 

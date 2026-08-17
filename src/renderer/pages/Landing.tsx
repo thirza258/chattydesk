@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { webChatURL } from '../../constant';
 import { useAuth } from '../AuthContext';
+import { usePageMeta } from '../pageMeta';
 import {
   IconArrowRight,
   IconCatalogue,
@@ -150,6 +151,16 @@ function ChatPreview() {
 
 function Landing() {
   const { status, user } = useAuth();
+
+  // The HTML shell already carries these for crawlers that do not run
+  // JavaScript; this keeps them right after any client-side navigation back
+  // here from another route.
+  usePageMeta({
+    title: 'ChattyDesk — every AI model in one chat window',
+    description:
+      'Chat with Claude, GPT, Gemini, Mistral and 400+ more models from one window. Switch model mid-conversation, keep the thread, and reopen anything you asked last week.',
+    path: '/',
+  });
   const signedIn = status === 'signed-in';
 
   return (

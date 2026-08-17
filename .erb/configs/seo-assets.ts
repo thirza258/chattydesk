@@ -96,7 +96,9 @@ export default class SeoAssetsPlugin {
 
           if (this.siteURL) {
             emit('sitemap.xml', sitemapXml(this.siteURL));
-          } else {
+          } else if (compiler.options.mode === 'production') {
+            // Only worth saying about a real build: locally there is no origin
+            // to advertise and nobody is submitting a sitemap.
             compilation.warnings.push(
               new webpack.WebpackError(
                 'SeoAssetsPlugin: SITE_URL is not set, so no sitemap.xml or canonical URL was written.',

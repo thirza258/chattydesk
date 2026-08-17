@@ -22,6 +22,18 @@ export const apiBaseURL =
 export const webChatURL = process.env.WEB_CHAT_URL || '';
 
 /**
+ * Public origin of the deployed site, e.g. `https://chattydesk.example.com`:
+ *
+ *   SITE_URL=https://chattydesk.example.com npm run build:web
+ *
+ * Needed for the absolute URLs that search engines and link previews require —
+ * canonical, `og:url`, `og:image`, sitemap.xml. Left empty (the default, and the
+ * only sane one for the desktop build) those are simply omitted rather than
+ * pointing somewhere invented.
+ */
+export const siteURL = (process.env.SITE_URL || '').replace(/\/+$/, '');
+
+/**
  * Router basename, derived from the asset prefix the bundle was built with.
  *
  * A real sub-path (`PUBLIC_PATH=/chattydesk/`, which is what a GitHub Pages

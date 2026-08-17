@@ -8,9 +8,17 @@ import AuthShell, {
 } from '../components/AuthShell';
 import { IconEye, IconEyeOff } from '../components/icons';
 import { useAuth } from '../AuthContext';
+import { usePageMeta } from '../pageMeta';
 
 function Login() {
   const { status, signIn } = useAuth();
+  usePageMeta({
+    title: 'Sign in · ChattyDesk',
+    description:
+      'Sign in to ChattyDesk to chat with 400+ models in one window.',
+    path: '/login',
+    noindex: true,
+  });
   const navigate = useNavigate();
   const location = useLocation();
 

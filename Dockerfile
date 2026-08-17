@@ -13,8 +13,12 @@ WORKDIR /app
 # Same-origin by default — nginx proxies /api to the backend below.
 ARG API_BASE_URL=/api/v1
 ARG PUBLIC_PATH=./
+# Public origin of the site, for canonical/og:/sitemap URLs. Empty means those
+# are left out rather than pointing at an invented address.
+ARG SITE_URL=
 ENV API_BASE_URL=$API_BASE_URL
 ENV PUBLIC_PATH=$PUBLIC_PATH
+ENV SITE_URL=$SITE_URL
 
 COPY package.json package-lock.json ./
 

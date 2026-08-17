@@ -19,6 +19,7 @@ DEFAULT_API_URL="${DEFAULT_BACKEND_ORIGIN}/api/v1"
 
 TARGET="static"
 API_URL=""
+SITE_URL="${SITE_URL:-}"
 PUBLIC_PATH=""
 BACKEND_ORIGIN="$DEFAULT_BACKEND_ORIGIN"
 PORT="5000"
@@ -68,6 +69,11 @@ ${BOLD}Options${RESET}
                           for you.
       --backend <origin>  Origin the docker/nginx target proxies /api to.
                           Default: ${DEFAULT_BACKEND_ORIGIN}
+      --site-url <url>    Public origin of the deployed site, e.g.
+                          https://chattydesk.example.com — used for the
+                          canonical link, the social preview tags and
+                          sitemap.xml. Omitted if unset, since those need an
+                          absolute URL and guessing one is worse.
       --public-path <p>   Base path the app is served from. Default: ./
                           (relative, so it works at a domain root and under a
                           sub-path alike). Example: /chattydesk/
@@ -106,6 +112,8 @@ while [ $# -gt 0 ]; do
     --api-url=*)     API_URL="${1#*=}"; shift ;;
     --backend)       BACKEND_ORIGIN="${2:-}"; shift 2 ;;
     --backend=*)     BACKEND_ORIGIN="${1#*=}"; shift ;;
+    --site-url)      SITE_URL="${2:-}"; shift 2 ;;
+    --site-url=*)    SITE_URL="${1#*=}"; shift ;;
     --public-path)   PUBLIC_PATH="${2:-}"; shift 2 ;;
     --public-path=*) PUBLIC_PATH="${1#*=}"; shift ;;
     --port)          PORT="${2:-}"; shift 2 ;;
@@ -156,11 +164,18 @@ build_web() {
   info "Building the web bundle"
   info "  API_BASE_URL = $API_URL"
   [ -n "$PUBLIC_PATH" ] && info "  PUBLIC_PATH  = $PUBLIC_PATH"
+  if [ -n "$SITE_URL" ]; then
+    info "  SITE_URL     = $SITE_URL"
+  else
+    warn "No --site-url given: the build will have no canonical URL, no social"
+    warn "preview image and no sitemap.xml. Fine for a preview, not for a site"
+    warn "you want found."
+  fi
 
   if [ -n "$PUBLIC_PATH" ]; then
-    API_BASE_URL="$API_URL" PUBLIC_PATH="$PUBLIC_PATH" npm run build:web
+    API_BASE_URL="$API_URL" SITE_URL="$SITE_URL" PUBLIC_PATH="$PUBLIC_PATH" npm run build:web
   else
-    API_BASE_URL="$API_URL" npm run build:web
+    API_BASE_URL="$API_URL" SITE_URL="$SITE_URL" npm run build:web
   fi
 
   [ -f "$WEB_DIR/index.html" ] || die "build finished but $WEB_DIR/index.html was not produced"
@@ -207,6 +222,7 @@ deploy_docker() {
   info "Building image $IMAGE_NAME (backend proxy target: $BACKEND_ORIGIN)"
   docker build \
     --build-arg "API_BASE_URL=$API_URL" \
+    --build-arg "SITE_URL=$SITE_URL" \
     --build-arg "BACKEND_ORIGIN=$BACKEND_ORIGIN" \
     -t "$IMAGE_NAME" .
   ok "Image built: $IMAGE_NAME"

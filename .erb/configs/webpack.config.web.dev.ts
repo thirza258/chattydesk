@@ -14,6 +14,7 @@ import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin';
 import webpackPaths from './webpack.paths';
+import SeoAssetsPlugin from './seo-assets';
 
 const port = Number(process.env.WEB_PORT || 3000);
 const apiProxyTarget =
@@ -139,6 +140,9 @@ const configuration: webpack.Configuration = {
       // links to /chat rather than out to a hosted deployment.
       WEB_CHAT_URL: process.env.WEB_CHAT_URL || '',
       PUBLIC_PATH: '/',
+      // Absolute canonical/social URLs are a production concern; locally
+      // they would advertise a machine nobody else can reach.
+      SITE_URL: '',
     }),
 
     new HtmlWebpackPlugin({
@@ -147,6 +151,10 @@ const configuration: webpack.Configuration = {
       isBrowser: true,
       isDevelopment: true,
     }),
+
+    // Served from memory here, so the favicon and robots.txt can be checked
+    // locally instead of only after a production build.
+    new SeoAssetsPlugin(),
   ],
 
   devServer: {
