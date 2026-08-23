@@ -204,7 +204,7 @@ function Chat() {
   );
 
   return (
-    <div className="h-dvh flex flex-col bg-slate-950">
+    <div className="h-dvh flex flex-col bg-paper text-ink">
       <NavBar
         selectedModel={selectedModel}
         conversationId={conversationId}
@@ -223,7 +223,7 @@ function Chat() {
           conversationId={conversationId}
           onOpenConversation={openConversation}
         />
-        <div className="flex-grow overflow-hidden bg-slate-950">
+        <div className="flex-grow overflow-hidden bg-paper">
           <Chatbot
             messages={messages}
             selectedModel={selectedModel}
@@ -235,7 +235,6 @@ function Chat() {
       </div>
     </div>
   );
-
 }
 
 export default Chat;

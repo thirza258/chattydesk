@@ -5,38 +5,35 @@ import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
 import {
   IconArrowRight,
-  IconBot,
   IconCatalogue,
   IconCheck,
-  IconCpu,
+  IconCompare,
   IconDevices,
   IconExternal,
   IconKey,
   IconLogo,
-  IconShield,
-  IconSparkles,
   IconThread,
 } from '../components/icons';
 
 const chatIsHere = !webChatURL;
 
 const primaryButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:bg-blue-500 active:bg-blue-700 shadow-md shadow-blue-600/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+  'inline-flex items-center justify-center gap-2 bg-ink text-paper px-6 py-3 text-sm font-semibold transition-all hover:bg-rust shadow-[4px_4px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const compactButton =
-  'inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition-all duration-150 hover:bg-blue-500 active:bg-blue-700 shadow-sm shadow-blue-600/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400';
+  'inline-flex items-center gap-1.5 bg-ink text-paper px-3.5 py-1.5 text-xs font-semibold transition-colors hover:bg-rust focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
-const ghostButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700/80 bg-slate-900/60 px-6 py-3 text-sm font-medium text-slate-200 transition-all duration-150 hover:bg-slate-800 hover:border-slate-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+const secondaryButton =
+  'inline-flex items-center justify-center gap-2 border-2 border-ink bg-paper-raised px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-paper-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const quietLink =
-  'rounded text-xs font-medium text-slate-400 transition-colors duration-150 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400';
+  'text-xs font-medium text-ink-soft transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 function ChatCta({ label, className }: { label: string; className: string }) {
   if (chatIsHere) {
     return (
       <Link to="/chat" className={className}>
-        <span>{label}</span>
+        {label}
         <IconArrowRight className="h-4 w-4" />
       </Link>
     );
@@ -49,152 +46,153 @@ function ChatCta({ label, className }: { label: string; className: string }) {
       rel="noreferrer noopener"
       className={className}
     >
-      <span>{label}</span>
+      {label}
       <IconExternal className="h-4 w-4" />
     </a>
   );
 }
 
-function FeatureCard({
-  icon,
-  badge,
-  title,
-  children,
-}: {
+/* eslint-disable react/require-default-props */
+interface FeatureCardProps {
   icon: ReactNode;
   badge?: string;
   title: string;
   children: ReactNode;
-}) {
+}
+
+function FeatureCard({ icon, badge, title, children }: FeatureCardProps) {
   return (
-    <div className="group relative rounded-2xl border border-slate-800/80 bg-slate-900/50 p-6 transition-all duration-200 hover:border-slate-700/90 hover:bg-slate-900/80 hover:shadow-xl hover:shadow-black/20">
+    <article className="border-2 border-ink bg-paper-raised p-6 shadow-[4px_4px_0_0_#C6BEA8] transition-transform hover:-translate-y-0.5">
       <div className="flex items-center justify-between">
-        <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800/80 border border-slate-700/60 text-blue-400 transition-colors group-hover:text-blue-300 group-hover:border-blue-500/40">
+        <div className="inline-flex h-9 w-9 items-center justify-center border-2 border-ink bg-paper-sunken text-rust">
           {icon}
         </div>
         {badge && (
-          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700/60 text-slate-400">
+          <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-hairline-strong bg-paper-sunken text-ink-faint">
             {badge}
           </span>
         )}
       </div>
-      <h3 className="mt-4 text-base font-semibold text-slate-100">{title}</h3>
-      <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-400">{children}</p>
-    </div>
+      <h3 className="mt-4 font-display text-lg font-semibold text-ink">
+        {title}
+      </h3>
+      <p className="mt-2 text-xs sm:text-sm leading-relaxed text-ink-soft">
+        {children}
+      </p>
+    </article>
   );
 }
 
 /**
- * Realistic Desktop Window Preview with native controls, sidebar mockup,
- * model switch pill, and syntax-highlighted code response.
+ * Realistic Desktop Window Preview in Paper & Ink style with native window frame,
+ * mini sidebar mockup, and clean syntax-highlighted response.
  */
 function ChatPreview() {
   return (
-    <div
+    <figure
       aria-hidden="true"
-      className="relative rounded-2xl border border-slate-700/80 bg-slate-900 shadow-2xl shadow-black/60 overflow-hidden text-xs select-none"
+      className="border-2 border-ink bg-paper-raised shadow-[6px_6px_0_0_#C6BEA8] overflow-hidden text-xs select-none"
     >
       {/* Window Title Bar */}
-      <div className="flex items-center justify-between border-b border-slate-800/90 bg-slate-950/80 px-4 py-3 backdrop-blur-md">
-        <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-red-500/80" />
-          <span className="h-3 w-3 rounded-full bg-amber-500/80" />
-          <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+      <header className="flex items-center justify-between border-b-2 border-ink bg-paper-sunken px-4 py-2.5">
+        <div className="flex items-center gap-1.5">
+          <div className="h-2.5 w-2.5 rounded-full bg-ink" />
+          <div className="h-2.5 w-2.5 rounded-full border border-ink bg-paper-raised" />
+          <div className="h-2.5 w-2.5 rounded-full border border-ink bg-paper-sunken" />
         </div>
 
-        <div className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1 font-mono text-[11px] text-slate-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span>anthropic/claude-3.5-sonnet</span>
+        <div className="font-mono text-[11px] text-ink font-medium px-2 py-0.5 border border-hairline-strong bg-paper-raised">
+          anthropic/claude-3.5-sonnet
         </div>
 
-        <div className="flex items-center gap-2 text-slate-500">
-          <span className="font-mono text-[10px]">$0.003 / req</span>
-        </div>
-      </div>
+        <data value="0.003" className="font-mono text-[10px] text-ink-faint">
+          $0.003 / req
+        </data>
+      </header>
 
       {/* App Body */}
-      <div className="grid grid-cols-[180px_1fr] min-h-[320px] bg-slate-950">
+      <div className="grid grid-cols-[180px_1fr] min-h-[300px] bg-paper">
         {/* Mock Mini Sidebar */}
-        <div className="hidden sm:block border-r border-slate-800/80 bg-slate-900/40 p-3 space-y-3">
+        <aside className="hidden sm:block border-r border-hairline bg-paper-sunken p-3 space-y-3">
           <div className="space-y-1">
-            <span className="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
+            <h4 className="font-mono text-[10px] uppercase font-semibold text-ink-faint tracking-wider">
               Recent Threads
-            </span>
-            <div className="p-2 rounded-lg bg-blue-600/15 border border-blue-500/30 text-blue-200 text-[11px] truncate font-medium">
+            </h4>
+            <div className="p-1.5 border border-ink bg-paper-raised text-ink text-[11px] truncate font-medium">
               Summarize 40-page report
             </div>
-            <div className="p-2 rounded-lg hover:bg-slate-800/40 text-slate-400 text-[11px] truncate">
+            <div className="p-1.5 text-ink-soft text-[11px] truncate">
               Debounce async queue
             </div>
-            <div className="p-2 rounded-lg hover:bg-slate-800/40 text-slate-400 text-[11px] truncate">
+            <div className="p-1.5 text-ink-soft text-[11px] truncate">
               PostgreSQL partitioning
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-800/60 space-y-1">
-            <span className="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
+          <div className="pt-2 border-t border-hairline space-y-1">
+            <h4 className="font-mono text-[10px] uppercase font-semibold text-ink-faint tracking-wider">
               Catalogue
-            </span>
-            <div className="text-[11px] text-slate-400 flex items-center justify-between py-1">
+            </h4>
+            <div className="text-[11px] text-ink flex items-center justify-between py-0.5">
               <span>Claude 3.5 Sonnet</span>
-              <span className="text-[9px] font-mono text-emerald-400">active</span>
+              <strong className="font-mono text-[9px] text-pine font-normal">
+                active
+              </strong>
             </div>
-            <div className="text-[11px] text-slate-500 flex items-center justify-between py-1">
+            <div className="text-[11px] text-ink-soft flex items-center justify-between py-0.5">
               <span>GPT-4o</span>
-              <span className="text-[9px] font-mono text-slate-600">$2.50/M</span>
+              <span className="font-mono text-[9px] text-ink-faint">
+                $2.50/M
+              </span>
             </div>
-            <div className="text-[11px] text-slate-500 flex items-center justify-between py-1">
+            <div className="text-[11px] text-ink-soft flex items-center justify-between py-0.5">
               <span>DeepSeek V3</span>
-              <span className="text-[9px] font-mono text-emerald-400">free</span>
+              <strong className="font-mono text-[9px] text-pine font-normal">
+                free
+              </strong>
             </div>
           </div>
-        </div>
+        </aside>
 
         {/* Mock Chat View */}
-        <div className="p-4 space-y-3 flex flex-col justify-between">
-          <div className="space-y-3 overflow-hidden">
+        <div className="p-4 space-y-3 flex flex-col justify-between bg-paper-raised">
+          <div className="space-y-3">
             {/* User message */}
-            <div className="ml-auto max-w-[85%] rounded-xl rounded-tr-xs bg-blue-600 px-3.5 py-2.5 text-white shadow-sm">
-              <p className="font-normal text-xs leading-relaxed">
-                Compare two models for summarising a 40-page PDF report.
-              </p>
+            <div className="ml-auto max-w-[85%] bg-ink p-3 text-paper border border-ink text-xs">
+              Compare two models for summarising a 40-page PDF report.
             </div>
 
             {/* Assistant message */}
-            <div className="max-w-[95%] rounded-xl rounded-tl-xs border border-slate-800 bg-slate-900 p-3.5 text-slate-200 shadow-sm space-y-2">
-              <p className="leading-relaxed text-xs">
+            <div className="max-w-[95%] border-2 border-hairline-strong bg-paper p-3 text-ink text-xs border-l-4 border-l-rust space-y-2">
+              <p className="leading-relaxed">
                 Both handle long context well. The 200K window allows ingesting
                 the entire document in one turn with zero loss of coherence:
               </p>
 
-              <div className="rounded-lg bg-slate-950 border border-slate-800 p-2.5 font-mono text-[11px] text-slate-300">
-                <span className="text-blue-400">const</span> summary ={' '}
-                <span className="text-blue-400">await</span> ai.summarize(pdf, &#123;
-                <br />
-                &nbsp;&nbsp;model: <span className="text-emerald-400">&apos;claude-3.5-sonnet&apos;</span>,
-                <br />
-                &nbsp;&nbsp;maxTokens: <span className="text-amber-400">4096</span>
-                <br />
-                &#125;);
-              </div>
+              <pre className="p-2 font-mono text-[11px] bg-paper-sunken border border-hairline text-ink">
+                const summary = await ai.summarize(pdf, &#123; model:
+                &apos;claude-3.5-sonnet&apos; &#125;);
+              </pre>
 
-              <div className="flex items-center justify-between pt-1 border-t border-slate-800/60 text-[10px] text-slate-500 font-mono">
-                <span>anthropic/claude-3.5-sonnet · 1,204 tokens</span>
-                <span className="text-emerald-400">0.42s latency</span>
-              </div>
+              <footer className="flex items-center justify-between pt-1 border-t border-hairline font-mono text-[10px] text-ink-faint">
+                <p>anthropic/claude-3.5-sonnet · 1,204 tokens</p>
+                <p className="text-pine font-medium">0.42s latency</p>
+              </footer>
             </div>
           </div>
 
           {/* Mock Input */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/90 p-2 flex items-center justify-between">
-            <span className="text-slate-500 text-xs pl-2">Ask a follow-up question…</span>
-            <span className="rounded-lg bg-blue-600 px-3 py-1 text-[11px] font-semibold text-white">
+          <div className="border-2 border-ink bg-paper-sunken p-1.5 flex items-center justify-between">
+            <p className="text-ink-faint text-xs pl-2">
+              Ask a follow-up question…
+            </p>
+            <div className="bg-ink px-2.5 py-1 text-[11px] font-semibold text-paper">
               Send
-            </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </figure>
   );
 }
 
@@ -210,13 +208,16 @@ function Landing() {
   const signedIn = status === 'signed-in';
 
   return (
-    <div className="min-h-dvh bg-slate-950 text-slate-100 selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="min-h-dvh bg-paper text-ink selection:bg-rust-soft selection:text-rust-deep">
       {/* Top Navigation */}
-      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b-2 border-ink bg-paper/95 backdrop-blur-xs">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <IconLogo className="h-6 w-6 shadow-sm shadow-blue-500/20" />
-            <span className="text-base font-semibold tracking-tight">ChattyDesk</span>
+          <Link
+            to="/"
+            className="flex items-center gap-2.5 font-display text-base font-semibold tracking-tight text-ink hover:text-rust-deep"
+          >
+            <IconLogo className="h-6 w-6" />
+            <span>ChattyDesk</span>
           </Link>
 
           <nav className="flex items-center gap-4 sm:gap-6">
@@ -228,6 +229,11 @@ function Landing() {
             >
               Desktop App
             </a>
+            {chatIsHere && (
+              <Link to="/compare" className={quietLink}>
+                Compare AI
+              </Link>
+            )}
             {chatIsHere && !signedIn && (
               <Link to="/login" className={quietLink}>
                 Sign in
@@ -243,27 +249,22 @@ function Landing() {
 
       <main>
         {/* ---------------------------------------------------------- HERO --- */}
-        <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24">
-          {/* Subtle Ambient Radial Glow */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[450px] w-[750px] rounded-full bg-blue-600/10 blur-[120px]"
-          />
-
-          <div className="relative mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-12">
+        <section className="pt-12 pb-16 sm:pt-16 sm:pb-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-12">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-xs font-medium text-slate-300 backdrop-blur-sm">
-                <IconSparkles className="h-3.5 w-3.5 text-blue-400" />
-                <span>400+ models · zero lock-in</span>
-              </div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">
+                01 — 400+ models · zero lock-in
+              </p>
 
-              <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-slate-100 leading-[1.1]">
+              <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-ink leading-[1.1]">
                 Every model.
                 <br />
-                <span className="text-slate-400 font-normal">One chat window.</span>
+                <em className="font-normal not-italic text-ink-soft">
+                  One chat window.
+                </em>
               </h1>
 
-              <p className="mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-slate-400">
+              <p className="mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-ink-soft">
                 Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, DeepSeek, and Mistral
                 in a single unified desktop &amp; web interface. Switch models
                 mid-conversation while preserving full context history.
@@ -275,7 +276,7 @@ function Landing() {
                   className={primaryButton}
                 />
                 {chatIsHere && !signedIn && (
-                  <Link to="/register" className={ghostButton}>
+                  <Link to="/register" className={secondaryButton}>
                     Create free account
                   </Link>
                 )}
@@ -283,18 +284,20 @@ function Landing() {
                   href="https://chattydesk.sourceforge.io/"
                   target="_blank"
                   rel="noreferrer noopener"
-                  className={ghostButton}
+                  className={secondaryButton}
                 >
                   Download desktop app
                 </a>
               </div>
 
-              <p className="mt-5 text-xs sm:text-sm text-slate-500 flex items-center gap-2">
-                <IconCheck className="h-4 w-4 text-emerald-400" />
-                {signedIn && user
-                  ? `Signed in as ${user.username}.`
-                  : 'Free tier models included. Optional BYO OpenRouter key.'}
-              </p>
+              <footer className="mt-6 flex items-center gap-2 text-xs sm:text-sm text-ink-faint">
+                <IconCheck className="h-4 w-4 text-pine flex-shrink-0" />
+                <p>
+                  {signedIn && user
+                    ? `Signed in as ${user.username}.`
+                    : 'Free tier models included. Optional BYO OpenRouter key.'}
+                </p>
+              </footer>
             </div>
 
             <div className="mt-10 lg:mt-0">
@@ -304,42 +307,54 @@ function Landing() {
         </section>
 
         {/* ------------------------------------------------ PROVIDERS STRIP --- */}
-        <section className="border-y border-slate-900 bg-slate-900/30 py-6">
+        <section className="border-y-2 border-ink bg-paper-sunken py-6">
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
-            <p className="text-center text-xs font-mono uppercase tracking-widest text-slate-500 mb-4">
+            <h2 className="text-center font-mono text-[10px] uppercase tracking-[0.25em] text-ink-faint mb-4">
               Direct access via OpenRouter proxies
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs sm:text-sm font-medium text-slate-400">
-              <span>Anthropic Claude</span>
-              <span className="text-slate-700">·</span>
-              <span>OpenAI GPT</span>
-              <span className="text-slate-700">·</span>
-              <span>Google Gemini</span>
-              <span className="text-slate-700">·</span>
-              <span>Meta Llama</span>
-              <span className="text-slate-700">·</span>
-              <span>Mistral AI</span>
-              <span className="text-slate-700">·</span>
-              <span>DeepSeek</span>
-              <span className="text-slate-700">·</span>
-              <span>Qwen</span>
-            </div>
+            </h2>
+            <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs sm:text-sm font-medium text-ink-soft">
+              <li>Anthropic Claude</li>
+              <li aria-hidden="true" className="text-hairline-strong">
+                ·
+              </li>
+              <li>OpenAI GPT</li>
+              <li aria-hidden="true" className="text-hairline-strong">
+                ·
+              </li>
+              <li>Google Gemini</li>
+              <li aria-hidden="true" className="text-hairline-strong">
+                ·
+              </li>
+              <li>Meta Llama</li>
+              <li aria-hidden="true" className="text-hairline-strong">
+                ·
+              </li>
+              <li>Mistral AI</li>
+              <li aria-hidden="true" className="text-hairline-strong">
+                ·
+              </li>
+              <li>DeepSeek</li>
+              <li aria-hidden="true" className="text-hairline-strong">
+                ·
+              </li>
+              <li>Qwen</li>
+            </ul>
           </div>
         </section>
 
         {/* ---------------------------------------------------- FEATURES --- */}
-        <section className="py-16 sm:py-24">
+        <section className="py-16 sm:py-24 bg-paper">
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
-            <div className="max-w-2xl">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-100 sm:text-3xl">
+            <header className="max-w-2xl">
+              <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
                 One window, the whole catalogue
               </h2>
-              <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-400">
-                Built for engineers, researchers, and writers who need to compare
-                outputs and switch between specialized models without managing
-                ten different subscriptions.
+              <p className="mt-3 text-sm sm:text-base leading-relaxed text-ink-soft">
+                Built for engineers, researchers, and writers who need to
+                compare outputs and switch between specialized models without
+                managing ten different subscriptions.
               </p>
-            </div>
+            </header>
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               <FeatureCard
@@ -347,8 +362,9 @@ function Landing() {
                 badge="400+ Models"
                 title="Searchable Catalogue"
               >
-                Instant search across providers, filter by free tier or capability,
-                and inspect live per-million token pricing before sending.
+                Instant search across providers, filter by free tier or
+                capability, and inspect live per-million token pricing before
+                sending.
               </FeatureCard>
 
               <FeatureCard
@@ -365,8 +381,9 @@ function Landing() {
                 badge="Client Encryption"
                 title="Your Key or Ours"
               >
-                Chat on the included shared pool, or securely store your personal
-                OpenRouter key with client-side encryption and automatic fallback.
+                Chat on the included shared pool, or securely store your
+                personal OpenRouter key with client-side encryption and
+                automatic fallback.
               </FeatureCard>
 
               <FeatureCard
@@ -374,108 +391,138 @@ function Landing() {
                 badge="Cross-Platform"
                 title="Desktop & Web"
               >
-                A single unified codebase packaged for Windows, macOS, Linux, and
-                modern web browsers with synced account sessions.
+                A single unified codebase packaged for Windows, macOS, Linux,
+                and modern web browsers with synced account sessions.
               </FeatureCard>
             </div>
+
+            <Link
+              to="/compare"
+              className="group mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-2 border-ink bg-rust text-paper p-6 shadow-[4px_4px_0_0_#C6BEA8] transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+            >
+              <div className="flex items-center gap-4">
+                <span className="flex h-10 w-10 flex-none items-center justify-center border-2 border-paper">
+                  <IconCompare className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="font-display text-lg font-semibold text-paper">
+                    Compare AI — one prompt, up to five models
+                  </h3>
+                  <p className="mt-1 text-xs sm:text-sm leading-relaxed text-paper/80">
+                    Put Claude, GPT, Gemini, and the rest head-to-head on the
+                    same question, then compare answers, speed, and cost side by
+                    side.
+                  </p>
+                </div>
+              </div>
+              <IconArrowRight className="h-5 w-5 flex-none transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
         </section>
 
         {/* ------------------------------------------------ HOW IT WORKS --- */}
-        <section className="border-t border-slate-900 bg-slate-900/20 py-16 sm:py-24">
+        <section className="border-t-2 border-ink bg-paper-sunken py-16 sm:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[1fr_1.2fr] lg:gap-14">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-100 sm:text-3xl">
+              <h2 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
                 Three steps to full model freedom
               </h2>
-              <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-400">
-                No complex API tooling, YAML configuration, or fragmented logins.
-                Everything works out of the box.
+              <p className="mt-3 text-sm sm:text-base leading-relaxed text-ink-soft">
+                No complex API tooling, YAML configuration, or fragmented
+                logins. Everything works out of the box.
               </p>
             </div>
 
-            <div className="mt-8 space-y-6 lg:mt-0">
-              <div className="flex gap-4 p-4 rounded-xl border border-slate-800/80 bg-slate-900/60">
-                <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-blue-600/10 border border-blue-500/30 text-xs font-mono font-bold text-blue-400">
+            <ol className="mt-8 space-y-4 lg:mt-0">
+              <li className="flex gap-4 p-4 border-2 border-ink bg-paper-raised shadow-[3px_3px_0_0_#C6BEA8]">
+                <div className="flex h-8 w-8 flex-none items-center justify-center border-2 border-ink bg-rust text-paper text-xs font-mono font-bold">
                   01
-                </span>
+                </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-100">Create your account</h3>
-                  <p className="mt-1 text-xs sm:text-sm text-slate-400 leading-relaxed">
-                    A simple username and password keeps your conversation threads
-                    and model preferences synced.
+                  <h3 className="text-sm font-semibold text-ink">
+                    Create your account
+                  </h3>
+                  <p className="mt-1 text-xs sm:text-sm text-ink-soft leading-relaxed">
+                    A simple username and password keeps your conversation
+                    threads and model preferences synced across web and desktop.
                   </p>
                 </div>
-              </div>
+              </li>
 
-              <div className="flex gap-4 p-4 rounded-xl border border-slate-800/80 bg-slate-900/60">
-                <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-blue-600/10 border border-blue-500/30 text-xs font-mono font-bold text-blue-400">
+              <li className="flex gap-4 p-4 border-2 border-ink bg-paper-raised shadow-[3px_3px_0_0_#C6BEA8]">
+                <div className="flex h-8 w-8 flex-none items-center justify-center border-2 border-ink bg-rust text-paper text-xs font-mono font-bold">
                   02
-                </span>
+                </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-100">Select any model in the catalogue</h3>
-                  <p className="mt-1 text-xs sm:text-sm text-slate-400 leading-relaxed">
-                    Filter by provider, toggle free models, or pick frontier reasoning
-                    models with exact pricing transparency.
+                  <h3 className="text-sm font-semibold text-ink">
+                    Select any model in the catalogue
+                  </h3>
+                  <p className="mt-1 text-xs sm:text-sm text-ink-soft leading-relaxed">
+                    Filter by provider, toggle free models, or pick frontier
+                    reasoning models with exact pricing transparency.
                   </p>
                 </div>
-              </div>
+              </li>
 
-              <div className="flex gap-4 p-4 rounded-xl border border-slate-800/80 bg-slate-900/60">
-                <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-blue-600/10 border border-blue-500/30 text-xs font-mono font-bold text-blue-400">
+              <li className="flex gap-4 p-4 border-2 border-ink bg-paper-raised shadow-[3px_3px_0_0_#C6BEA8]">
+                <div className="flex h-8 w-8 flex-none items-center justify-center border-2 border-ink bg-rust text-paper text-xs font-mono font-bold">
                   03
-                </span>
+                </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-100">Chat with formatted Markdown &amp; telemetry</h3>
-                  <p className="mt-1 text-xs sm:text-sm text-slate-400 leading-relaxed">
-                    Receive rich code blocks, tables, and token consumption metrics
-                    on every single prompt.
+                  <h3 className="text-sm font-semibold text-ink">
+                    Chat with formatted Markdown &amp; telemetry
+                  </h3>
+                  <p className="mt-1 text-xs sm:text-sm text-ink-soft leading-relaxed">
+                    Receive rich code blocks, tables, and token consumption
+                    metrics on every single prompt.
                   </p>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ol>
           </div>
         </section>
 
         {/* --------------------------------------------------- FINAL CTA --- */}
-        <section className="border-t border-slate-900 py-16 sm:py-20 text-center">
+        <section className="py-16 sm:py-20 bg-paper text-center">
           <div className="mx-auto max-w-4xl px-5 sm:px-8">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
-              Ready to explore 400+ models?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base text-slate-400 leading-relaxed">
-              Launch in your browser immediately, or download the native desktop
-              installer for your platform.
-            </p>
+            <div className="border-2 border-ink bg-paper-raised p-8 sm:p-12 shadow-[6px_6px_0_0_#C6BEA8]">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                Ready to explore 400+ models?
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base text-ink-soft leading-relaxed">
+                Launch in your browser immediately, or download the native
+                desktop installer for your platform.
+              </p>
 
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <ChatCta
-                label={signedIn ? 'Open the chat' : 'Start chatting'}
-                className={primaryButton}
-              />
-              <a
-                href="https://chattydesk.sourceforge.io/"
-                target="_blank"
-                rel="noreferrer noopener"
-                className={ghostButton}
-              >
-                <span>Download Desktop Installer</span>
-                <IconExternal className="h-4 w-4" />
-              </a>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <ChatCta
+                  label={signedIn ? 'Open the chat' : 'Start chatting'}
+                  className={primaryButton}
+                />
+                <a
+                  href="https://chattydesk.sourceforge.io/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className={secondaryButton}
+                >
+                  Download Desktop Installer
+                  <IconExternal className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 sm:px-8 sm:flex-row sm:items-center sm:justify-between text-xs text-slate-500">
+      <footer className="border-t-2 border-ink bg-paper-sunken py-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 sm:px-8 sm:flex-row sm:items-center sm:justify-between text-xs text-ink-faint">
           <div className="flex items-center gap-2">
             <IconLogo className="h-4 w-4" />
-            <span>ChattyDesk · Unified AI Model Desktop Client</span>
+            <p>ChattyDesk · Unified AI Model Desktop Client</p>
           </div>
 
-          <div className="flex items-center gap-6">
+          <nav className="flex items-center gap-6">
             {chatIsHere && !signedIn && (
               <Link to="/login" className={quietLink}>
                 Sign in
@@ -497,7 +544,7 @@ function Landing() {
             >
               SourceForge
             </a>
-          </div>
+          </nav>
         </div>
       </footer>
     </div>
@@ -505,4 +552,3 @@ function Landing() {
 }
 
 export default Landing;
-

@@ -69,7 +69,7 @@ function Login() {
         {error && (
           <p
             role="alert"
-            className="rounded-lg border border-red-500/40 bg-red-500/10 px-3.5 py-3 text-sm text-red-300"
+            className="border-2 border-ember bg-ember-soft p-3 text-xs text-ember font-mono"
           >
             {error}
           </p>
@@ -113,12 +113,12 @@ function Login() {
             type="button"
             onClick={() => setRevealed((shown) => !shown)}
             aria-label={revealed ? 'Hide password' : 'Show password'}
-            className="absolute bottom-[3px] right-1 flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 transition-colors duration-200 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+            className="absolute bottom-[3px] right-1 flex h-11 w-11 items-center justify-center text-ink-faint transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust"
           >
             {revealed ? (
-              <IconEyeOff className="h-5 w-5" />
+              <IconEyeOff className="h-4 w-4" />
             ) : (
-              <IconEye className="h-5 w-5" />
+              <IconEye className="h-4 w-4" />
             )}
           </button>
         </div>
@@ -129,7 +129,7 @@ function Login() {
           className={submitClasses}
         >
           {submitting && (
-            <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-transparent motion-safe:animate-spin" />
+            <span className="h-3.5 w-3.5 rounded-full border-2 border-paper/40 border-t-transparent motion-safe:animate-spin" />
           )}
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>

@@ -10,27 +10,23 @@ import {
   IconExternal,
   IconEye,
   IconEyeOff,
-  IconKey,
   IconLogo,
-  IconShield,
-  IconSignOut,
-  IconUser,
 } from '../components/icons';
 
 const fieldClasses =
-  'w-full rounded-xl border border-slate-700/80 bg-slate-950/90 px-3.5 py-2.5 font-mono text-xs text-slate-100 placeholder:text-slate-600 transition-all duration-150 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-60';
+  'w-full border-2 border-hairline-strong bg-paper px-3.5 py-2.5 font-mono text-xs text-ink placeholder:text-ink-faint transition-colors focus:border-rust focus:outline-none disabled:opacity-60';
 
 const primaryButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition-all duration-150 hover:bg-blue-500 active:bg-blue-700 shadow-md shadow-blue-600/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-500';
+  'inline-flex items-center justify-center gap-2 bg-ink px-4 py-2 text-xs font-semibold text-paper transition-colors hover:bg-rust shadow-[3px_3px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust disabled:cursor-not-allowed disabled:bg-hairline-strong disabled:text-ink-faint';
 
 const quietButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700/80 bg-slate-900/60 px-4 py-2 text-xs font-medium text-slate-300 transition-all duration-150 hover:bg-slate-800 hover:border-slate-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+  'inline-flex items-center justify-center gap-2 border-2 border-ink bg-paper px-4 py-2 text-xs font-medium text-ink transition-colors hover:bg-paper-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const dangerButton =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/40 bg-red-950/20 px-4 py-2 text-xs font-medium text-red-300 transition-all duration-150 hover:bg-red-950/50 hover:border-red-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+  'inline-flex items-center justify-center gap-2 border-2 border-ember bg-ember-soft px-4 py-2 text-xs font-medium text-ember transition-colors hover:bg-ember hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const linkClasses =
-  'rounded font-medium text-blue-400 transition-colors duration-150 hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950';
+  'font-medium text-rust transition-colors hover:text-rust-deep hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 /** OpenRouter reports spend in dollars, often in fractions of a cent. */
 const money = (value: number | null | undefined): string | null => {
@@ -48,13 +44,14 @@ function KeyCheckSummary({ check }: { check: KeyCheck }) {
   else if (spent) allowance = ', no limit set.';
 
   return (
-    <div className="mt-3 rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-3.5 py-2.5 text-xs text-emerald-300 flex items-center gap-2">
-      <IconCheck className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-      <span>
+    <div className="mt-3 border-2 border-pine bg-pine-soft px-3.5 py-2.5 text-xs text-pine flex items-center gap-2 font-mono">
+      <IconCheck className="h-4 w-4 text-pine flex-shrink-0" />
+      <p>
         OpenRouter verified key
-        {check.label ? ` (${check.label})` : ''}.{spent ? ` ${spent} spent` : ''}
+        {check.label ? ` (${check.label})` : ''}.
+        {spent ? ` ${spent} spent` : ''}
         {allowance}
-      </span>
+      </p>
     </div>
   );
 }
@@ -69,16 +66,15 @@ function Card({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-slate-800/90 bg-slate-900/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md">
-      <h2 className="text-base font-semibold text-slate-100">{title}</h2>
-      <p className="mt-1 text-xs sm:text-sm leading-relaxed text-slate-400">
+    <section className="border-2 border-ink bg-paper-raised p-6 shadow-[4px_4px_0_0_#C6BEA8]">
+      <h2 className="font-display text-lg font-semibold text-ink">{title}</h2>
+      <p className="mt-1 text-xs sm:text-sm leading-relaxed text-ink-soft">
         {description}
       </p>
       {children}
     </section>
   );
 }
-
 
 /**
  * Account page, and the one place a user can hand over their own OpenRouter
@@ -199,16 +195,19 @@ function Settings() {
   const hasKey = Boolean(settings?.has_own_key);
 
   return (
-    <div className="min-h-dvh bg-slate-950 text-slate-100 selection:bg-blue-500/30 selection:text-blue-200">
-      <header className="sticky top-0 z-20 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+    <div className="min-h-dvh bg-paper text-ink selection:bg-rust-soft selection:text-rust-deep">
+      <header className="sticky top-0 z-20 border-b-2 border-ink bg-paper/95 backdrop-blur-xs">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5 sm:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <IconLogo className="h-6 w-6 shadow-sm shadow-blue-500/20" />
-            <span className="text-base font-semibold tracking-tight">ChattyDesk</span>
+          <Link
+            to="/"
+            className="flex items-center gap-2.5 font-display text-base font-semibold tracking-tight text-ink hover:text-rust-deep"
+          >
+            <IconLogo className="h-6 w-6" />
+            <span>ChattyDesk</span>
           </Link>
           <Link
             to="/chat"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-300 transition-all duration-150 hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+            className="inline-flex items-center gap-1.5 border-2 border-ink bg-paper px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-paper-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust"
           >
             <span>Back to chat</span>
             <IconArrowRight className="h-3.5 w-3.5" />
@@ -216,11 +215,12 @@ function Settings() {
         </div>
       </header>
 
-
       <main className="mx-auto max-w-3xl space-y-6 px-5 py-10 sm:px-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-          <p className="mt-2 text-sm text-slate-400">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-ink">
+            Settings
+          </h1>
+          <p className="mt-2 text-sm text-ink-soft">
             Your account, and which OpenRouter key pays for your chats.
           </p>
         </div>
@@ -228,7 +228,7 @@ function Settings() {
         {loadError && (
           <p
             role="alert"
-            className="rounded-lg border border-red-500/40 bg-red-500/10 px-3.5 py-3 text-sm text-red-300"
+            className="border-2 border-ember bg-ember-soft p-3 text-xs text-ember font-mono"
           >
             Could not load your settings: {loadError}
           </p>
@@ -238,22 +238,20 @@ function Settings() {
           title="Account"
           description="Signed in on this device. The same account works in the desktop app and in the browser."
         >
-          <dl className="mt-4 divide-y divide-slate-800 text-sm">
+          <dl className="mt-4 divide-y divide-hairline text-sm">
             <div className="flex justify-between gap-4 py-2.5">
-              <dt className="text-slate-400">Username</dt>
-              <dd className="font-medium text-slate-100">
-                {user?.username ?? '—'}
-              </dd>
+              <dt className="text-ink-soft">Username</dt>
+              <dd className="font-medium text-ink">{user?.username ?? '—'}</dd>
             </div>
             <div className="flex justify-between gap-4 py-2.5">
-              <dt className="text-slate-400">Email</dt>
-              <dd className="truncate font-medium text-slate-100">
+              <dt className="text-ink-soft">Email</dt>
+              <dd className="truncate font-medium text-ink">
                 {user?.email || 'Not set'}
               </dd>
             </div>
             <div className="flex justify-between gap-4 py-2.5">
-              <dt className="text-slate-400">Member since</dt>
-              <dd className="font-medium text-slate-100">
+              <dt className="text-ink-soft">Member since</dt>
+              <dd className="font-medium text-ink font-mono text-xs">
                 {user?.date_joined
                   ? new Date(user.date_joined).toLocaleDateString()
                   : '—'}
@@ -274,16 +272,16 @@ function Settings() {
           title="Your OpenRouter key"
           description="Chats are charged to the server's key by default. Save your own and it takes over when that one is out of credit — or on every request, if you would rather."
         >
-          <p className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-slate-400">Currently:</span>
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-ink-soft">Currently:</span>
             {loading ? (
-              <span className="text-slate-500">checking…</span>
+              <span className="text-ink-faint">checking…</span>
             ) : (
-              <span className="font-medium text-slate-100">
+              <span className="font-medium text-ink">
                 {hasKey ? (
                   <>
                     your key
-                    <span className="ml-1.5 rounded bg-slate-800 px-1.5 py-0.5 font-mono text-xs text-slate-300">
+                    <span className="ml-1.5 border border-hairline-strong bg-paper-sunken px-1.5 py-0.5 font-mono text-xs text-ink">
                       sk-or-…{settings?.key_hint}
                     </span>
                   </>
@@ -292,12 +290,12 @@ function Settings() {
                 )}
               </span>
             )}
-          </p>
+          </div>
 
           {notice && (
             <p
               role="status"
-              className="mt-3 rounded-lg border border-slate-700 bg-slate-800/60 px-3.5 py-3 text-sm text-slate-200"
+              className="mt-3 border-2 border-hairline-strong bg-paper-sunken p-3 text-xs text-ink font-mono"
             >
               {notice}
             </p>
@@ -306,7 +304,7 @@ function Settings() {
           {keyError && (
             <p
               role="alert"
-              className="mt-3 rounded-lg border border-red-500/40 bg-red-500/10 px-3.5 py-3 text-sm text-red-300"
+              className="mt-3 border-2 border-ember bg-ember-soft p-3 text-xs text-ember font-mono"
             >
               {keyError}
             </p>
@@ -319,7 +317,7 @@ function Settings() {
                 label steals the click that should focus the input. */}
             <div className="relative">
               <label htmlFor="openrouter-key" className="block">
-                <span className="block text-sm font-medium text-slate-300">
+                <span className="block text-xs font-mono font-semibold uppercase tracking-wider text-ink-faint">
                   {hasKey ? 'Replace your key' : 'OpenRouter API key'}
                 </span>
                 <input
@@ -340,16 +338,16 @@ function Settings() {
                 type="button"
                 onClick={() => setRevealed((shown) => !shown)}
                 aria-label={revealed ? 'Hide the key' : 'Show the key'}
-                className="absolute bottom-[2px] right-1 flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 transition-colors duration-200 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                className="absolute bottom-[2px] right-1 flex h-11 w-11 items-center justify-center text-ink-faint transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust"
               >
                 {revealed ? (
-                  <IconEyeOff className="h-5 w-5" />
+                  <IconEyeOff className="h-4 w-4" />
                 ) : (
-                  <IconEye className="h-5 w-5" />
+                  <IconEye className="h-4 w-4" />
                 )}
               </button>
             </div>
-            <p id="openrouter-key-hint" className="mt-2 text-sm text-slate-500">
+            <p id="openrouter-key-hint" className="mt-2 text-xs text-ink-faint">
               Stored encrypted and never shown again — only the last four
               characters come back.{' '}
               <a
@@ -370,7 +368,7 @@ function Settings() {
                 className={primaryButton}
               >
                 {savingKey && (
-                  <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-transparent motion-safe:animate-spin" />
+                  <span className="h-3.5 w-3.5 rounded-full border-2 border-paper/40 border-t-transparent motion-safe:animate-spin" />
                 )}
                 {savingKey ? 'Checking with OpenRouter…' : 'Save key'}
               </button>
@@ -416,7 +414,7 @@ function Settings() {
           {preferenceError && (
             <p
               role="alert"
-              className="mt-3 rounded-lg border border-red-500/40 bg-red-500/10 px-3.5 py-3 text-sm text-red-300"
+              className="mt-3 border-2 border-ember bg-ember-soft p-3 text-xs text-ember font-mono"
             >
               {preferenceError}
             </p>
@@ -445,30 +443,30 @@ function Settings() {
               <label
                 key={String(option.value)}
                 htmlFor={`preference-${option.value}`}
-                className="flex cursor-pointer gap-3 rounded-lg border border-slate-800 p-3.5 transition-colors duration-200 hover:border-slate-700"
+                className="flex cursor-pointer gap-3 border-2 border-hairline p-3.5 transition-colors hover:border-rust"
               >
                 <input
                   id={`preference-${option.value}`}
                   type="radio"
                   name="prefer-own-key"
-                  className="mt-1 h-4 w-4 accent-blue-500"
+                  className="mt-1 h-4 w-4 accent-rust"
                   checked={Boolean(settings?.prefer_own_key) === option.value}
                   onChange={() => choosePreference(option.value)}
                 />
-                <span>
-                  <span className="block text-sm font-medium text-slate-100">
+                <div>
+                  <span className="block text-sm font-semibold text-ink">
                     {option.title}
                   </span>
-                  <span className="mt-0.5 block text-sm text-slate-400">
+                  <span className="mt-0.5 block text-xs text-ink-soft">
                     {option.blurb}
                   </span>
-                </span>
+                </div>
               </label>
             ))}
           </fieldset>
 
           {!hasKey && (
-            <p className="mt-3 text-sm text-slate-500">
+            <p className="mt-3 text-xs text-ink-faint font-mono">
               Save a key above to choose.
             </p>
           )}

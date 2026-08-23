@@ -214,6 +214,15 @@ export function IconShield({ className }: IconProps) {
   );
 }
 
+export function IconCompare({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="3.5" y="4.5" width="7.5" height="15" rx="1.5" />
+      <rect x="13" y="7.5" width="7.5" height="12" rx="1.5" />
+    </Svg>
+  );
+}
+
 export function IconLogo({ className }: IconProps) {
   return (
     <svg
@@ -222,15 +231,14 @@ export function IconLogo({ className }: IconProps) {
       aria-hidden="true"
       className={className}
     >
-      <rect width="24" height="24" rx="6" className="fill-blue-600" />
+      <rect width="24" height="24" rx="4" className="fill-ink" />
       <path
         d="M6.5 7.5A1.5 1.5 0 0 1 8 6h8a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 15h-4l-3.5 3v-3H8a1.5 1.5 0 0 1-1.5-1.5v-6Z"
-        className="fill-white"
+        className="fill-paper"
       />
-      <circle cx="10" cy="10.5" r="1" className="fill-blue-600" />
-      <circle cx="12" cy="10.5" r="1" className="fill-blue-600" />
-      <circle cx="14" cy="10.5" r="1" className="fill-blue-600" />
+      <circle cx="10" cy="10.5" r="1" className="fill-rust" />
+      <circle cx="12" cy="10.5" r="1" className="fill-rust" />
+      <circle cx="14" cy="10.5" r="1" className="fill-rust" />
     </svg>
   );
 }
-

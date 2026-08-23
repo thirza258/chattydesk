@@ -11,6 +11,7 @@ import {
 import {
   AuthUser,
   ChatResult,
+  CompareResponse,
   Credentials,
   Envelope,
   HistoryPage,
@@ -210,6 +211,27 @@ const sendMessage = async (
 };
 
 /**
+ * Compare one prompt across 2–5 models at once. Requires a signed-in account.
+ *
+ * Ephemeral: nothing is written to chat history.
+ */
+const compareModels = async (
+  message: string,
+  models: string[],
+): Promise<CompareResponse> => {
+  try {
+    const { data } = await api.post<Envelope<CompareResponse>>(
+      `${openRouterURL}/compare/`,
+      { message, models },
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+/**
  * The signed-in account's own history, newest first. Filter by
  * `conversationId` to rebuild a single thread.
  */
@@ -326,6 +348,7 @@ const saveSettings = async (patch: SettingsPatch): Promise<UserSettings> => {
 export default {
   listModels,
   sendMessage,
+  compareModels,
   getHistory,
   signIn,
   signUp,

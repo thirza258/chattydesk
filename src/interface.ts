@@ -52,6 +52,20 @@ export interface ChatResult {
   used_own_key?: boolean;
 }
 
+export interface CompareResult {
+  model: string;
+  response?: string;
+  usage?: Usage;
+  used_own_key?: boolean;
+  duration_ms?: number;
+  error?: string;
+}
+
+export interface CompareResponse {
+  prompt: string;
+  results: CompareResult[];
+}
+
 export interface HistoryEntry {
   id: number;
   prompt: string;

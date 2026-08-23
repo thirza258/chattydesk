@@ -13,6 +13,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Chat from './pages/Chat';
+import Compare from './pages/Compare';
 import Settings from './pages/Settings';
 import './App.css';
 import 'tailwindcss/tailwind.css';
@@ -47,6 +48,14 @@ function App() {
             element={
               <RequireAuth>
                 <Chat />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/compare"
+            element={
+              <RequireAuth>
+                <Compare />
               </RequireAuth>
             }
           />

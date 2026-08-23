@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,38 +7,38 @@
 @layer base {
   html {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
-    @apply bg-slate-950 text-slate-100 antialiased selection:bg-blue-500/30 selection:text-blue-200;
+    @apply bg-paper text-ink antialiased selection:bg-rust-soft selection:text-rust-deep;
   }
 }
 
-/* Custom sleek slim scrollbar */
+/* Tactile clean scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #EFECE6;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: #CBC7BD;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.35);
+  background: #8C887B;
 }
 
-/* Rich Markdown Typography for Chat Bot messages */
+/* Rich Markdown Typography for Chat Bot messages (Light Mode) */
 .chat-markdown {
   font-size: 0.9375rem;
   line-height: 1.625;
-  color: #e2e8f0;
+  color: #18181B;
 }
 
 .chat-markdown p {
@@ -54,7 +54,7 @@
 .chat-markdown h3,
 .chat-markdown h4 {
   font-weight: 600;
-  color: #f8fafc;
+  color: #18181B;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   letter-spacing: -0.015em;
@@ -87,19 +87,19 @@
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   font-size: 0.8125rem;
   padding: 0.15rem 0.375rem;
-  border-radius: 0.375rem;
-  background-color: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(51, 65, 85, 0.6);
-  color: #93c5fd;
+  border-radius: 0.25rem;
+  background-color: #EFECE6;
+  border: 1px solid #E4E2DC;
+  color: #9A3412;
 }
 
 .chat-markdown pre {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   padding: 0.875rem 1rem;
-  border-radius: 0.625rem;
-  background-color: #090d16;
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 0.25rem;
+  background-color: #EFECE6;
+  border: 1px solid #CBC7BD;
   overflow-x: auto;
 }
 
@@ -107,22 +107,21 @@
   padding: 0;
   border: none;
   background-color: transparent;
-  color: #e2e8f0;
+  color: #18181B;
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 
 .chat-markdown blockquote {
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid #C2410C;
   padding-left: 0.875rem;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
-  color: #94a3b8;
+  color: #52525B;
   font-style: italic;
-  background: rgba(15, 23, 42, 0.4);
+  background: #FFF7ED;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  border-radius: 0 0.375rem 0.375rem 0;
 }
 
 .chat-markdown table {
@@ -135,27 +134,27 @@
 
 .chat-markdown th,
 .chat-markdown td {
-  border: 1px solid #334155;
+  border: 1px solid #CBC7BD;
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
 .chat-markdown th {
-  background-color: #1e293b;
+  background-color: #EFECE6;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #18181B;
 }
 
 .chat-markdown tr:nth-child(even) {
-  background-color: rgba(30, 41, 59, 0.3);
+  background-color: rgba(239, 236, 230, 0.4);
 }
 
 .chat-markdown a {
-  color: #60a5fa;
+  color: #C2410C;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .chat-markdown a:hover {
-  color: #93c5fd;
+  color: #9A3412;
 }
