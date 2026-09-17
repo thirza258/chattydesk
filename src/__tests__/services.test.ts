@@ -131,6 +131,83 @@ describe('an expired access token', () => {
     expect(window.localStorage.getItem(REFRESH_KEY)).toBeNull();
   });
 
+  it.each([402, 429, 502, 504])(
+    'preserves the session and inference error when a refreshed chat fails with %s',
+    async (status) => {
+      const expired = jest.fn();
+      onSessionExpired(expired);
+      respond = (request) => {
+        if (request.url.endsWith('/auth/refresh/')) {
+          return {
+            status: 200,
+            data: { status: 200, data: { access: 'fresh' } },
+          };
+        }
+        if (request.authorization === 'Bearer stale') {
+          return { status: 401, data: { message: 'Access token expired' } };
+        }
+        return {
+          status,
+          data: { message: 'OpenRouter error: model unavailable' },
+        };
+      };
+
+      await expect(
+        services.sendMessage({ message: 'Hello' }),
+      ).rejects.toMatchObject({
+        status,
+        message: 'OpenRouter error: model unavailable',
+      });
+
+      expect(refreshCount()).toBe(1);
+      expect(expired).not.toHaveBeenCalled();
+      expect(window.localStorage.getItem(ACCESS_KEY)).toBe('fresh');
+      expect(window.localStorage.getItem(REFRESH_KEY)).toBe('refresh-token');
+    },
+  );
+
+  it('keeps the session when token refresh fails temporarily', async () => {
+    const expired = jest.fn();
+    onSessionExpired(expired);
+    respond = (request) =>
+      request.url.endsWith('/auth/refresh/')
+        ? { status: 503, data: { message: 'Service temporarily unavailable' } }
+        : { status: 401, data: { message: 'Access token expired' } };
+
+    await expect(
+      services.sendMessage({ message: 'Hello' }),
+    ).rejects.toMatchObject({
+      status: 503,
+      message: 'Service temporarily unavailable',
+    });
+
+    expect(refreshCount()).toBe(1);
+    expect(expired).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(ACCESS_KEY)).toBe('stale');
+    expect(window.localStorage.getItem(REFRESH_KEY)).toBe('refresh-token');
+  });
+
+  it('ends the session if the refreshed token is also rejected', async () => {
+    const expired = jest.fn();
+    onSessionExpired(expired);
+    respond = (request) =>
+      request.url.endsWith('/auth/refresh/')
+        ? { status: 200, data: { data: { access: 'fresh' } } }
+        : { status: 401, data: { message: 'Account no longer available' } };
+
+    await expect(
+      services.sendMessage({ message: 'Hello' }),
+    ).rejects.toMatchObject({
+      status: 401,
+      message: 'Account no longer available',
+    });
+
+    expect(refreshCount()).toBe(1);
+    expect(expired).toHaveBeenCalledTimes(1);
+    expect(window.localStorage.getItem(ACCESS_KEY)).toBeNull();
+    expect(window.localStorage.getItem(REFRESH_KEY)).toBeNull();
+  });
+
   it('does not try to refresh a rejected sign-in', async () => {
     respond = () => ({
       status: 401,

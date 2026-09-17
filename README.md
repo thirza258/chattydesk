@@ -27,6 +27,26 @@ source: as a desktop app (Electron) and as an ordinary web app in the browser.
 | `/login`, `/register` | Sign in and sign up — same forms in the browser and on the desktop |
 | `/chat` | The app. Needs an account; sends you to `/login` if you have none |
 | `/settings` | Account details and your own OpenRouter key |
+| `/courses` | Free beginner AI courses, available in the web app only |
+| `/courses/:courseId/:lessonId` | A lesson, practice prompt, and knowledge check |
+
+## Conversation memory and learning
+
+Open **Conversation memory** above the chat to turn recall on or off, choose
+how many previous turns to include (up to 50), or reset the current thread's
+memory. A reset keeps the visible chat history and excludes older messages from
+future context. Preferences are saved per account and conversation on the backend.
+Changing models keeps the same thread; **New chat** starts with fresh context.
+
+The backend also limits the amount of history sent in a request, keeping complete
+recent turns. Deploy the matching backend and run its migrations before using
+these controls; they use `GET/PATCH /openrouter/conversations/<id>/memory/`.
+
+The web app includes four introductory courses covering AI basics, prompting,
+checking answers, and everyday tasks. Each has three lessons, a practice prompt,
+and a knowledge check. Completion is stored in this browser after a correct
+answer; it is not synced across devices. Course routes and links are not exposed
+in the Electron app.
 
 The browser build uses real URLs, so every page is linkable and the host must
 serve `index.html` for unknown paths (`deploy.sh` writes a `404.html` for the

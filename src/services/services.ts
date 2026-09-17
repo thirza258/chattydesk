@@ -12,6 +12,7 @@ import {
   AuthUser,
   ChatResult,
   CompareResponse,
+  ConversationMemory,
   Credentials,
   Envelope,
   HistoryPage,
@@ -20,6 +21,7 @@ import {
   ModelCatalogue,
   PaymentConfig,
   PaymentStatus,
+  MemoryPatch,
   SendMessageOptions,
   Session,
   SettingsPatch,
@@ -124,7 +126,17 @@ api.interceptors.response.use(undefined, async (error: AxiosError) => {
     !isPublic(config.url) &&
     readStored(REFRESH_KEY);
 
-  if (!canRetry) throw error;
+  if (!canRetry) {
+    if (
+      error.response?.status === 401 &&
+      config?.retried &&
+      !isPublic(config.url)
+    ) {
+      clearSession();
+      sessionExpiredHandler?.();
+    }
+    throw error;
+  }
 
   config.retried = true;
 
@@ -136,13 +148,19 @@ api.interceptors.response.use(undefined, async (error: AxiosError) => {
     }
     const access = await refreshInFlight;
     config.headers.set('Authorization', `Bearer ${access}`);
-    return await api(config);
-  } catch {
-    // The refresh token is expired or revoked: this session is over.
-    clearSession();
-    sessionExpiredHandler?.();
-    throw error;
+  } catch (refreshError) {
+    const status = (refreshError as AxiosError).response?.status;
+    // A temporary outage does not mean the refresh token was rejected.
+    if (status === 401 || status === 403) {
+      clearSession();
+      sessionExpiredHandler?.();
+    }
+    throw refreshError;
   }
+
+  // Inference can fail even with a valid session. Keep that error separate
+  // from token refresh so it reaches the chat without signing the user out.
+  return api(config);
 });
 
 // ------------------------------------------------------------------- models ---
@@ -196,7 +214,12 @@ const sendMessage = async (
         ...(options.systemPrompt
           ? { system_prompt: options.systemPrompt }
           : {}),
-        ...(options.useHistory === false ? { use_history: false } : {}),
+        ...(options.useHistory !== undefined
+          ? { use_history: options.useHistory }
+          : {}),
+        ...(options.historyTurns !== undefined
+          ? { history_turns: options.historyTurns }
+          : {}),
         ...(options.temperature !== undefined
           ? { temperature: options.temperature }
           : {}),
@@ -348,6 +371,36 @@ const saveSettings = async (patch: SettingsPatch): Promise<UserSettings> => {
   }
 };
 
+// ----------------------------------------------------------------- memory ---
+
+const getMemory = async (
+  conversationId: string,
+): Promise<ConversationMemory> => {
+  try {
+    const { data } = await api.get<Envelope<ConversationMemory>>(
+      `${openRouterURL}/conversations/${encodeURIComponent(conversationId)}/memory/`,
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const updateMemory = async (
+  conversationId: string,
+  patch: MemoryPatch,
+): Promise<ConversationMemory> => {
+  try {
+    const { data } = await api.patch<Envelope<ConversationMemory>>(
+      `${openRouterURL}/conversations/${encodeURIComponent(conversationId)}/memory/`,
+      patch,
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
 // ----------------------------------------------------------------- payments ---
 
 const getPaymentConfig = async (): Promise<PaymentConfig> => {
@@ -405,6 +458,8 @@ export default {
   sendMessage,
   compareModels,
   getHistory,
+  getMemory,
+  updateMemory,
   signIn,
   signUp,
   signOut,

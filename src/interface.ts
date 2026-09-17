@@ -47,6 +47,21 @@ export interface QuotaInfo {
   model_is_free?: boolean;
 }
 
+export interface ConversationMemory {
+  enabled: boolean;
+  history_turns: number;
+  available_turns: number;
+  reset_at?: string | null;
+  used_turns?: number;
+  trimmed?: boolean;
+}
+
+export interface MemoryPatch {
+  enabled?: boolean;
+  history_turns?: number;
+  reset?: boolean;
+}
+
 /** POST /openrouter/chat/ */
 export interface ChatResult {
   /** Markdown. */
@@ -59,6 +74,7 @@ export interface ChatResult {
   /** True when the answer was paid for with the account's own OpenRouter key. */
   used_own_key?: boolean;
   quota?: QuotaInfo | null;
+  memory?: ConversationMemory | null;
 }
 
 export interface CompareResult {
@@ -116,6 +132,7 @@ export interface SendMessageOptions {
   conversationId?: string | null;
   systemPrompt?: string;
   useHistory?: boolean;
+  historyTurns?: number;
   temperature?: number;
   maxTokens?: number;
   /** Takes over context entirely when provided. */
