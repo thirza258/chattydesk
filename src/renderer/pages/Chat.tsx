@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import NavBar from '../components/NavBar';
 import Chatbot from '../components/Chatbot';
 import Sidebar from '../components/Sidebar';
+import UpgradeModal from '../components/UpgradeModal';
 import services from '../../services/services';
 import { ChatMessage, HistoryEntry, Model } from '../../interface';
+import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
 import {
   CONVERSATION_KEY,
@@ -26,6 +28,7 @@ function Chat() {
   // Nothing here is public, so there is nothing to index.
   usePageMeta({ title: 'Chat · ChattyDesk', path: '/chat', noindex: true });
 
+  const { updateUser } = useAuth();
   const [models, setModels] = useState<Model[]>([]);
   const [defaultModel, setDefaultModel] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
@@ -41,6 +44,7 @@ function Chat() {
   );
   const [sending, setSending] = useState(false);
   const [chatError, setChatError] = useState('');
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const refreshHistory = useCallback(async () => {
     try {
@@ -169,6 +173,10 @@ function Chat() {
           },
         ]);
 
+        if (result.quota) {
+          updateUser(result.quota);
+        }
+
         if (result.conversation_id) {
           setConversationId(result.conversation_id);
           writeStored(CONVERSATION_KEY, result.conversation_id);
@@ -182,11 +190,14 @@ function Chat() {
           ...previous,
           { text: message, user: 'bot', error: true },
         ]);
+        if (message.includes('Free limit reached') || message.includes('Paddle')) {
+          setShowUpgradeModal(true);
+        }
       } finally {
         setSending(false);
       }
     },
-    [conversationId, refreshHistory, selectedModel, sending],
+    [conversationId, refreshHistory, selectedModel, sending, updateUser],
   );
 
   // History rows are one prompt/response pair each, newest first — reverse
@@ -230,9 +241,18 @@ function Chat() {
             sending={sending}
             error={chatError}
             onSend={sendMessage}
+            onUpgrade={() => setShowUpgradeModal(true)}
           />
         </div>
       </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onSuccess={() => {
+          setChatError('');
+        }}
+      />
     </div>
   );
 }

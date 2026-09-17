@@ -242,3 +242,21 @@ export function IconLogo({ className }: IconProps) {
     </svg>
   );
 }
+
+export function IconCreditCard({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="2.5" y="5.5" width="19" height="13" rx="2" />
+      <path d="M2.5 10h19M6.5 14.5h4" />
+    </Svg>
+  );
+}
+
+export function IconInfinity({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M18.178 8c5.096 0 5.096 8 0 8-2.67 0-4.633-4.04-6.178-6-1.545-1.96-3.508-6-6.178-6-5.096 0-5.096 8 0 8 2.67 0 4.633-4.04 6.178-6 1.545-1.96 3.508-6 6.178-6Z" />
+    </Svg>
+  );
+}
+

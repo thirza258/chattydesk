@@ -9,6 +9,7 @@ interface ChatbotProps {
   sending: boolean;
   error: string;
   onSend: (text: string) => void;
+  onUpgrade?: () => void;
 }
 
 const STARTER_PROMPTS = [
@@ -24,6 +25,7 @@ function Chatbot({
   sending,
   error,
   onSend,
+  onUpgrade,
 }: ChatbotProps) {
   const [input, setInput] = useState('');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -220,7 +222,19 @@ function Chatbot({
       {/* Error Banner */}
       {error && (
         <div className="flex-shrink-0 px-4 py-2.5 bg-ember-soft text-ember text-xs border-t-2 border-ember flex items-center justify-between font-mono">
-          <span className="truncate">{error}</span>
+          <span className="truncate mr-3">{error}</span>
+          {(error.includes('Free limit') ||
+            error.includes('Upgrade') ||
+            error.includes('Paddle')) &&
+            onUpgrade && (
+              <button
+                type="button"
+                onClick={onUpgrade}
+                className="flex-shrink-0 bg-ember text-paper hover:bg-ink px-2.5 py-1 text-[11px] font-semibold transition-colors font-sans shadow-tactile-sm"
+              >
+                Upgrade $0.99
+              </button>
+            )}
         </div>
       )}
 

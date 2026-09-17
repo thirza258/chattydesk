@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import {
+  IconCheck,
   IconCompare,
   IconLogo,
   IconPlus,
@@ -72,6 +73,28 @@ function NavBar({ selectedModel, conversationId, onNewChat }: NavBarProps) {
 
         {user && (
           <div className="hidden md:flex items-center gap-2 pl-2 border-l-2 border-hairline text-xs text-ink">
+            {user.is_unlimited ? (
+              <Link
+                to="/settings"
+                title="Unlimited Plan Active ($0.99 Lifetime Access)"
+                className="inline-flex items-center gap-1 border border-pine bg-pine-soft px-2 py-0.5 text-[11px] font-mono text-pine font-medium hover:bg-pine hover:text-paper transition-colors"
+              >
+                <IconCheck className="h-3 w-3" />
+                <span>Unlimited</span>
+              </Link>
+            ) : (
+              <Link
+                to="/settings"
+                title={`${user.remaining_paid_requests ?? 50} free paid requests remaining. Click to upgrade for $0.99.`}
+                className="inline-flex items-center gap-1.5 border border-hairline-strong bg-paper-sunken px-2 py-0.5 text-[11px] font-mono text-ink hover:border-rust hover:text-rust-deep transition-colors"
+              >
+                <span className="font-semibold text-rust">
+                  {user.remaining_paid_requests ?? 50}/50
+                </span>
+                <span className="text-[10px] text-ink-faint">paid reqs</span>
+              </Link>
+            )}
+
             <span className="h-6 w-6 bg-ink text-paper flex items-center justify-center text-[10px] font-semibold">
               {user.username.charAt(0).toUpperCase()}
             </span>

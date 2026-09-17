@@ -18,6 +18,8 @@ import {
   HistoryQuery,
   ListModelsOptions,
   ModelCatalogue,
+  PaymentConfig,
+  PaymentStatus,
   SendMessageOptions,
   Session,
   SettingsPatch,
@@ -27,6 +29,7 @@ import {
 
 const openRouterURL = `${apiBaseURL}/openrouter`;
 const authURL = `${apiBaseURL}/auth`;
+const paymentsURL = `${apiBaseURL}/payments`;
 
 /**
  * The backend passes OpenRouter's status codes through and puts the reason in
@@ -345,6 +348,58 @@ const saveSettings = async (patch: SettingsPatch): Promise<UserSettings> => {
   }
 };
 
+// ----------------------------------------------------------------- payments ---
+
+const getPaymentConfig = async (): Promise<PaymentConfig> => {
+  try {
+    const { data } = await api.get<Envelope<PaymentConfig>>(
+      `${paymentsURL}/config/`,
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getPaymentStatus = async (): Promise<PaymentStatus> => {
+  try {
+    const { data } = await api.get<Envelope<PaymentStatus>>(
+      `${paymentsURL}/status/`,
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const verifyPayment = async (transactionId: string): Promise<PaymentStatus> => {
+  try {
+    const { data } = await api.post<Envelope<PaymentStatus>>(
+      `${paymentsURL}/verify/`,
+      { transaction_id: transactionId },
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const testUnlockPayment = async (
+  unlimited = true,
+): Promise<PaymentStatus> => {
+  try {
+    const { data } = await api.post<Envelope<PaymentStatus>>(
+      `${paymentsURL}/test-unlock/`,
+      { unlimited },
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
 export default {
   listModels,
   sendMessage,
@@ -356,4 +411,8 @@ export default {
   me,
   getSettings,
   saveSettings,
+  getPaymentConfig,
+  getPaymentStatus,
+  verifyPayment,
+  testUnlockPayment,
 };

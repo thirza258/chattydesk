@@ -24,6 +24,8 @@ interface AuthValue {
   signIn: (credentials: Credentials) => Promise<void>;
   signUp: (details: SignUpDetails) => Promise<void>;
   signOut: () => void;
+  refreshUser: () => Promise<AuthUser | null>;
+  updateUser: (partial: Partial<AuthUser>) => void;
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
@@ -96,9 +98,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('signed-out');
   }, []);
 
+  const refreshUser = useCallback(async (): Promise<AuthUser | null> => {
+    try {
+      const account = await services.me();
+      setUser(account);
+      return account;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const updateUser = useCallback((partial: Partial<AuthUser>) => {
+    setUser((prev) => (prev ? { ...prev, ...partial } : null));
+  }, []);
+
   const value = useMemo(
-    () => ({ user, status, signIn, signUp, signOut }),
-    [user, status, signIn, signUp, signOut],
+    () => ({ user, status, signIn, signUp, signOut, refreshUser, updateUser }),
+    [user, status, signIn, signUp, signOut, refreshUser, updateUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

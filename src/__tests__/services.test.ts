@@ -144,3 +144,92 @@ describe('an expired access token', () => {
     expect(refreshCount()).toBe(0);
   });
 });
+
+describe('payment services', () => {
+  beforeEach(() => {
+    requests.length = 0;
+    window.localStorage.clear();
+    window.localStorage.setItem(ACCESS_KEY, 'valid-token');
+  });
+
+  it('fetches payment config publicly', async () => {
+    respond = (request) => {
+      if (request.url.endsWith('/payments/config/')) {
+        return {
+          status: 200,
+          data: {
+            status: 200,
+            message: 'ok',
+            data: {
+              environment: 'sandbox',
+              price_amount: '0.99',
+              currency: 'USD',
+              max_free_requests: 50,
+            },
+          },
+        };
+      }
+      return { status: 404, data: null };
+    };
+
+    const config = await services.getPaymentConfig();
+    expect(config.price_amount).toBe('0.99');
+    expect(config.max_free_requests).toBe(50);
+  });
+
+  it('fetches payment status', async () => {
+    respond = (request) => {
+      if (request.url.endsWith('/payments/status/')) {
+        return {
+          status: 200,
+          data: {
+            status: 200,
+            message: 'ok',
+            data: {
+              is_unlimited: false,
+              paid_requests_count: 12,
+              max_free_requests: 50,
+              remaining_paid_requests: 38,
+              plan: 'free',
+            },
+          },
+        };
+      }
+      return { status: 404, data: null };
+    };
+
+    const status = await services.getPaymentStatus();
+    expect(status.is_unlimited).toBe(false);
+    expect(status.paid_requests_count).toBe(12);
+    expect(status.remaining_paid_requests).toBe(38);
+  });
+
+  it('verifies payment transaction to unlock unlimited', async () => {
+    respond = (request) => {
+      if (request.url.endsWith('/payments/verify/')) {
+        return {
+          status: 200,
+          data: {
+            status: 200,
+            message: 'ok',
+            data: {
+              is_unlimited: true,
+              paid_requests_count: 12,
+              max_free_requests: 50,
+              remaining_paid_requests: null,
+              plan: 'unlimited',
+              paddle_transaction_id: 'txn_123',
+            },
+          },
+        };
+      }
+      return { status: 404, data: null };
+    };
+
+    const verified = await services.verifyPayment('txn_123');
+    expect(verified.is_unlimited).toBe(true);
+    expect(verified.plan).toBe('unlimited');
+    expect(verified.remaining_paid_requests).toBeNull();
+  });
+});
+

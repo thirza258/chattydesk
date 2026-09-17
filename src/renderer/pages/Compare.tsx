@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import services from '../../services/services';
 import { CompareResult, Model } from '../../interface';
+import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
+import UpgradeModal from '../components/UpgradeModal';
 import {
   IconArrowRight,
   IconLogo,
@@ -40,6 +42,7 @@ function Compare() {
     noindex: true,
   });
 
+  const { updateUser } = useAuth();
   const [models, setModels] = useState<Model[]>([]);
   const [loadingModels, setLoadingModels] = useState(true);
   const [catalogueError, setCatalogueError] = useState('');
@@ -48,6 +51,7 @@ function Compare() {
   const [input, setInput] = useState('');
   const [comparing, setComparing] = useState(false);
   const [globalError, setGlobalError] = useState('');
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const [promptEcho, setPromptEcho] = useState('');
   const [results, setResults] = useState<CompareResult[] | null>(null);
@@ -142,8 +146,15 @@ function Compare() {
       const response = await services.compareModels(prompt, slots);
       setResults(response.results);
       setPromptEcho(response.prompt || prompt);
+      if (response.quota) {
+        updateUser(response.quota);
+      }
     } catch (error) {
-      setGlobalError((error as Error).message);
+      const msg = (error as Error).message;
+      setGlobalError(msg);
+      if (msg.includes('Free limit reached') || msg.includes('Paddle')) {
+        setShowUpgradeModal(true);
+      }
     } finally {
       setComparing(false);
     }
@@ -304,9 +315,20 @@ function Compare() {
         {globalError && (
           <div
             role="alert"
-            className="mb-6 px-4 py-3 bg-ember-soft text-ember text-xs border border-ember flex items-center justify-between"
+            className="mb-6 px-4 py-3 bg-ember-soft text-ember text-xs border border-ember flex items-center justify-between font-mono"
           >
             <span>{globalError}</span>
+            {(globalError.includes('Free limit') ||
+              globalError.includes('Upgrade') ||
+              globalError.includes('Paddle')) && (
+              <button
+                type="button"
+                onClick={() => setShowUpgradeModal(true)}
+                className="flex-shrink-0 bg-ember text-paper hover:bg-ink px-3 py-1 text-xs font-semibold font-sans transition-colors ml-3"
+              >
+                Upgrade $0.99
+              </button>
+            )}
           </div>
         )}
 
@@ -531,6 +553,13 @@ function Compare() {
           </div>
         </div>
       </div>
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onSuccess={() => {
+          setGlobalError('');
+        }}
+      />
     </div>
   );
 }

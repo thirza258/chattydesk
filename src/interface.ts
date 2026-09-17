@@ -39,6 +39,14 @@ export interface Usage {
   total_tokens?: number;
 }
 
+export interface QuotaInfo {
+  is_unlimited: boolean;
+  paid_requests_count: number;
+  max_free_requests: number;
+  remaining_paid_requests: number | null;
+  model_is_free?: boolean;
+}
+
 /** POST /openrouter/chat/ */
 export interface ChatResult {
   /** Markdown. */
@@ -50,6 +58,7 @@ export interface ChatResult {
   usage?: Usage;
   /** True when the answer was paid for with the account's own OpenRouter key. */
   used_own_key?: boolean;
+  quota?: QuotaInfo | null;
 }
 
 export interface CompareResult {
@@ -64,6 +73,7 @@ export interface CompareResult {
 export interface CompareResponse {
   prompt: string;
   results: CompareResult[];
+  quota?: QuotaInfo | null;
 }
 
 export interface HistoryEntry {
@@ -132,6 +142,10 @@ export interface AuthUser {
   username: string;
   email: string;
   date_joined: string;
+  is_unlimited?: boolean;
+  paid_requests_count?: number;
+  max_free_requests?: number;
+  remaining_paid_requests?: number | null;
 }
 
 /**
@@ -177,6 +191,12 @@ export interface UserSettings {
   key_hint: string;
   /** False: the server's key pays until it runs out. True: always use theirs. */
   prefer_own_key: boolean;
+  is_unlimited?: boolean;
+  paid_requests_count?: number;
+  max_free_requests?: number;
+  remaining_paid_requests?: number | null;
+  unlocked_at?: string | null;
+  paddle_transaction_id?: string;
   updated_at: string;
   key_check?: KeyCheck;
 }
@@ -185,4 +205,25 @@ export interface SettingsPatch {
   /** An empty string removes the saved key. */
   openrouterKey?: string;
   preferOwnKey?: boolean;
+}
+
+export interface PaymentConfig {
+  environment: 'sandbox' | 'production';
+  client_token: string;
+  price_id: string;
+  vendor_id: string;
+  price_amount: string;
+  currency: string;
+  plan_name: string;
+  max_free_requests: number;
+}
+
+export interface PaymentStatus {
+  is_unlimited: boolean;
+  paid_requests_count: number;
+  max_free_requests: number;
+  remaining_paid_requests: number | null;
+  plan: 'free' | 'unlimited';
+  unlocked_at: string | null;
+  paddle_transaction_id: string;
 }

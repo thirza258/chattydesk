@@ -1,16 +1,20 @@
 import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import services from '../../services/services';
-import { KeyCheck, UserSettings } from '../../interface';
+import { KeyCheck, PaymentConfig, UserSettings } from '../../interface';
 import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
+import { openPaddleCheckout } from '../paddle';
 import {
   IconArrowRight,
   IconCheck,
+  IconCreditCard,
   IconExternal,
   IconEye,
   IconEyeOff,
+  IconInfinity,
   IconLogo,
+  IconSparkles,
 } from '../components/icons';
 
 const fieldClasses =
@@ -84,7 +88,7 @@ function Card({
  * last four characters of what is saved and an empty input for replacing it.
  */
 function Settings() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateUser } = useAuth();
   usePageMeta({
     title: 'Settings · ChattyDesk',
     path: '/settings',
@@ -92,8 +96,12 @@ function Settings() {
   });
 
   const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(null);
   const [loadError, setLoadError] = useState('');
   const [loading, setLoading] = useState(true);
+
+  const [upgrading, setUpgrading] = useState(false);
+  const [upgradeError, setUpgradeError] = useState('');
 
   const [keyInput, setKeyInput] = useState('');
   const [revealed, setRevealed] = useState(false);
@@ -111,10 +119,23 @@ function Settings() {
 
     const load = async () => {
       try {
-        const loaded = await services.getSettings();
+        const [loadedSettings, loadedConfig] = await Promise.allSettled([
+          services.getSettings(),
+          services.getPaymentConfig(),
+        ]);
+
         if (cancelled) return;
-        setSettings(loaded);
-        setLoadError('');
+
+        if (loadedSettings.status === 'fulfilled') {
+          setSettings(loadedSettings.value);
+          setLoadError('');
+        } else {
+          setLoadError(loadedSettings.reason.message);
+        }
+
+        if (loadedConfig.status === 'fulfilled') {
+          setPaymentConfig(loadedConfig.value);
+        }
       } catch (error) {
         if (!cancelled) setLoadError((error as Error).message);
       } finally {
@@ -128,6 +149,41 @@ function Settings() {
       cancelled = true;
     };
   }, []);
+
+  const handleUnlockUnlimited = async () => {
+    if (!user || upgrading) return;
+    setUpgrading(true);
+    setUpgradeError('');
+    try {
+      await openPaddleCheckout({
+        user,
+        config: paymentConfig,
+        onSuccess: async (updatedStatus) => {
+          const refreshedSettings = await services.getSettings();
+          applyResult(refreshedSettings);
+          updateUser({
+            is_unlimited: updatedStatus.is_unlimited,
+            paid_requests_count: updatedStatus.paid_requests_count,
+            remaining_paid_requests: updatedStatus.remaining_paid_requests,
+          });
+          setNotice(
+            'Payment confirmed! Unlimited Lifetime Plan is now active on your account.',
+          );
+          setUpgrading(false);
+        },
+        onError: (errMsg) => {
+          setUpgradeError(errMsg);
+          setUpgrading(false);
+        },
+        onClose: () => {
+          setUpgrading(false);
+        },
+      });
+    } catch (err) {
+      setUpgradeError((err as Error).message);
+      setUpgrading(false);
+    }
+  };
 
   const applyResult = (saved: UserSettings) => {
     setSettings(saved);
@@ -266,6 +322,129 @@ function Settings() {
           >
             Sign out
           </button>
+        </Card>
+
+        <Card
+          title="Plan & Quota"
+          description="Track your free request quota for paid models and manage your lifetime unlimited access."
+        >
+          {upgradeError && (
+            <p
+              role="alert"
+              className="mt-3 border-2 border-ember bg-ember-soft p-3 text-xs text-ember font-mono"
+            >
+              {upgradeError}
+            </p>
+          )}
+
+          {settings?.is_unlimited ? (
+            <div className="mt-4 border-2 border-pine bg-pine-soft p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 border-2 border-pine bg-paper flex items-center justify-center text-pine flex-shrink-0">
+                  <IconCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm text-pine font-sans">
+                      Unlimited Lifetime Access
+                    </span>
+                    <span className="bg-pine text-paper text-[10px] px-1.5 py-0.5 font-bold uppercase">
+                      Active
+                    </span>
+                  </div>
+                  <p className="text-xs text-pine/90 mt-0.5 font-sans">
+                    You have unlimited access to all 400+ paid and free AI models using the server key.
+                  </p>
+                </div>
+              </div>
+              {settings.paddle_transaction_id && (
+                <div className="text-[10px] text-pine/80 border-t sm:border-t-0 sm:border-l border-pine/30 pt-2 sm:pt-0 sm:pl-3 truncate max-w-[200px]">
+                  <span>Txn: {settings.paddle_transaction_id}</span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4 space-y-4">
+              {/* Quota Progress Bar */}
+              <div className="border-2 border-hairline-strong bg-paper p-4">
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="font-semibold text-ink">Paid Model Free Quota</span>
+                  <span className="text-ink-soft">
+                    {settings?.paid_requests_count ?? 0} / {settings?.max_free_requests ?? 50} used ({settings?.remaining_paid_requests ?? 50} left)
+                  </span>
+                </div>
+                <div className="h-2.5 w-full bg-paper-sunken border border-hairline overflow-hidden">
+                  <div
+                    className="h-full bg-rust transition-all duration-300"
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        Math.round(
+                          ((settings?.paid_requests_count ?? 0) /
+                            (settings?.max_free_requests ?? 50)) *
+                            100,
+                        ),
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Information Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="border border-hairline bg-paper p-3 space-y-1">
+                  <div className="flex items-center gap-1.5 text-pine font-semibold font-mono">
+                    <IconInfinity className="h-4 w-4" />
+                    <span>Free OpenRouter Models</span>
+                  </div>
+                  <p className="text-ink-soft leading-relaxed">
+                    Models ending in <code className="text-rust bg-paper-sunken px-1">:free</code> are 100% UNLIMITED and never consume your quota.
+                  </p>
+                </div>
+
+                <div className="border border-hairline bg-paper p-3 space-y-1">
+                  <div className="flex items-center gap-1.5 text-rust font-semibold font-mono">
+                    <IconSparkles className="h-4 w-4" />
+                    <span>Paid Frontier Models</span>
+                  </div>
+                  <p className="text-ink-soft leading-relaxed">
+                    Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, etc. use the server API key up to 50 requests.
+                  </p>
+                </div>
+              </div>
+
+              {/* Upgrade Banner */}
+              <div className="border-2 border-ink bg-paper-sunken p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-display text-sm font-semibold text-ink">
+                      Unlock Unlimited for $0.99
+                    </h3>
+                    <span className="border border-rust bg-rust-soft text-rust-deep font-mono text-[10px] font-semibold px-1.5 py-0.2">
+                      Lifetime
+                    </span>
+                  </div>
+                  <p className="text-xs text-ink-soft mt-0.5">
+                    Pay once via Paddle to remove all paid model rate limits forever.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleUnlockUnlimited}
+                  disabled={upgrading}
+                  className={`${primaryButton} flex-shrink-0 bg-ink hover:bg-rust text-paper`}
+                >
+                  <IconCreditCard className="h-4 w-4" />
+                  <span>
+                    {upgrading
+                      ? 'Opening Paddle…'
+                      : 'Unlock for $0.99 with Paddle'}
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
         </Card>
 
         <Card
