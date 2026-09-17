@@ -7,6 +7,7 @@ interface ChatbotProps {
   messages: ChatMessage[];
   selectedModel: string;
   sending: boolean;
+  loading: boolean;
   error: string;
   onSend: (text: string) => void;
 }
@@ -22,6 +23,7 @@ function Chatbot({
   messages,
   selectedModel,
   sending,
+  loading,
   error,
   onSend,
 }: ChatbotProps) {
@@ -47,7 +49,7 @@ function Chatbot({
   }, [input]);
 
   const submit = () => {
-    if (!input.trim() || sending) return;
+    if (!input.trim() || sending || loading) return;
     onSend(input);
     setInput('');
     if (textareaRef.current) {
@@ -69,11 +71,16 @@ function Chatbot({
   };
 
   return (
-    <div className="flex flex-col h-full bg-paper text-ink select-text">
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-paper text-ink select-text">
       {/* Messages Scroll Area */}
-      <div className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-5">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-6 space-y-5">
+        {loading && (
+          <p role="status" className="py-12 text-center text-sm text-ink-soft">
+            Preparing conversation…
+          </p>
+        )}
         {/* Empty State */}
-        {messages.length === 0 && !sending && (
+        {messages.length === 0 && !sending && !loading && (
           <div className="max-w-2xl mx-auto py-12 px-4 text-center my-auto">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-faint">
               session ready
@@ -82,8 +89,8 @@ function Chatbot({
               {selectedModel || 'Pick a model to start'}
             </h2>
             <p className="mt-2 text-sm text-ink-soft max-w-md mx-auto leading-relaxed">
-              Every query is streamed with full Markdown support, token metrics,
-              and seamless model-switching mid-conversation.
+              Chat with Markdown support, token metrics, and model-switching
+              mid-conversation. Responses appear when the model finishes.
             </p>
 
             <div className="mt-8 border-t-2 border-ink text-left max-w-xl mx-auto">
@@ -117,7 +124,7 @@ function Chatbot({
           <div
             // eslint-disable-next-line react/no-array-index-key
             key={index}
-            className={`flex items-start gap-3 ${
+            className={`min-w-0 flex items-start gap-3 ${
               msg.user === 'me' ? 'justify-end' : 'justify-start'
             }`}
           >
@@ -128,7 +135,7 @@ function Chatbot({
             )}
 
             <div
-              className={`relative group max-w-[88%] sm:max-w-[80%] p-4 text-sm leading-relaxed ${
+              className={`relative group min-w-0 max-w-[calc(100%-2.75rem)] sm:max-w-[80%] p-3 sm:p-4 text-sm leading-relaxed [overflow-wrap:anywhere] ${
                 msg.user === 'me'
                   ? 'bg-ink text-paper border border-ink shadow-tactile-sm'
                   : ''
@@ -173,7 +180,7 @@ function Chatbot({
                     type="button"
                     onClick={() => copyToClipboard(msg.text, index)}
                     title="Copy response"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1 hover:text-ink text-ink-faint"
+                    className="shrink-0 opacity-100 sm:opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-150 p-1 hover:text-ink text-ink-faint"
                   >
                     {copiedIndex === index ? (
                       <span className="text-[10px] text-pine font-sans">
@@ -204,7 +211,7 @@ function Chatbot({
             <div className="bg-paper-raised border-2 border-hairline-strong border-l-4 border-l-rust p-4 text-xs text-ink shadow-tactile-sm flex items-center gap-3">
               <span className="h-3.5 w-3.5 rounded-full border-2 border-ink/20 border-t-rust animate-spin" />
               <span className="font-mono text-ink-soft">
-                streaming response from{' '}
+                Waiting for a response from{' '}
                 <strong className="font-medium text-rust-deep">
                   {selectedModel || 'the model'}
                 </strong>
@@ -220,7 +227,7 @@ function Chatbot({
       {/* Error Banner */}
       {error && (
         <div className="flex-shrink-0 px-4 py-2.5 bg-ember-soft text-ember text-xs border-t-2 border-ember flex items-center justify-between font-mono">
-          <span className="truncate">{error}</span>
+          <span className="break-words">{error}</span>
         </div>
       )}
 
@@ -232,7 +239,7 @@ function Chatbot({
               ref={textareaRef}
               rows={1}
               value={input}
-              disabled={sending}
+              disabled={sending || loading}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={
@@ -262,7 +269,7 @@ function Chatbot({
               <button
                 type="button"
                 onClick={submit}
-                disabled={sending || !input.trim()}
+                disabled={sending || loading || !input.trim()}
                 className="inline-flex items-center gap-1.5 bg-ink hover:bg-rust disabled:bg-hairline-strong disabled:text-ink-faint text-paper text-xs font-semibold px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust"
               >
                 <span>{sending ? 'Sending…' : 'Send'}</span>

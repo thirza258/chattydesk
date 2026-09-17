@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { isDesktop } from '../environment';
 import { HistoryEntry, Model } from '../../interface';
 import { IconSearch, IconThread } from './icons';
 
@@ -81,7 +83,11 @@ function Sidebar({
   }, [history]);
 
   return (
-    <aside className="w-80 flex-shrink-0 bg-paper-sunken border-r-2 border-ink h-full flex flex-col select-none text-ink">
+    <aside
+      id="chat-sidebar"
+      aria-label="Models and history"
+      className="w-full md:w-72 lg:w-80 flex-shrink-0 bg-paper-sunken md:border-r-2 border-ink h-full min-h-0 flex flex-col select-none text-ink"
+    >
       {/* Sidebar Tabs */}
       <div className="p-3 pb-0 flex-shrink-0 border-b-2 border-ink">
         <div className="flex border-2 border-ink bg-paper p-1 text-xs font-medium">
@@ -302,6 +308,14 @@ function Sidebar({
             );
           })}
         </div>
+      )}
+      {!isDesktop() && (
+        <Link
+          to="/courses"
+          className="shrink-0 border-t border-hairline-strong px-4 py-3 text-sm font-medium text-rust-deep hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust"
+        >
+          Learn to use AI →
+        </Link>
       )}
     </aside>
   );

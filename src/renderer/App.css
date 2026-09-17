@@ -36,6 +36,8 @@
 
 /* Rich Markdown Typography for Chat Bot messages (Light Mode) */
 .chat-markdown {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 0.9375rem;
   line-height: 1.625;
   color: #18181B;
@@ -94,6 +96,8 @@
 }
 
 .chat-markdown pre {
+  max-width: 100%;
+  overflow-wrap: normal;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   padding: 0.875rem 1rem;
@@ -158,3 +162,14 @@
 .chat-markdown a:hover {
   color: #9A3412;
 }
+
+.course-progress {
+  appearance: none;
+  border: none;
+  background: #E4E2DC;
+  color: #C2410C;
+}
+
+.course-progress::-webkit-progress-bar { background: #E4E2DC; }
+.course-progress::-webkit-progress-value { background: #C2410C; }
+.course-progress::-moz-progress-bar { background: #C2410C; }

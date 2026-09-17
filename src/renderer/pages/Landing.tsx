@@ -18,13 +18,13 @@ import {
 const chatIsHere = !webChatURL;
 
 const primaryButton =
-  'inline-flex items-center justify-center gap-2 bg-ink text-paper px-6 py-3 text-sm font-semibold transition-all hover:bg-rust shadow-[4px_4px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
+  'inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap bg-ink text-paper px-5 py-3 text-sm font-semibold transition-colors hover:bg-rust shadow-[4px_4px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const compactButton =
-  'inline-flex items-center gap-1.5 bg-ink text-paper px-3.5 py-1.5 text-xs font-semibold transition-colors hover:bg-rust focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
+  'inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap bg-ink text-paper px-3.5 py-2 text-xs font-semibold transition-colors hover:bg-rust focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const secondaryButton =
-  'inline-flex items-center justify-center gap-2 border-2 border-ink bg-paper-raised px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-paper-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
+  'inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap border-2 border-ink bg-paper-raised px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-paper-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
 
 const quietLink =
   'text-xs font-medium text-ink-soft transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust';
@@ -91,29 +91,32 @@ function ChatPreview() {
   return (
     <figure
       aria-hidden="true"
-      className="border-2 border-ink bg-paper-raised shadow-[6px_6px_0_0_#C6BEA8] overflow-hidden text-xs select-none"
+      className="min-w-0 border-2 border-ink bg-paper-raised shadow-[6px_6px_0_0_#C6BEA8] overflow-hidden text-xs select-none"
     >
       {/* Window Title Bar */}
-      <header className="flex items-center justify-between border-b-2 border-ink bg-paper-sunken px-4 py-2.5">
-        <div className="flex items-center gap-1.5">
+      <header className="flex items-center justify-between gap-3 border-b-2 border-ink bg-paper-sunken px-3 py-2.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <div className="h-2.5 w-2.5 rounded-full bg-ink" />
           <div className="h-2.5 w-2.5 rounded-full border border-ink bg-paper-raised" />
           <div className="h-2.5 w-2.5 rounded-full border border-ink bg-paper-sunken" />
         </div>
 
-        <div className="font-mono text-[11px] text-ink font-medium px-2 py-0.5 border border-hairline-strong bg-paper-raised">
+        <div className="min-w-0 truncate font-mono text-[10px] text-ink font-medium px-2 py-0.5 border border-hairline-strong bg-paper-raised">
           anthropic/claude-3.5-sonnet
         </div>
 
-        <data value="0.003" className="font-mono text-[10px] text-ink-faint">
+        <data
+          value="0.003"
+          className="hidden shrink-0 font-mono text-[10px] text-ink-faint xl:block"
+        >
           $0.003 / req
         </data>
       </header>
 
       {/* App Body */}
-      <div className="grid grid-cols-[180px_1fr] min-h-[300px] bg-paper">
+      <div className="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] min-h-[300px] bg-paper">
         {/* Mock Mini Sidebar */}
-        <aside className="hidden sm:block border-r border-hairline bg-paper-sunken p-3 space-y-3">
+        <aside className="hidden min-w-0 sm:block border-r border-hairline bg-paper-sunken p-3 space-y-3">
           <div className="space-y-1">
             <h4 className="font-mono text-[10px] uppercase font-semibold text-ink-faint tracking-wider">
               Recent Threads
@@ -155,7 +158,7 @@ function ChatPreview() {
         </aside>
 
         {/* Mock Chat View */}
-        <div className="p-4 space-y-3 flex flex-col justify-between bg-paper-raised">
+        <div className="min-w-0 p-3 sm:p-4 space-y-4 flex flex-col justify-between bg-paper-raised">
           <div className="space-y-3">
             {/* User message */}
             <div className="ml-auto max-w-[85%] bg-ink p-3 text-paper border border-ink text-xs">
@@ -169,13 +172,13 @@ function ChatPreview() {
                 the entire document in one turn with zero loss of coherence:
               </p>
 
-              <pre className="p-2 font-mono text-[11px] bg-paper-sunken border border-hairline text-ink">
+              <pre className="max-w-full overflow-x-auto p-2 font-mono text-[11px] bg-paper-sunken border border-hairline text-ink">
                 const summary = await ai.summarize(pdf, &#123; model:
                 &apos;claude-3.5-sonnet&apos; &#125;);
               </pre>
 
-              <footer className="flex items-center justify-between pt-1 border-t border-hairline font-mono text-[10px] text-ink-faint">
-                <p>anthropic/claude-3.5-sonnet · 1,204 tokens</p>
+              <footer className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-hairline font-mono text-[10px] text-ink-faint">
+                <p>Claude · 1,204 tokens</p>
                 <p className="text-pine font-medium">0.42s latency</p>
               </footer>
             </div>
@@ -211,7 +214,7 @@ function Landing() {
     <div className="min-h-dvh bg-paper text-ink selection:bg-rust-soft selection:text-rust-deep">
       {/* Top Navigation */}
       <header className="sticky top-0 z-30 border-b-2 border-ink bg-paper/95 backdrop-blur-xs">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 sm:px-8">
           <Link
             to="/"
             className="flex items-center gap-2.5 font-display text-base font-semibold tracking-tight text-ink hover:text-rust-deep"
@@ -220,7 +223,10 @@ function Landing() {
             <span>ChattyDesk</span>
           </Link>
 
-          <nav className="flex items-center gap-4 sm:gap-6">
+          <nav
+            aria-label="Main navigation"
+            className="order-3 flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2 text-nowrap sm:order-none sm:ml-auto sm:w-auto sm:justify-start"
+          >
             <a
               href="https://chattydesk.sourceforge.io/"
               target="_blank"
@@ -229,6 +235,9 @@ function Landing() {
             >
               Desktop App
             </a>
+            <Link to="/courses" className={quietLink}>
+              AI courses
+            </Link>
             {chatIsHere && (
               <Link to="/compare" className={quietLink}>
                 Compare AI
@@ -239,24 +248,24 @@ function Landing() {
                 Sign in
               </Link>
             )}
-            <ChatCta
-              label={signedIn || !chatIsHere ? 'Open the chat' : 'Get started'}
-              className={compactButton}
-            />
           </nav>
+          <ChatCta
+            label={signedIn || !chatIsHere ? 'Open the chat' : 'Get started'}
+            className={compactButton}
+          />
         </div>
       </header>
 
       <main>
         {/* ---------------------------------------------------------- HERO --- */}
         <section className="pt-12 pb-16 sm:pt-16 sm:pb-24">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-12">
-            <div>
+          <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-8">
+            <div className="min-w-0">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">
                 01 — 400+ models · zero lock-in
               </p>
 
-              <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-ink leading-[1.1]">
+              <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl text-ink leading-[1.1]">
                 Every model.
                 <br />
                 <em className="font-normal not-italic text-ink-soft">
@@ -270,7 +279,7 @@ function Landing() {
                 mid-conversation while preserving full context history.
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <ChatCta
                   label={signedIn ? 'Open the chat' : 'Start chatting'}
                   className={primaryButton}
@@ -300,7 +309,7 @@ function Landing() {
               </footer>
             </div>
 
-            <div className="mt-10 lg:mt-0">
+            <div className="min-w-0 mt-10 lg:mt-0">
               <ChatPreview />
             </div>
           </div>
@@ -342,6 +351,26 @@ function Landing() {
           </div>
         </section>
 
+        <section className="border-b-2 border-ink bg-paper-raised py-10">
+          <div className="mx-auto flex max-w-6xl flex-col gap-5 px-5 sm:px-8 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-xl">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-rust">
+                Learn at your pace
+              </p>
+              <h2 className="mt-2 font-display text-2xl font-semibold">
+                Put AI to work, one lesson at a time.
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                Free beginner courses with practical prompts, short lessons, and
+                knowledge checks. No account required.
+              </p>
+            </div>
+            <Link to="/courses" className={secondaryButton}>
+              Explore AI courses <IconArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
         {/* ---------------------------------------------------- FEATURES --- */}
         <section className="py-16 sm:py-24 bg-paper">
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -378,12 +407,12 @@ function Landing() {
 
               <FeatureCard
                 icon={<IconKey className="h-5 w-5" />}
-                badge="Client Encryption"
+                badge="Encrypted Storage"
                 title="Your Key or Ours"
               >
                 Chat on the included shared pool, or securely store your
-                personal OpenRouter key with client-side encryption and
-                automatic fallback.
+                personal OpenRouter key with encrypted storage and automatic
+                fallback.
               </FeatureCard>
 
               <FeatureCard
@@ -522,7 +551,10 @@ function Landing() {
             <p>ChattyDesk · Unified AI Model Desktop Client</p>
           </div>
 
-          <nav className="flex items-center gap-6">
+          <nav className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link to="/courses" className={quietLink}>
+              AI courses
+            </Link>
             {chatIsHere && !signedIn && (
               <Link to="/login" className={quietLink}>
                 Sign in

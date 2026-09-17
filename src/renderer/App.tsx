@@ -15,6 +15,7 @@ import Register from './pages/Register';
 import Chat from './pages/Chat';
 import Compare from './pages/Compare';
 import Settings from './pages/Settings';
+import { Courses, CourseReader } from './pages/Courses';
 import './App.css';
 import 'tailwindcss/tailwind.css';
 
@@ -43,6 +44,16 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          {!desktop && <Route path="/courses" element={<Courses />} />}
+          {!desktop && (
+            <Route path="/courses/:courseId" element={<CourseReader />} />
+          )}
+          {!desktop && (
+            <Route
+              path="/courses/:courseId/:lessonId"
+              element={<CourseReader />}
+            />
+          )}
           <Route
             path="/chat"
             element={

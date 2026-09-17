@@ -255,7 +255,9 @@ function Compare() {
         )}
 
         {/* Slot Selectors */}
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
+        <div
+          className={`mt-3 grid grid-cols-1 ${gridColsClass(slots.length)} gap-2.5`}
+        >
           {slots.map((slotModel, index) => (
             <div
               // eslint-disable-next-line react/no-array-index-key
@@ -367,7 +369,7 @@ function Compare() {
             >
               {slots.map((modelId, index) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <div key={index} className="p-4 sm:p-5 flex flex-col">
+                <div key={index} className="min-w-0 p-4 sm:p-5 flex flex-col">
                   <div className="border-b border-hairline pb-2 mb-4">
                     <p className="font-mono text-[10px] uppercase tracking-wider text-ink-faint truncate">
                       {modelId}
@@ -376,8 +378,8 @@ function Compare() {
                   <div className="flex-1 flex items-center justify-start py-8">
                     <div className="flex items-center gap-2.5 border-l-2 border-hairline-strong pl-4 text-xs">
                       <span className="h-3.5 w-3.5 rounded-full border-2 border-ink/20 border-t-rust animate-spin flex-shrink-0" />
-                      <span className="font-mono text-ink-soft">
-                        streaming from{' '}
+                      <span className="min-w-0 break-words font-mono text-ink-soft">
+                        Waiting for{' '}
                         <span className="font-medium text-rust-deep">
                           {modelId}
                         </span>
@@ -414,7 +416,7 @@ function Compare() {
                   <div
                     // eslint-disable-next-line react/no-array-index-key
                     key={index}
-                    className="p-4 sm:p-5 flex flex-col justify-between"
+                    className="min-w-0 p-4 sm:p-5 flex flex-col justify-between [overflow-wrap:anywhere]"
                   >
                     <div>
                       <div className="border-b border-hairline pb-2 mb-4">
