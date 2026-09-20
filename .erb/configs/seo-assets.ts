@@ -37,6 +37,7 @@ const robotsTxt = (siteURL: string): string => {
     '# here: a path disallowed in robots.txt can still be indexed from an',
     '# external link, because the crawler never gets to read the tag.',
     'User-agent: *',
+    'Content-Signal: ai-train=yes, search=yes, ai-input=yes',
     'Allow: /',
   ];
   if (siteURL) lines.push('', `Sitemap: ${siteURL}/sitemap.xml`);
