@@ -309,4 +309,3 @@ describe('payment services', () => {
     expect(verified.remaining_paid_requests).toBeNull();
   });
 });
-

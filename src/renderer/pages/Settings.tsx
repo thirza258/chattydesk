@@ -96,7 +96,9 @@ function Settings() {
   });
 
   const [settings, setSettings] = useState<UserSettings | null>(null);
-  const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(null);
+  const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(
+    null,
+  );
   const [loadError, setLoadError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -150,6 +152,11 @@ function Settings() {
     };
   }, []);
 
+  const applyResult = (saved: UserSettings) => {
+    setSettings(saved);
+    setKeyCheck(saved.key_check ?? null);
+  };
+
   const handleUnlockUnlimited = async () => {
     if (!user || upgrading) return;
     setUpgrading(true);
@@ -183,11 +190,6 @@ function Settings() {
       setUpgradeError((err as Error).message);
       setUpgrading(false);
     }
-  };
-
-  const applyResult = (saved: UserSettings) => {
-    setSettings(saved);
-    setKeyCheck(saved.key_check ?? null);
   };
 
   const saveKey = async (event: FormEvent) => {
@@ -353,7 +355,8 @@ function Settings() {
                     </span>
                   </div>
                   <p className="text-xs text-pine/90 mt-0.5 font-sans">
-                    You have unlimited access to all 400+ paid and free AI models using the server key.
+                    You have unlimited access to all 400+ paid and free AI
+                    models using the server key.
                   </p>
                 </div>
               </div>
@@ -368,9 +371,13 @@ function Settings() {
               {/* Quota Progress Bar */}
               <div className="border-2 border-hairline-strong bg-paper p-4">
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="font-semibold text-ink">Paid Model Free Quota</span>
+                  <span className="font-semibold text-ink">
+                    Paid Model Free Quota
+                  </span>
                   <span className="text-ink-soft">
-                    {settings?.paid_requests_count ?? 0} / {settings?.max_free_requests ?? 50} used ({settings?.remaining_paid_requests ?? 50} left)
+                    {settings?.paid_requests_count ?? 0} /{' '}
+                    {settings?.max_free_requests ?? 50} used (
+                    {settings?.remaining_paid_requests ?? 50} left)
                   </span>
                 </div>
                 <div className="h-2.5 w-full bg-paper-sunken border border-hairline overflow-hidden">
@@ -398,7 +405,11 @@ function Settings() {
                     <span>Free OpenRouter Models</span>
                   </div>
                   <p className="text-ink-soft leading-relaxed">
-                    Models ending in <code className="text-rust bg-paper-sunken px-1">:free</code> are 100% UNLIMITED and never consume your quota.
+                    Models ending in{' '}
+                    <code className="text-rust bg-paper-sunken px-1">
+                      :free
+                    </code>{' '}
+                    are 100% UNLIMITED and never consume your quota.
                   </p>
                 </div>
 
@@ -408,7 +419,8 @@ function Settings() {
                     <span>Paid Frontier Models</span>
                   </div>
                   <p className="text-ink-soft leading-relaxed">
-                    Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, etc. use the server API key up to 50 requests.
+                    Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, etc. use the
+                    server API key up to 50 requests.
                   </p>
                 </div>
               </div>
@@ -425,7 +437,8 @@ function Settings() {
                     </span>
                   </div>
                   <p className="text-xs text-ink-soft mt-0.5">
-                    Pay once via Paddle to remove all paid model rate limits forever.
+                    Pay once via Paddle to remove all paid model rate limits
+                    forever.
                   </p>
                 </div>
 

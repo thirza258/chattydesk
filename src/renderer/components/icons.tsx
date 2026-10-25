@@ -259,4 +259,3 @@ export function IconInfinity({ className }: IconProps) {
     </Svg>
   );
 }
-

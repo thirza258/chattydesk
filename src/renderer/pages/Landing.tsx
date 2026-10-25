@@ -460,8 +460,9 @@ function Landing() {
                 Unlimited access for just $0.99
               </h2>
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-ink-soft">
-                Start completely free, or unlock lifetime access to every paid model
-                with a single one-time payment via Paddle. No subscriptions.
+                Start completely free, or unlock lifetime access to every paid
+                model with a single one-time payment via Paddle. No
+                subscriptions.
               </p>
             </header>
 
@@ -484,7 +485,8 @@ function Landing() {
                     </span>
                   </div>
                   <p className="mt-3 text-xs text-ink-soft leading-relaxed">
-                    Ideal for exploring models and testing outputs with our shared key.
+                    Ideal for exploring models and testing outputs with our
+                    shared key.
                   </p>
 
                   <ul className="mt-6 space-y-2.5 text-xs text-ink divide-y divide-hairline">
@@ -497,7 +499,8 @@ function Landing() {
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
                       <span>
-                        <strong>Unlimited free models</strong> (:free OpenRouter models)
+                        <strong>Unlimited free models</strong> (:free OpenRouter
+                        models)
                       </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
@@ -537,34 +540,44 @@ function Landing() {
                     </span>
                   </div>
                   <p className="mt-3 text-xs text-ink-soft leading-relaxed">
-                    Lifetime unlimited inference across all 400+ paid and free models.
+                    Lifetime unlimited inference across all 400+ paid and free
+                    models.
                   </p>
 
                   <ul className="mt-6 space-y-2.5 text-xs text-ink divide-y divide-hairline">
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
                       <span>
-                        <strong>Unlimited requests</strong> for all paid frontier models
+                        <strong>Unlimited requests</strong> for all paid
+                        frontier models
                       </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, and more</span>
+                      <span>
+                        Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, and more
+                      </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>Zero monthly subscriptions — pay once, use forever</span>
+                      <span>
+                        Zero monthly subscriptions — pay once, use forever
+                      </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>Multi-model comparison &amp; full context replay</span>
+                      <span>
+                        Multi-model comparison &amp; full context replay
+                      </span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="mt-8">
                   <ChatCta
-                    label={signedIn ? 'Unlock in Settings' : 'Claim $0.99 Access'}
+                    label={
+                      signedIn ? 'Unlock in Settings' : 'Claim $0.99 Access'
+                    }
                     className={primaryButton}
                   />
                 </div>
@@ -594,15 +607,21 @@ function Landing() {
                   <ul className="mt-6 space-y-2.5 text-xs text-ink divide-y divide-hairline">
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>Pay exact OpenRouter token rates with zero markup</span>
+                      <span>
+                        Pay exact OpenRouter token rates with zero markup
+                      </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>Automatic fallback when server key is unavailable</span>
+                      <span>
+                        Automatic fallback when server key is unavailable
+                      </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>Encrypted client-side storage with verification</span>
+                      <span>
+                        Encrypted client-side storage with verification
+                      </span>
                     </li>
                   </ul>
                 </div>

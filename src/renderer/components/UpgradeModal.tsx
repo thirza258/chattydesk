@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { openPaddleCheckout } from '../paddle';
-import {
-  IconCheck,
-  IconCreditCard,
-  IconInfinity,
-  IconSparkles,
-} from './icons';
+import { IconCheck, IconCreditCard, IconInfinity, IconSparkles } from './icons';
 
 interface UpgradeModalProps {
   isOpen: boolean;
@@ -14,11 +9,7 @@ interface UpgradeModalProps {
   onSuccess?: () => void;
 }
 
-export function UpgradeModal({
-  isOpen,
-  onClose,
-  onSuccess,
-}: UpgradeModalProps) {
+function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
   const { user, updateUser } = useAuth();
   const [upgrading, setUpgrading] = useState(false);
   const [error, setError] = useState('');
@@ -133,7 +124,9 @@ export function UpgradeModal({
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-ink hover:bg-rust text-paper text-xs font-semibold px-5 py-2 transition-colors shadow-[3px_3px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust disabled:opacity-50"
           >
             <IconCreditCard className="h-3.5 w-3.5" />
-            <span>{upgrading ? 'Opening Checkout…' : 'Pay $0.99 with Paddle'}</span>
+            <span>
+              {upgrading ? 'Opening Checkout…' : 'Pay $0.99 with Paddle'}
+            </span>
           </button>
         </div>
       </div>

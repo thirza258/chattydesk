@@ -230,7 +230,10 @@ function Chat() {
         ...previous,
         { text: message, user: 'bot', error: true },
       ]);
-      if (message.includes('Free limit reached') || message.includes('Paddle')) {
+      if (
+        message.includes('Free limit reached') ||
+        message.includes('Paddle')
+      ) {
         setShowUpgradeModal(true);
       }
     } finally {

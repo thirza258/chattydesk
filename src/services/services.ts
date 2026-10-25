@@ -438,9 +438,7 @@ const verifyPayment = async (transactionId: string): Promise<PaymentStatus> => {
   }
 };
 
-const testUnlockPayment = async (
-  unlimited = true,
-): Promise<PaymentStatus> => {
+const testUnlockPayment = async (unlimited = true): Promise<PaymentStatus> => {
   try {
     const { data } = await api.post<Envelope<PaymentStatus>>(
       `${paymentsURL}/test-unlock/`,
