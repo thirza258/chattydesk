@@ -33,6 +33,11 @@ server {
         default_type text/plain;
     }
 
+    location = /ads.txt {
+        try_files $uri =404;
+        default_type text/plain;
+    }
+
     # ...but the document that points at them must not be.
     location = /index.html {
         add_header Cache-Control "no-cache";

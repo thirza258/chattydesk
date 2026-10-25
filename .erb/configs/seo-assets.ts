@@ -94,6 +94,7 @@ export default class SeoAssetsPlugin {
           });
 
           emit('robots.txt', robotsTxt(this.siteURL));
+          emit('ads.txt', 'google.com, pub-3592604467898331, DIRECT, f08c47fec0942fa0\n');
 
           if (this.siteURL) {
             emit('sitemap.xml', sitemapXml(this.siteURL));
