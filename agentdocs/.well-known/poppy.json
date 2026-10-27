@@ -1,0 +1,46 @@
+{
+  "protocol_version": "0.1",
+  "organization": {
+    "name": "Nevatal",
+    "domain": "chatty.nevatal.id"
+  },
+  "auth": {
+    "issuer": "https://chatty.nevatal.id",
+    "direct": {
+      "scopes": [
+        "poppy:read",
+        "poppy:write"
+      ]
+    },
+    "device": {
+      "scopes": [
+        "poppy:read",
+        "poppy:write"
+      ]
+    }
+  },
+  "agent": {
+    "protocols": [
+      {
+        "type": "poppy",
+        "endpoint": "https://chatty.nevatal.id/api/"
+      }
+    ]
+  },
+  "apis": [
+    {
+      "type": "openapi",
+      "url": "https://chatty.nevatal.id/api/v1/",
+      "description": "Chattydesk API"
+    },
+    {
+      "type": "mcp",
+      "url": "https://chatty.nevatal.id/mcp",
+      "description": "Chattydesk MCP server"
+    }
+  ],
+  "web": {
+    "browser_session_endpoint": "https://chatty.nevatal.id/"
+  },
+  "extensions": {}
+}

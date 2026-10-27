@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "send-chat-message",
+      "type": "skill-md",
+      "description": "Send a message to an AI model and read the reply.",
+      "url": "https://chatty.nevatal.id/.well-known/agent-skills/send-chat-message/SKILL.md"
+    },
+    {
+      "name": "manage-conversations",
+      "type": "skill-md",
+      "description": "Browse, search and organize saved conversations.",
+      "url": "https://chatty.nevatal.id/.well-known/agent-skills/manage-conversations/SKILL.md"
+    }
+  ]
+}

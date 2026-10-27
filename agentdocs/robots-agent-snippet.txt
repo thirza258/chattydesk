@@ -1,0 +1,6 @@
+User-agent: *
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+Allow: /
+
+Host: https://chatty.nevatal.id
+Agentmap: https://chatty.nevatal.id/.well-known/ai-catalog.json

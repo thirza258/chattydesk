@@ -1,0 +1,28 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Chattydesk",
+    "identifier": "did:web:chatty.nevatal.id"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:chatty.nevatal.id:api:site",
+      "displayName": "Chattydesk API",
+      "type": "application/json",
+      "url": "https://chatty.nevatal.id/api/v1/",
+      "representativeQueries": [
+        "what does Chattydesk do",
+        "get data from Chattydesk"
+      ]
+    },
+    {
+      "identifier": "urn:air:chatty.nevatal.id:server:mcp",
+      "displayName": "Chattydesk MCP Server",
+      "type": "application/mcp-server-card+json",
+      "url": "https://chatty.nevatal.id/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "query Chattydesk"
+      ]
+    }
+  ]
+}

@@ -38,6 +38,10 @@ FROM nginx:1.27-alpine AS serve
 ENV BACKEND_ORIGIN=http://backend:9001
 
 COPY --from=build /app/release/web /usr/share/nginx/html
+COPY agentdocs/.well-known /usr/share/nginx/html/.well-known
+COPY agentdocs/auth.md agentdocs/llms.txt /usr/share/nginx/html/
+COPY agentdocs/webmcp.js /usr/share/nginx/html/webmcp.js
+RUN sed -i 's#</body>#<script src="/webmcp.js" defer></script></body>#' /usr/share/nginx/html/index.html
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 
 EXPOSE 80

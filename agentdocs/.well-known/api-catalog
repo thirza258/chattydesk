@@ -1,0 +1,25 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://chatty.nevatal.id/api",
+      "service-desc": [
+        {
+          "href": "https://chatty.nevatal.id/api/v1/",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://chatty.nevatal.id/auth.md",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://chatty.nevatal.id/api/v1/",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

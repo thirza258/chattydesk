@@ -1,0 +1,45 @@
+{
+  "name": "Chattydesk Agent",
+  "description": "Desktop AI chat client with multiple model backends, conversation history and model comparison.",
+  "url": "https://chatty.nevatal.id",
+  "provider": {
+    "name": "Nevatal",
+    "url": "https://chatty.nevatal.id"
+  },
+  "version": "1.0.0",
+  "protocolVersion": "0.3.0",
+  "preferredTransport": "JSONRPC",
+  "supportedInterfaces": [
+    {
+      "url": "https://chatty.nevatal.id/api",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3.0"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "send-chat-message",
+      "name": "Send Chat Message",
+      "description": "Send a message to an AI model and read the reply."
+    },
+    {
+      "id": "manage-conversations",
+      "name": "Manage Conversations",
+      "description": "Browse, search and organize saved conversations."
+    }
+  ],
+  "authentication": {
+    "type": "oauth2",
+    "discovery_url": "https://chatty.nevatal.id/.well-known/oauth-authorization-server"
+  }
+}

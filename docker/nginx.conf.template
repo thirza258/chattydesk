@@ -1,3 +1,8 @@
+map $http_accept $want_markdown {
+    default 0;
+    "~*text/markdown" 1;
+}
+
 # nginx config for the Chattydesk web deployment.
 #
 # The official nginx image runs envsubst over /etc/nginx/templates/*.template
@@ -10,6 +15,7 @@ server {
 
     root  /usr/share/nginx/html;
     index index.html;
+    add_header Link '</.well-known/api-catalog>; rel="api-catalog", </auth.md>; rel="describedby"; type="text/markdown", </.well-known/agent-card.json>; rel="a2a-agent-card", </.well-known/ai-catalog.json>; rel="ai-catalog"' always;
 
     gzip            on;
     gzip_min_length 1024;
@@ -41,6 +47,7 @@ server {
     # ...but the document that points at them must not be.
     location = /index.html {
         add_header Cache-Control "no-cache";
+    add_header Link '</.well-known/api-catalog>; rel="api-catalog", </auth.md>; rel="describedby"; type="text/markdown", </.well-known/agent-card.json>; rel="a2a-agent-card", </.well-known/ai-catalog.json>; rel="ai-catalog"' always;
     }
 
     # Reverse proxy to the backend. The browser only ever talks to this
@@ -61,6 +68,31 @@ server {
         proxy_send_timeout    300s;
         proxy_read_timeout    300s;
         proxy_buffering       off;
+    }
+
+    # Agent discovery documents
+    location = /.well-known/api-catalog {
+        default_type application/linkset+json;
+        add_header Access-Control-Allow-Origin "*" always;
+    }
+
+    location ^~ /.well-known/ {
+        default_type application/json;
+        add_header Access-Control-Allow-Origin "*" always;
+    }
+
+    location = /auth.md {
+        default_type text/markdown;
+    }
+
+    location = /llms.txt {
+        types { text/markdown txt; }
+        default_type text/markdown;
+    }
+
+    location = / {
+        if ($want_markdown) { rewrite ^ /llms.txt last; }
+        try_files $uri $uri/ /index.html;
     }
 
     location / {

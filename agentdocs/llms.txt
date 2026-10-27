@@ -1,0 +1,11 @@
+# Chattydesk
+
+> Desktop AI chat client with multiple model backends, conversation history and model comparison.
+
+## Endpoints
+- Homepage: https://chatty.nevatal.id/
+- API: https://chatty.nevatal.id/api/v1/
+- API Catalog: https://chatty.nevatal.id/.well-known/api-catalog
+- Agent Card: https://chatty.nevatal.id/.well-known/agent-card.json
+- AI Catalog: https://chatty.nevatal.id/.well-known/ai-catalog.json
+- Authentication Guide: https://chatty.nevatal.id/auth.md
