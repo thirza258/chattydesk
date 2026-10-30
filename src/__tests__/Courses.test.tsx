@@ -40,7 +40,7 @@ it('only records completion for a correct answer and restores progress on reload
   view.unmount();
   window.history.replaceState({}, '', '/courses');
   render(<App />);
-  expect(screen.getByText('1 of 12 lessons complete')).toBeInTheDocument();
+  expect(screen.getByText('1 of 15 lessons complete')).toBeInTheDocument();
   expect(
     screen.getByRole('link', { name: /continue course/i }),
   ).toHaveAttribute('href', '/courses/ai-essentials/choose-a-task');

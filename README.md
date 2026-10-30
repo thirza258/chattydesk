@@ -42,9 +42,10 @@ The backend also limits the amount of history sent in a request, keeping complet
 recent turns. Deploy the matching backend and run its migrations before using
 these controls; they use `GET/PATCH /openrouter/conversations/<id>/memory/`.
 
-The web app includes four introductory courses covering AI basics, prompting,
-checking answers, and everyday tasks. Each has three lessons, a practice prompt,
-and a knowledge check. Completion is stored in this browser after a correct
+The web app includes five introductory courses covering AI basics, prompting,
+checking answers, everyday tasks, and making a website readable by AI crawlers
+and quotable in AI answers. Each has three lessons, a practice prompt, and a
+knowledge check. Completion is stored in this browser after a correct
 answer; it is not synced across devices. Course routes and links are not exposed
 in the Electron app.
 

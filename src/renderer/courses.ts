@@ -361,4 +361,91 @@ export const courses: Course[] = [
       },
     ],
   },
+  {
+    id: 'ai-ready-website',
+    title: 'Make your site AI-ready',
+    description:
+      'Help AI search and assistants find your pages, read them correctly, and quote them in answers.',
+    outcome:
+      'Decide what AI crawlers may read, publish a clear map, and write pages that answer questions directly.',
+    lessons: [
+      {
+        id: 'welcome-the-crawlers',
+        title: 'Decide what AI crawlers may read',
+        minutes: 4,
+        paragraphs: [
+          'AI search tools and assistants fetch pages with crawlers of their own, often under names such as GPTBot, ClaudeBot, or PerplexityBot. A robots.txt file at the root of your site states which of them may fetch which parts. Search crawlers and AI crawlers can be allowed or blocked separately, so a site can be visible in search results while staying invisible to AI answers.',
+          'Blocking an AI crawler is a policy choice, not a technical shield. Well-behaved crawlers follow robots.txt; others may not. If your pages should be cited in AI answers, the crawlers behind those answers have to be able to reach them. Check each provider’s documentation, keep the rules short enough to audit, and revisit them when your priorities change.',
+        ],
+        takeaways: [
+          'Read your robots.txt as an outside crawler would.',
+          'Decide separately whether AI search, AI training, and AI browsing are welcome.',
+          'Keep pages you want cited reachable by the crawlers that answer questions.',
+        ],
+        practice:
+          'Explain what this robots.txt says about AI crawlers, and list which user agents it allows or blocks. Then suggest the smallest change that would let AI search read the public articles while keeping account pages out. robots.txt: [paste the file].',
+        question:
+          'You want your public articles quoted in AI answers. What matters most?',
+        options: [
+          'Allowing the crawlers that fetch pages for AI answers to reach those articles',
+          'Adding the word AI to every heading',
+          'Blocking every bot except traditional search engines',
+        ],
+        answer: 0,
+        explanation:
+          'An assistant can only quote a page that its crawler was able to fetch. Access comes first; wording comes later.',
+      },
+      {
+        id: 'machine-readable-map',
+        title: 'Give AI a clear map of your site',
+        minutes: 4,
+        paragraphs: [
+          'Crawlers work better with a guide. A sitemap.xml lists your canonical URLs. A short llms.txt at the root can summarize what the site is and link to the pages worth reading, in plain text. A few lines of JSON-LD structured data can describe the organization, product, or article so key facts do not have to be guessed from the layout.',
+          'Every map has to match the site. Remove dead links, keep descriptions factual, and leave out pages that are private or marked noindex. If you publish an API or an agent endpoint, document it in the same spirit: stable URLs, an honest scope, and machine-readable details instead of marketing language.',
+        ],
+        takeaways: [
+          'Start with a correct sitemap and plain descriptions of your pages.',
+          'Use llms.txt for a short overview and curated links, not a second copy of the site.',
+          'Describe key entities with structured data, and keep every pointer working.',
+        ],
+        practice:
+          'Draft an llms.txt for this website. Include a one-sentence summary, then list up to eight public pages with a short note on what each one answers. Leave out private and sign-in pages. Site outline: [paste your pages].',
+        question: 'What makes an llms.txt useful to an AI system?',
+        options: [
+          'A brief summary plus working links to pages worth reading',
+          'Every page of the site reproduced in full',
+          'As many keywords as fit in one file',
+        ],
+        answer: 0,
+        explanation:
+          'A short, accurate overview with working links helps a system choose where to look; a copy of the site only adds noise.',
+      },
+      {
+        id: 'answer-engine-ready',
+        title: 'Write pages AI can quote',
+        minutes: 4,
+        paragraphs: [
+          'AI answers are assembled from passages. A page that states its answer early, uses headings that match real questions, and defines its terms is easier to select and quote. Put the conclusion first, then the supporting detail. Use lists and tables where they clarify, and give every fact a date.',
+          'Accuracy beats persuasion. Invented statistics, vague superlatives, and claims without context give an assistant little reliable material. Say who you are, what you offer, and what has changed. Keep pricing and availability current, and make the same facts visible in the HTML rather than only inside images or scripts.',
+        ],
+        takeaways: [
+          'Answer the main question in the first paragraph.',
+          'Use descriptive headings, dated facts, and concrete details.',
+          'Keep the text readable without JavaScript, images, or decoration.',
+        ],
+        practice:
+          'Rewrite this page section so an AI assistant can quote it in one sentence. Lead with the direct answer, keep the facts and dates, drop vague claims, and use a short heading that matches the question a customer would ask. Section: [paste text].',
+        question:
+          'Which page is easiest for an AI assistant to cite accurately?',
+        options: [
+          'A clear answer up front with dated, specific facts',
+          'A long introduction that builds suspense before the answer',
+          'Key facts shown only inside a promotional image',
+        ],
+        answer: 0,
+        explanation:
+          'Assistants select passages that answer the question directly. Specific, dated text is easier to quote without distortion.',
+      },
+    ],
+  },
 ];
