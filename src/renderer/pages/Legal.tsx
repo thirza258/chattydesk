@@ -238,9 +238,12 @@ export default function Legal() {
       {/* Footer */}
       <footer className="border-t-2 border-ink bg-paper-sunken py-8">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 sm:px-8 text-xs text-ink-faint">
-          <div className="flex items-center gap-2">
-            <IconLogo className="h-4 w-4" />
-            <p>ChattyDesk · Self-Hosted Multi-Model AI Client</p>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-2">
+              <IconLogo className="h-4 w-4" />
+              <p>ChattyDesk · Self-Hosted Multi-Model AI Client</p>
+            </div>
+            <p className="text-[11px]">This project is under nevatal.id for educational purposes.</p>
           </div>
           <p>Contact: nevatalapp@gmail.com</p>
         </div>

@@ -742,9 +742,12 @@ function Landing() {
       {/* Footer */}
       <footer className="border-t-2 border-ink bg-paper-sunken py-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 sm:px-8 sm:flex-row sm:items-center sm:justify-between text-xs text-ink-faint">
-          <div className="flex items-center gap-2">
-            <IconLogo className="h-4 w-4" />
-            <p>ChattyDesk · Unified AI Model Desktop Client</p>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <IconLogo className="h-4 w-4" />
+              <p>ChattyDesk · Unified AI Model Desktop Client</p>
+            </div>
+            <p className="text-[11px] text-ink-faint">This project is under nevatal.id for educational purposes.</p>
           </div>
 
           <nav className="flex flex-wrap items-center gap-x-6 gap-y-3">
