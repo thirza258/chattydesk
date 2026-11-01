@@ -238,6 +238,12 @@ function Landing() {
             <Link to="/courses" className={quietLink}>
               AI courses
             </Link>
+            <Link to="/privacy" className={quietLink}>
+              Privacy
+            </Link>
+            <Link to="/terms" className={quietLink}>
+              Terms
+            </Link>
             {chatIsHere && (
               <Link to="/compare" className={quietLink}>
                 Compare AI
@@ -744,6 +750,12 @@ function Landing() {
           <nav className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link to="/courses" className={quietLink}>
               AI courses
+            </Link>
+            <Link to="/privacy" className={quietLink}>
+              Privacy
+            </Link>
+            <Link to="/terms" className={quietLink}>
+              Terms
             </Link>
             {chatIsHere && !signedIn && (
               <Link to="/login" className={quietLink}>

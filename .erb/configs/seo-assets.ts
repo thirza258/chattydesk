@@ -27,8 +27,8 @@ const ICONS: Array<{ from: string; to: string }> = [
   { from: path.join('icons', '512x512.png'), to: 'og-image.png' },
 ];
 
-/** Only `/` is worth indexing; the app routes say so themselves via `noindex`. */
-const INDEXABLE_PATHS = ['/'];
+/** Public pages indexed in sitemap.xml */
+const INDEXABLE_PATHS = ['/', '/courses', '/privacy', '/terms'];
 
 const robotsTxt = (siteURL: string): string => {
   const lines = [
