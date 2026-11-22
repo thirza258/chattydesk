@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ragReaderURL } from '../../constant';
 import { isDesktop } from '../environment';
 import { HistoryEntry, Model } from '../../interface';
-import { IconSearch, IconThread } from './icons';
+import { IconExternal, IconSearch, IconThread } from './icons';
 
 interface SidebarProps {
   models: Model[];
@@ -317,6 +318,23 @@ function Sidebar({
           Learn to use AI →
         </Link>
       )}
+
+      {/* AI Evaluation Suite Companion Link */}
+      <div className="shrink-0 border-t-2 border-ink p-3 bg-paper">
+        <a
+          href={ragReaderURL}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-between text-xs font-semibold text-ink-soft hover:text-rust-deep transition-colors"
+          title="Open RagReader: Document QA & Retrieval-Augmented Generation Evaluation"
+        >
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-pine inline-block" />
+            <span>RagReader (RAG Lab)</span>
+          </span>
+          <IconExternal className="h-3.5 w-3.5 text-rust" />
+        </a>
+      </div>
     </aside>
   );
 }

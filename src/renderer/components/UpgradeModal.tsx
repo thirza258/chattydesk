@@ -109,6 +109,10 @@ function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
           </li>
         </ul>
 
+        <p className="mt-3 text-center text-[11px] font-mono text-ink-soft">
+          Tip: You can also insert your own personal OpenRouter API key to compare paid models without limits.
+        </p>
+
         <div className="mt-5 flex flex-col sm:flex-row items-center justify-end gap-3">
           <button
             type="button"

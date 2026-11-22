@@ -9,16 +9,27 @@ import {
   writeStored,
 } from '../renderer/storage';
 import {
+  AIModelItem,
+  AnalyticsOverview,
   AuthUser,
+  BenchmarkDataset,
+  BenchmarkExecutionItem,
+  BenchmarkExperimentDetail,
+  BenchmarkExperimentItem,
+  BenchmarkProgress,
   ChatResult,
+  ComparisonSessionItem,
   CompareResponse,
   ConversationMemory,
+  CostProjectionItem,
   Credentials,
   Envelope,
   HistoryPage,
   HistoryQuery,
+  LeaderboardEntry,
   ListModelsOptions,
   ModelCatalogue,
+  ModelMetadataSnapshotItem,
   PaymentConfig,
   PaymentStatus,
   MemoryPatch,
@@ -32,6 +43,13 @@ import {
 const openRouterURL = `${apiBaseURL}/openrouter`;
 const authURL = `${apiBaseURL}/auth`;
 const paymentsURL = `${apiBaseURL}/payments`;
+const benchmarksURL = `${apiBaseURL}/benchmarks`;
+const datasetsURL = `${apiBaseURL}/datasets`;
+const leaderboardsURL = `${apiBaseURL}/leaderboards`;
+const analyticsURL = `${apiBaseURL}/analytics`;
+const comparisonsURL = `${apiBaseURL}/comparisons`;
+const evaluationsURL = `${apiBaseURL}/evaluations`;
+const modelsURL = `${apiBaseURL}/models`;
 
 /**
  * The backend passes OpenRouter's status codes through and puts the reason in
@@ -244,11 +262,28 @@ const sendMessage = async (
 const compareModels = async (
   message: string,
   models: string[],
+  options: {
+    systemPrompt?: string;
+    temperature?: number;
+    maxTokens?: number;
+    mode?: string;
+    saveSession?: boolean;
+    openrouterKey?: string;
+  } = {},
 ): Promise<CompareResponse> => {
   try {
     const { data } = await api.post<Envelope<CompareResponse>>(
       `${openRouterURL}/compare/`,
-      { message, models },
+      {
+        message,
+        models,
+        system_prompt: options.systemPrompt,
+        temperature: options.temperature,
+        max_tokens: options.maxTokens,
+        mode: options.mode,
+        save_session: options.saveSession,
+        openrouter_key: options.openrouterKey,
+      },
       { headers: { 'Content-Type': 'application/json' } },
     );
     return data.data;
@@ -451,6 +486,368 @@ const testUnlockPayment = async (unlimited = true): Promise<PaymentStatus> => {
   }
 };
 
+// ---------------------------------------------------------------------------
+// Benchmarking & Performance Evaluation Services
+// ---------------------------------------------------------------------------
+
+const listDatasets = async (category?: string): Promise<BenchmarkDataset[]> => {
+  try {
+    const { data } = await api.get<Envelope<{ count: number; results: BenchmarkDataset[] }>>(
+      `${datasetsURL}/`,
+      { params: { ...(category ? { category } : {}) } },
+    );
+    return data.data.results;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getDataset = async (id: string): Promise<BenchmarkDataset> => {
+  try {
+    const { data } = await api.get<Envelope<BenchmarkDataset>>(`${datasetsURL}/${id}/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const createDataset = async (payload: {
+  name: string;
+  description?: string;
+  category?: string;
+  test_cases?: any[];
+}): Promise<BenchmarkDataset> => {
+  try {
+    const { data } = await api.post<Envelope<BenchmarkDataset>>(
+      `${datasetsURL}/`,
+      payload,
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const deleteDataset = async (id: string): Promise<void> => {
+  try {
+    await api.delete(`${datasetsURL}/${id}/`);
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const importDataset = async (payload: {
+  name: string;
+  description?: string;
+  category?: string;
+  content: string;
+}): Promise<{ dataset: BenchmarkDataset }> => {
+  try {
+    const { data } = await api.post<Envelope<{ dataset: BenchmarkDataset }>>(
+      `${datasetsURL}/import/`,
+      payload,
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const listBenchmarks = async (statusParam?: string): Promise<BenchmarkExperimentItem[]> => {
+  try {
+    const { data } = await api.get<Envelope<{ count: number; results: BenchmarkExperimentItem[] }>>(
+      `${benchmarksURL}/`,
+      { params: { ...(statusParam ? { status: statusParam } : {}) } },
+    );
+    return data.data.results;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const createBenchmark = async (payload: {
+  name: string;
+  dataset_id?: string;
+  dataset_version_id?: string;
+  models: string[];
+  configuration?: Record<string, any>;
+  auto_start?: boolean;
+}): Promise<{ experiment_id: string; status: string; status_url: string }> => {
+  try {
+    const { data } = await api.post<Envelope<{ experiment_id: string; status: string; status_url: string }>>(
+      `${benchmarksURL}/`,
+      payload,
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getBenchmark = async (id: string): Promise<BenchmarkExperimentDetail> => {
+  try {
+    const { data } = await api.get<Envelope<BenchmarkExperimentDetail>>(`${benchmarksURL}/${id}/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const startBenchmark = async (id: string): Promise<{ experiment_id: string; status: string }> => {
+  try {
+    const { data } = await api.post<Envelope<{ experiment_id: string; status: string }>>(
+      `${benchmarksURL}/${id}/start/`,
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const cancelBenchmark = async (id: string): Promise<void> => {
+  try {
+    await api.post(`${benchmarksURL}/${id}/cancel/`);
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getBenchmarkProgress = async (id: string): Promise<BenchmarkProgress> => {
+  try {
+    const { data } = await api.get<Envelope<BenchmarkProgress>>(`${benchmarksURL}/${id}/progress/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getBenchmarkResults = async (
+  id: string,
+  filters: { model?: string; status?: string } = {},
+): Promise<{ experiment: BenchmarkExperimentDetail; executions: BenchmarkExecutionItem[] }> => {
+  try {
+    const { data } = await api.get<Envelope<{ experiment: BenchmarkExperimentDetail; executions: BenchmarkExecutionItem[] }>>(
+      `${benchmarksURL}/${id}/results/`,
+      { params: filters },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const submitHumanFeedback = async (payload: {
+  execution_id: string;
+  rating: number;
+  preferred_response?: boolean;
+  notes?: string;
+}): Promise<void> => {
+  try {
+    await api.post(`${evaluationsURL}/human-feedback/`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getAnalyticsOverview = async (): Promise<AnalyticsOverview> => {
+  try {
+    const { data } = await api.get<Envelope<AnalyticsOverview>>(`${analyticsURL}/overview/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getPerformanceAnalytics = async (): Promise<any[]> => {
+  try {
+    const { data } = await api.get<Envelope<any[]>>(`${analyticsURL}/performance/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getCostAnalytics = async (params: {
+  daily_requests?: number;
+  avg_input_tokens?: number;
+  avg_output_tokens?: number;
+  models?: string;
+} = {}): Promise<{ workload_params: any; projections: CostProjectionItem[] }> => {
+  try {
+    const { data } = await api.get<Envelope<{ workload_params: any; projections: CostProjectionItem[] }>>(
+      `${analyticsURL}/cost/`,
+      { params },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getLeaderboard = async (
+  category = 'overall',
+  weights?: { quality?: number; speed?: number; cost?: number; reliability?: number },
+): Promise<{ category: string; rankings: LeaderboardEntry[]; weights_used: any }> => {
+  try {
+    const params: Record<string, any> = { category };
+    if (weights) {
+      if (weights.quality !== undefined) params.w_quality = weights.quality;
+      if (weights.speed !== undefined) params.w_speed = weights.speed;
+      if (weights.cost !== undefined) params.w_cost = weights.cost;
+      if (weights.reliability !== undefined) params.w_reliability = weights.reliability;
+    }
+    const { data } = await api.get<Envelope<{ category: string; rankings: LeaderboardEntry[]; weights_used: any }>>(
+      `${leaderboardsURL}/`,
+      { params },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getRecommendations = async (params: {
+  category?: string;
+  max_latency_ms?: number;
+  max_cost_per_1m?: number;
+  min_quality?: number;
+  free_only?: boolean;
+} = {}): Promise<{ category: string; recommendations: LeaderboardEntry[] }> => {
+  try {
+    const { data } = await api.get<Envelope<{ category: string; recommendations: LeaderboardEntry[] }>>(
+      `${leaderboardsURL}/recommend/`,
+      { params },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const listComparisons = async (limit = 50, offset = 0): Promise<{ count: number; results: ComparisonSessionItem[] }> => {
+  try {
+    const { data } = await api.get<Envelope<{ count: number; results: ComparisonSessionItem[] }>>(
+      `${comparisonsURL}/`,
+      { params: { limit, offset } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getComparison = async (id: string): Promise<ComparisonSessionItem> => {
+  try {
+    const { data } = await api.get<Envelope<ComparisonSessionItem>>(`${comparisonsURL}/${id}/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const deleteComparison = async (id: string): Promise<void> => {
+  try {
+    await api.delete(`${comparisonsURL}/${id}/`);
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const saveComparison = async (payload: {
+  prompt: string;
+  models: string[];
+  results: any[];
+  mode?: string;
+}): Promise<ComparisonSessionItem> => {
+  try {
+    const { data } = await api.post<Envelope<ComparisonSessionItem>>(
+      `${comparisonsURL}/`,
+      payload,
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const listRegisteredModels = async (params: {
+  search?: string;
+  provider?: string;
+  free?: boolean;
+  limit?: number;
+  offset?: number;
+} = {}): Promise<{ count: number; results: AIModelItem[] }> => {
+  try {
+    const { data } = await api.get<Envelope<{ count: number; results: AIModelItem[] }>>(
+      `${modelsURL}/`,
+      { params },
+    );
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getModelDetail = async (modelId: string): Promise<AIModelItem> => {
+  try {
+    const encoded = encodeURIComponent(modelId);
+    const { data } = await api.get<Envelope<AIModelItem>>(`${modelsURL}/${encoded}/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const getModelHistory = async (modelId: string): Promise<ModelMetadataSnapshotItem[]> => {
+  try {
+    const encoded = encodeURIComponent(modelId);
+    const { data } = await api.get<Envelope<ModelMetadataSnapshotItem[]>>(`${modelsURL}/${encoded}/history/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const refreshModels = async (): Promise<{ count: number; synced: number }> => {
+  try {
+    const { data } = await api.post<Envelope<{ count: number; synced: number }>>(`${modelsURL}/refresh/`);
+    return data.data;
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
+const downloadBenchmarkExport = async (
+  experimentId: string,
+  format: 'json' | 'csv' = 'json',
+): Promise<void> => {
+  try {
+    const response = await api.get(`${benchmarksURL}/${experimentId}/export/`, {
+      params: { export_format: format },
+      responseType: 'blob',
+    });
+    const blob = new Blob([response.data], {
+      type: format === 'csv' ? 'text/csv' : 'application/json',
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `benchmark_${experimentId}.${format}`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    throw toApiError(error);
+  }
+};
+
 export default {
   listModels,
   sendMessage,
@@ -468,4 +865,31 @@ export default {
   getPaymentStatus,
   verifyPayment,
   testUnlockPayment,
+  listDatasets,
+  getDataset,
+  createDataset,
+  deleteDataset,
+  importDataset,
+  listBenchmarks,
+  createBenchmark,
+  getBenchmark,
+  startBenchmark,
+  cancelBenchmark,
+  getBenchmarkProgress,
+  getBenchmarkResults,
+  submitHumanFeedback,
+  getAnalyticsOverview,
+  getPerformanceAnalytics,
+  getCostAnalytics,
+  getLeaderboard,
+  getRecommendations,
+  listComparisons,
+  getComparison,
+  deleteComparison,
+  saveComparison,
+  listRegisteredModels,
+  getModelDetail,
+  getModelHistory,
+  refreshModels,
+  downloadBenchmarkExport,
 };

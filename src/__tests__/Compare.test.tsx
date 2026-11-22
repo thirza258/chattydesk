@@ -92,6 +92,12 @@ describe('Compare page', () => {
     jest.clearAllMocks();
     window.localStorage.clear();
     mocked.listModels.mockResolvedValue(mockCatalogue);
+    mocked.getSettings.mockResolvedValue({
+      has_own_key: false,
+      key_hint: '',
+      prefer_own_key: false,
+      updated_at: '2026-11-20T00:00:00Z',
+    });
   });
 
   it('renders with 2 default slots (default model + first free model)', async () => {
@@ -113,7 +119,7 @@ describe('Compare page', () => {
     ).toBeInTheDocument();
   });
 
-  it('+ grows to 5 and then disappears; − shrinks to 2 and then disappears', async () => {
+  it('+ grows to 10 and then disappears; − shrinks to 2 and then disappears', async () => {
     renderCompare();
 
     await waitFor(() => expect(mocked.listModels).toHaveBeenCalled());
@@ -126,38 +132,24 @@ describe('Compare page', () => {
 
     const addButton = () => screen.getByRole('button', { name: /\+ add/i });
 
-    // Click + to add 3rd slot
-    fireEvent.click(addButton());
-    expect(screen.getAllByRole('combobox')).toHaveLength(3);
+    // Click + to add up to 10 slots
+    for (let count = 3; count <= 10; count++) {
+      fireEvent.click(addButton());
+      expect(screen.getAllByRole('combobox')).toHaveLength(count);
+    }
 
-    // Now remove button is present
-    const removeButton = () =>
-      screen.getByRole('button', { name: /− remove/i });
-    expect(removeButton()).toBeInTheDocument();
-
-    // Click + to add 4th slot
-    fireEvent.click(addButton());
-    expect(screen.getAllByRole('combobox')).toHaveLength(4);
-
-    // Click + to add 5th slot
-    fireEvent.click(addButton());
-    expect(screen.getAllByRole('combobox')).toHaveLength(5);
-
-    // At 5 slots, add button disappears
+    // At 10 slots, add button disappears
     expect(
       screen.queryByRole('button', { name: /\+ add/i }),
     ).not.toBeInTheDocument();
 
-    // Now shrink back down
-    fireEvent.click(removeButton());
-    expect(screen.getAllByRole('combobox')).toHaveLength(4);
-    expect(screen.getByRole('button', { name: /\+ add/i })).toBeInTheDocument();
-
-    fireEvent.click(removeButton());
-    expect(screen.getAllByRole('combobox')).toHaveLength(3);
-
-    fireEvent.click(removeButton());
-    expect(screen.getAllByRole('combobox')).toHaveLength(2);
+    // Now shrink back down to 2
+    const removeButton = () =>
+      screen.getByRole('button', { name: /− remove/i });
+    for (let count = 9; count >= 2; count--) {
+      fireEvent.click(removeButton());
+      expect(screen.getAllByRole('combobox')).toHaveLength(count);
+    }
 
     // At 2 slots, remove button disappears
     expect(
@@ -293,5 +285,52 @@ describe('Compare page', () => {
 
     const input = screen.getByRole('textbox', { name: /compare input/i });
     expect(input).toHaveValue('Explain quicksort in two sentences.');
+  });
+
+  it('toggles Free models only and filters dropdown models to free OpenRouter models', async () => {
+    renderCompare();
+    await waitFor(() => expect(mocked.listModels).toHaveBeenCalled());
+
+    const freeCheckbox = screen.getByRole('checkbox', { name: /free models only/i });
+    expect(freeCheckbox).not.toBeChecked();
+
+    fireEvent.click(freeCheckbox);
+    expect(freeCheckbox).toBeChecked();
+
+    // After ticking free models only, slot models should be switched to available free model
+    const selects = screen.getAllByRole('combobox', { name: /slot \d model/i });
+    expect(selects[0]).toHaveValue('meta/llama-3-8b-instruct:free');
+  });
+
+  it('opens OpenRouter key modal and saves user key for paid model comparison', async () => {
+    mocked.saveSettings.mockResolvedValue({
+      has_own_key: true,
+      key_hint: '7890',
+      prefer_own_key: true,
+      updated_at: '2026-11-22T00:00:00Z',
+    });
+
+    renderCompare();
+    await waitFor(() => expect(mocked.listModels).toHaveBeenCalled());
+
+    const keyButton = screen.getByRole('button', { name: /\+ openrouter key/i });
+    fireEvent.click(keyButton);
+
+    expect(
+      screen.getByRole('heading', { name: /openrouter api key/i }),
+    ).toBeInTheDocument();
+
+    const input = screen.getByPlaceholderText(/sk-or-v1-…/i);
+    fireEvent.change(input, { target: { value: 'sk-or-v1-test1234567890' } });
+
+    const saveBtn = screen.getByRole('button', { name: /save & activate/i });
+    fireEvent.click(saveBtn);
+
+    await waitFor(() => {
+      expect(mocked.saveSettings).toHaveBeenCalledWith({
+        openrouterKey: 'sk-or-v1-test1234567890',
+        preferOwnKey: true,
+      });
+    });
   });
 });

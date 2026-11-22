@@ -1,13 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ragReaderURL } from '../../constant';
 import { useAuth } from '../AuthContext';
+import EvaluationSuiteModal from './EvaluationSuiteModal';
 import {
   IconCheck,
   IconCompare,
+  IconExternal,
+  IconFlask,
   IconLogo,
   IconPlus,
   IconSettings,
   IconSignOut,
   IconCatalogue,
+  IconTrophy,
+  IconBarChart,
 } from './icons';
 
 interface NavBarProps {
@@ -29,6 +36,18 @@ function NavBar({
   onToggleSidebar,
 }: NavBarProps) {
   const { user, signOut } = useAuth();
+  const location = useLocation();
+  const pathname = location.pathname;
+  const [suiteModalOpen, setSuiteModalOpen] = useState(false);
+
+  const navItemClass = (path: string) => {
+    const active = pathname === path || pathname.startsWith(`${path}/`);
+    return `inline-flex h-9 items-center gap-1.5 px-2.5 sm:px-3 text-xs font-semibold border-2 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust ${
+      active
+        ? 'border-ink bg-ink text-paper'
+        : 'border-transparent text-ink-soft hover:text-ink hover:border-hairline-strong bg-paper'
+    }`;
+  };
 
   return (
     <nav
@@ -59,45 +78,102 @@ function NavBar({
           </span>
         </Link>
 
-        {selectedModel && (
-          <div className="hidden xl:flex items-center gap-2 pl-3 border-l-2 border-hairline text-xs min-w-0">
+        {/* Top-level Navigation Links */}
+        <div className="hidden md:flex items-center gap-1 pl-3 border-l-2 border-hairline">
+          <Link
+            to="/chat"
+            className={navItemClass('/chat')}
+            title="Interactive AI Chat"
+          >
+            <span>Chat</span>
+          </Link>
+          <Link
+            to="/compare"
+            className={navItemClass('/compare')}
+            title="Compare AI Models"
+          >
+            <IconCompare className="h-3.5 w-3.5" />
+            <span>Compare</span>
+          </Link>
+          <Link
+            to="/benchmarks"
+            className={navItemClass('/benchmarks')}
+            title="AI Benchmark Lab"
+          >
+            <IconFlask className="h-3.5 w-3.5" />
+            <span>Benchmark Lab</span>
+          </Link>
+          <Link
+            to="/leaderboard"
+            className={navItemClass('/leaderboard')}
+            title="Model Leaderboards & Rankings"
+          >
+            <IconTrophy className="h-3.5 w-3.5" />
+            <span>Leaderboard</span>
+          </Link>
+          <Link
+            to="/analytics"
+            className={navItemClass('/analytics')}
+            title="Performance & Cost Analytics"
+          >
+            <IconBarChart className="h-3.5 w-3.5" />
+            <span>Analytics</span>
+          </Link>
+          <Link
+            to="/models"
+            className={navItemClass('/models')}
+            title="Model Registry Catalogue"
+          >
+            <span>Models</span>
+          </Link>
+        </div>
+
+        {/* Companion AI Evaluation Suite Link & Modal Trigger */}
+        <div className="hidden xl:flex items-center gap-1.5 pl-3 border-l-2 border-hairline">
+          <button
+            type="button"
+            onClick={() => setSuiteModalOpen(true)}
+            className="inline-flex h-9 items-center gap-1 px-2 text-[11px] font-semibold font-mono border-2 border-hairline hover:border-ink hover:text-ink transition-colors bg-paper text-ink-soft"
+            title="Overview of the AI Evaluation Suite (ChattyDesk × RagReader)"
+          >
+            <span className="h-1.5 w-1.5 bg-rust rounded-full" />
+            <span>AI Suite</span>
+          </button>
+          <a
+            href={ragReaderURL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-9 items-center gap-1.5 px-2.5 text-xs font-semibold border-2 border-hairline-strong hover:border-rust hover:text-rust-deep transition-colors bg-paper text-ink"
+            title="Open RagReader: Document QA & Retrieval-Augmented Generation Evaluation"
+          >
+            <span className="h-1.5 w-1.5 bg-pine inline-block" />
+            <span>RagReader (RAG Lab)</span>
+            <IconExternal className="h-3 w-3 text-rust" />
+          </a>
+        </div>
+
+        {selectedModel && pathname === '/chat' && (
+          <div className="hidden 2xl:flex items-center gap-2 pl-3 border-l-2 border-hairline text-xs min-w-0">
             <span className="h-1.5 w-1.5 bg-pine flex-shrink-0" />
-            <span className="font-mono text-ink-soft truncate max-w-[220px] md:max-w-xs">
+            <span className="font-mono text-ink-soft truncate max-w-[200px]">
               {selectedModel}
             </span>
           </div>
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-1 sm:gap-3">
-        <span className="hidden lg:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-ink-faint">
-          <span
-            className={`inline-block h-1.5 w-1.5 ${
-              conversationId ? 'bg-rust' : 'bg-hairline-strong'
-            }`}
-          />
-          {conversationId ? 'active thread' : 'new session'}
-        </span>
-
-        <Link
-          to="/compare"
-          aria-label="Compare AI"
-          title="Compare AI models side by side"
-          className="inline-flex h-10 items-center gap-1.5 border-2 border-ink hover:border-rust hover:text-rust-deep text-ink text-xs font-semibold px-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-        >
-          <IconCompare className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Compare AI</span>
-        </Link>
-
-        <button
-          type="button"
-          onClick={onNewChat}
-          aria-label="New chat"
-          className="inline-flex h-10 items-center gap-1.5 bg-ink hover:bg-rust text-paper text-xs font-semibold px-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-        >
-          <IconPlus className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">New chat</span>
-        </button>
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        {pathname === '/chat' && (
+          <button
+            type="button"
+            onClick={onNewChat}
+            aria-label="New chat"
+            className="inline-flex h-9 items-center gap-1.5 bg-ink hover:bg-rust text-paper text-xs font-semibold px-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust"
+          >
+            <IconPlus className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">New chat</span>
+          </button>
+        )}
 
         {user && (
           <div className="hidden lg:flex items-center gap-2 pl-2 border-l-2 border-hairline text-xs text-ink">
@@ -153,6 +229,11 @@ function NavBar({
           </button>
         </div>
       </div>
+
+      <EvaluationSuiteModal
+        isOpen={suiteModalOpen}
+        onClose={() => setSuiteModalOpen(false)}
+      />
     </nav>
   );
 }

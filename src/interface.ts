@@ -89,6 +89,7 @@ export interface CompareResult {
 export interface CompareResponse {
   prompt: string;
   results: CompareResult[];
+  session_id?: string | null;
   quota?: QuotaInfo | null;
 }
 
@@ -244,3 +245,306 @@ export interface PaymentStatus {
   unlocked_at: string | null;
   paddle_transaction_id: string;
 }
+
+// ---------------------------------------------------------------------------
+// Benchmarking Platform Types
+// ---------------------------------------------------------------------------
+
+export type BenchmarkCategory =
+  | 'general_qa'
+  | 'reasoning'
+  | 'math'
+  | 'coding'
+  | 'instruction_following'
+  | 'summarization'
+  | 'structured_output'
+  | 'classification'
+  | 'custom'
+  | 'overall';
+
+export interface BenchmarkTestCase {
+  id: string;
+  external_case_id: string;
+  prompt?: string;
+  expected_answer?: string;
+  evaluation_method?: string;
+  metadata?: any;
+  input_json: {
+    prompt: string;
+    system_prompt?: string;
+  };
+  expected_output_json: {
+    answer?: string;
+    label?: string;
+    schema?: Record<string, any>;
+    keys?: string[];
+  };
+  evaluation_config_json: {
+    method?: string;
+    tolerance?: number;
+    threshold?: number;
+    case_sensitive?: boolean;
+  };
+  tags?: string[];
+  difficulty?: 'easy' | 'medium' | 'hard';
+  order_index?: number;
+}
+
+export interface BenchmarkDatasetVersion {
+  id: string;
+  version: number;
+  schema_version: string;
+  checksum: string;
+  test_case_count: number;
+  test_cases?: BenchmarkTestCase[];
+  metadata_json?: Record<string, any>;
+  created_at: string;
+}
+
+export interface BenchmarkDataset {
+  id: string;
+  name: string;
+  description: string;
+  category: BenchmarkCategory;
+  visibility: 'public' | 'private' | 'workspace';
+  is_builtin: boolean;
+  created_at: string;
+  updated_at: string;
+  latest_version?: BenchmarkDatasetVersion | null;
+  version_count?: number;
+  test_cases?: BenchmarkTestCase[];
+}
+
+export interface EvaluationResultItem {
+  id: string;
+  metric_name: string;
+  score: number;
+  maximum_score: number;
+  passed: boolean;
+  explanation: string;
+  raw_result_json?: Record<string, any>;
+}
+
+export interface BenchmarkExecutionItem {
+  id: string;
+  test_case_id: string;
+  model_identifier: string;
+  provider_id: string;
+  repetition_index: number;
+  status: 'pending' | 'running' | 'success' | 'error' | 'timeout' | 'cancelled';
+  duration_ms?: number | null;
+  ttft_ms?: number | null;
+  tokens_per_second?: number | null;
+  input_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
+  estimated_cost?: string | number | null;
+  actual_cost?: string | number | null;
+  error_code?: string;
+  error_message?: string;
+  prompt?: string;
+  expected_answer?: string;
+  response_text?: string;
+  evaluations?: EvaluationResultItem[];
+  started_at?: string | null;
+  completed_at?: string | null;
+}
+
+export interface ModelSummaryMetrics {
+  total_runs: number;
+  successful_runs: number;
+  failed_runs: number;
+  timeout_runs: number;
+  success_rate: number;
+  error_rate: number;
+  timeout_rate: number;
+  latency_ms: {
+    count: number;
+    mean?: number;
+    median?: number;
+    min?: number;
+    max?: number;
+    std_dev?: number;
+    p50?: number;
+    p90?: number;
+    p95?: number;
+    p99?: number;
+  };
+  tokens_per_second: {
+    count: number;
+    mean?: number;
+    median?: number;
+    min?: number;
+    max?: number;
+    p50?: number;
+  };
+  total_input_tokens: number;
+  total_output_tokens: number;
+  total_tokens: number;
+  total_cost_usd: number;
+  avg_cost_per_request_usd: number;
+  cost_per_1m_tokens_usd: number;
+  overall_quality_score: number;
+  quality_metrics: Record<
+    string,
+    {
+      count: number;
+      mean_score: number;
+      max_score: number;
+      pass_rate: number;
+    }
+  >;
+}
+
+export interface ExperimentSummaryItem {
+  model_identifier: string;
+  metrics: ModelSummaryMetrics;
+  sample_count: number;
+}
+
+export interface BenchmarkExperimentItem {
+  id: string;
+  name: string;
+  description: string;
+  status:
+    | 'queued'
+    | 'validating'
+    | 'running'
+    | 'evaluating'
+    | 'aggregating'
+    | 'completed'
+    | 'partially_completed'
+    | 'failed'
+    | 'cancelled';
+  dataset_name?: string;
+  dataset_category?: string;
+  dataset_version_num?: number;
+  total_cases: number;
+  completed_cases: number;
+  failed_cases: number;
+  models: string[];
+  created_at: string;
+  started_at?: string | null;
+  completed_at?: string | null;
+}
+
+export interface BenchmarkExperimentDetail extends BenchmarkExperimentItem {
+  configuration_json: {
+    repetitions?: number;
+    concurrency?: number;
+    temperature?: number;
+    max_tokens?: number;
+    system_prompt?: string;
+    timeout?: number;
+  };
+  error_message?: string;
+  dataset: {
+    id: string;
+    name: string;
+    category: string;
+    version: number;
+    checksum: string;
+    test_case_count: number;
+  };
+  summaries: ExperimentSummaryItem[];
+}
+
+export interface BenchmarkProgress {
+  experiment_id: string;
+  status: string;
+  total_cases: number;
+  completed_cases: number;
+  failed_cases: number;
+  progress_percentage: number;
+  started_at?: string | null;
+  completed_at?: string | null;
+}
+
+export interface LeaderboardEntry {
+  ranking: number;
+  model_identifier: string;
+  provider: string;
+  category: string;
+  composite_score: number;
+  quality_score: number;
+  speed_score: number;
+  cost_per_1m: number;
+  reliability_score: number;
+  sample_count: number;
+  updated_at: string;
+  recommendation_reason?: string;
+}
+
+export interface CostProjectionItem {
+  model_id: string;
+  prompt_per_1m: number;
+  completion_per_1m: number;
+  cost_per_request: number;
+  cost_per_1k_requests: number;
+  cost_per_1m_tokens: number;
+  daily_cost: number;
+  monthly_cost: number;
+  annual_cost: number;
+}
+
+export interface AnalyticsOverview {
+  total_experiments: number;
+  completed_experiments: number;
+  total_benchmark_requests: number;
+  successful_requests: number;
+  avg_success_rate: number;
+  models_evaluated_count: number;
+}
+
+export interface ComparisonSessionItem {
+  id: string;
+  prompt: string;
+  models: string[];
+  system_prompt?: string;
+  temperature?: number | null;
+  max_tokens?: number | null;
+  mode?: string;
+  created_at: string;
+  results?: Array<{
+    id: string;
+    model_identifier: string;
+    response: string;
+    duration_ms: number;
+    input_tokens?: number | null;
+    output_tokens?: number | null;
+    total_tokens?: number | null;
+    estimated_cost?: string | number | null;
+    used_own_key?: boolean;
+    error?: string | null;
+    slot_index: number;
+  }>;
+}
+
+export interface AIModelItem {
+  id: string;
+  model_identifier: string;
+  display_name: string;
+  provider_id: string;
+  model_family?: string;
+  description?: string;
+  context_length?: number | null;
+  max_output_tokens?: number | null;
+  capabilities?: string[];
+  supported_parameters?: string[];
+  input_price_per_token?: string | null;
+  output_price_per_token?: string | null;
+  is_free: boolean;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ModelMetadataSnapshotItem {
+  id: string;
+  model_identifier: string;
+  snapshot_hash: string;
+  metadata_json: Record<string, any>;
+  observed_changes?: Record<string, any>;
+  recorded_at: string;
+}
+

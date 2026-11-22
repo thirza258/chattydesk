@@ -14,6 +14,14 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Chat from './pages/Chat';
 import Compare from './pages/Compare';
+import BenchmarkLab from './pages/BenchmarkLab';
+import BenchmarkWizard from './pages/BenchmarkWizard';
+import BenchmarkDetail from './pages/BenchmarkDetail';
+import BenchmarkExperiments from './pages/BenchmarkExperiments';
+import BenchmarkDatasets from './pages/BenchmarkDatasets';
+import Leaderboard from './pages/Leaderboard';
+import Analytics from './pages/Analytics';
+import Models from './pages/Models';
 import Settings from './pages/Settings';
 import { Courses, CourseReader } from './pages/Courses';
 import Legal from './pages/Legal';
@@ -70,6 +78,70 @@ function App() {
             element={
               <RequireAuth>
                 <Compare />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/benchmarks"
+            element={
+              <RequireAuth>
+                <BenchmarkLab />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/benchmarks/new"
+            element={
+              <RequireAuth>
+                <BenchmarkWizard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/benchmarks/experiments"
+            element={
+              <RequireAuth>
+                <BenchmarkExperiments />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/benchmarks/experiments/:id"
+            element={
+              <RequireAuth>
+                <BenchmarkDetail />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/benchmarks/datasets"
+            element={
+              <RequireAuth>
+                <BenchmarkDatasets />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/leaderboard"
+            element={
+              <RequireAuth>
+                <Leaderboard />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <RequireAuth>
+                <Analytics />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/models"
+            element={
+              <RequireAuth>
+                <Models />
               </RequireAuth>
             }
           />

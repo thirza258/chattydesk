@@ -14,7 +14,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 WEB_DIR="release/web"
-DEFAULT_BACKEND_ORIGIN="https://web-production-7ffc1.up.railway.app"
+DEFAULT_BACKEND_ORIGIN="https://chatty.nevatal.id"
 DEFAULT_API_URL="${DEFAULT_BACKEND_ORIGIN}/api/v1"
 
 TARGET="static"
@@ -239,7 +239,7 @@ ${BOLD}Next step${RESET}
   docker run --rm -p ${PORT}:80 ${IMAGE_NAME}
 
   Or push it to a registry and deploy it anywhere containers run
-  (Railway, Fly.io, Cloud Run, ECS, a plain VPS):
+  (Docker, Fly.io, Cloud Run, ECS, a plain VPS):
 
     docker tag ${IMAGE_NAME} <registry>/${IMAGE_NAME}:latest
     docker push <registry>/${IMAGE_NAME}:latest

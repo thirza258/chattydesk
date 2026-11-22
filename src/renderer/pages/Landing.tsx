@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { webChatURL } from '../../constant';
+import { ragReaderURL, webChatURL } from '../../constant';
 import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
 import {
@@ -238,6 +238,15 @@ function Landing() {
             <Link to="/courses" className={quietLink}>
               AI courses
             </Link>
+            <a
+              href={ragReaderURL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={quietLink}
+              title="RagReader Document QA & RAG Evaluation Workbench"
+            >
+              RagReader (RAG Lab)
+            </a>
             <Link to="/privacy" className={quietLink}>
               Privacy
             </Link>
@@ -452,6 +461,37 @@ function Landing() {
               </div>
               <IconArrowRight className="h-5 w-5 flex-none transition-transform group-hover:translate-x-0.5" />
             </Link>
+
+            {/* Companion Suite Link to RagReader */}
+            <a
+              href={ragReaderURL}
+              target="_blank"
+              rel="noreferrer"
+              className="group mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-2 border-ink bg-paper-raised p-6 shadow-[4px_4px_0_0_#C6BEA8] transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+            >
+              <div className="flex items-center gap-4">
+                <span className="flex h-10 w-10 flex-none items-center justify-center border-2 border-ink bg-paper-sunken text-rust">
+                  <IconExternal className="h-5 w-5" />
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] uppercase font-semibold text-pine bg-pine-soft border border-pine px-1.5 py-0.5">
+                      Companion Workbench
+                    </span>
+                    <h3 className="font-display text-lg font-semibold text-ink">
+                      RagReader — Document QA &amp; RAG Evaluation
+                    </h3>
+                  </div>
+                  <p className="mt-1 text-xs sm:text-sm leading-relaxed text-ink-soft">
+                    Part of the AI Evaluation Suite. While ChattyDesk benchmarks foundational models, RagReader tests document chunking, dense/sparse retrieval pipelines, and the RAG Triad on your actual files.
+                  </p>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-rust group-hover:text-rust-deep">
+                <span>Open RagReader</span>
+                <span className="text-sm">↗</span>
+              </span>
+            </a>
           </div>
         </section>
 
@@ -754,6 +794,15 @@ function Landing() {
             <Link to="/courses" className={quietLink}>
               AI courses
             </Link>
+            <a
+              href={ragReaderURL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className={quietLink}
+              title="RagReader Document QA & RAG Evaluation Workbench"
+            >
+              RagReader (RAG Lab)
+            </a>
             <Link to="/privacy" className={quietLink}>
               Privacy
             </Link>

@@ -7,7 +7,7 @@
 // does not exist.
 export const apiBaseURL =
   process.env.API_BASE_URL ||
-  'https://web-production-7ffc1.up.railway.app/api/v1';
+  'https://chatty.nevatal.id/api/v1';
 
 /**
  * Where the hosted chat lives, for deployments that publish the landing page
@@ -31,7 +31,7 @@ export const webChatURL = process.env.WEB_CHAT_URL || '';
  * only sane one for the desktop build) those are simply omitted rather than
  * pointing somewhere invented.
  */
-export const siteURL = (process.env.SITE_URL || '').replace(/\/+$/, '');
+export const siteURL = (process.env.SITE_URL || 'https://chatty.nevatal.id').replace(/\/+$/, '');
 
 /**
  * Router basename, derived from the asset prefix the bundle was built with.
@@ -44,3 +44,13 @@ const publicPath = process.env.PUBLIC_PATH || './';
 export const routerBasename = publicPath.startsWith('/')
   ? publicPath
   : undefined;
+
+/**
+ * Companion Application: RagReader (RAG & Retrieval Evaluation Lab)
+ * Overridable with RAGREADER_URL at build/runtime.
+ */
+export const ragReaderURL =
+  process.env.RAGREADER_URL ||
+  (typeof window !== 'undefined' && (window as any).RAGREADER_URL) ||
+  'https://rag.nevatal.id';
+
