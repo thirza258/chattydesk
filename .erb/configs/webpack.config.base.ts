@@ -55,12 +55,13 @@ const configuration: webpack.Configuration = {
       // Declared here (not only in the web config) so every bundle inlines a
       // literal instead of leaving a bare `process.env` lookup behind — the
       // sandboxed renderer has no `process` to look it up on.
-      API_BASE_URL: 'https://web-production-7ffc1.up.railway.app/api/v1',
+      API_BASE_URL: 'https://chatty.nevatal.id/api/v1',
       // Only meaningful for the browser build (see src/constant.ts), but every
       // bundle needs the literal.
       WEB_CHAT_URL: '',
       PUBLIC_PATH: './',
       SITE_URL: '',
+      RAGREADER_URL: 'https://rag.nevatal.id',
     }),
   ],
 };
