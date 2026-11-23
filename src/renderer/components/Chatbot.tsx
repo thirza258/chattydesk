@@ -231,7 +231,8 @@ function Chatbot({
         <div className="flex-shrink-0 px-4 py-2.5 bg-ember-soft text-ember text-xs border-t-2 border-ember flex items-center justify-between font-mono">
           <span className="break-words mr-3 flex-1">{error}</span>
           {(error.includes('Free limit') ||
-            error.includes('Upgrade') ||
+            error.includes('BYOK') ||
+            error.includes('OpenRouter key') ||
             error.includes('Paddle')) &&
             onUpgrade && (
               <button
@@ -239,7 +240,7 @@ function Chatbot({
                 onClick={onUpgrade}
                 className="flex-shrink-0 bg-ember text-paper hover:bg-ink px-2.5 py-1 text-[11px] font-semibold transition-colors font-sans shadow-tactile-sm"
               >
-                Upgrade $0.99
+                Switch to BYOK
               </button>
             )}
         </div>

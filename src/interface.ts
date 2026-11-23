@@ -40,11 +40,13 @@ export interface Usage {
 }
 
 export interface QuotaInfo {
-  is_unlimited: boolean;
+  is_unlimited?: boolean;
   paid_requests_count: number;
   max_free_requests: number;
   remaining_paid_requests: number | null;
   model_is_free?: boolean;
+  has_own_key?: boolean;
+  plan?: 'free' | 'byok';
 }
 
 export interface ConversationMemory {
@@ -160,6 +162,8 @@ export interface AuthUser {
   username: string;
   email: string;
   date_joined: string;
+  has_own_key?: boolean;
+  plan?: 'free' | 'byok';
   is_unlimited?: boolean;
   paid_requests_count?: number;
   max_free_requests?: number;
@@ -209,6 +213,7 @@ export interface UserSettings {
   key_hint: string;
   /** False: the server's key pays until it runs out. True: always use theirs. */
   prefer_own_key: boolean;
+  plan?: 'free' | 'byok';
   is_unlimited?: boolean;
   paid_requests_count?: number;
   max_free_requests?: number;
@@ -241,7 +246,7 @@ export interface PaymentStatus {
   paid_requests_count: number;
   max_free_requests: number;
   remaining_paid_requests: number | null;
-  plan: 'free' | 'unlimited';
+  plan: 'free' | 'byok' | 'unlimited';
   unlocked_at: string | null;
   paddle_transaction_id: string;
 }

@@ -232,6 +232,8 @@ function Chat() {
       ]);
       if (
         message.includes('Free limit reached') ||
+        message.includes('BYOK') ||
+        message.includes('OpenRouter key') ||
         message.includes('Paddle')
       ) {
         setShowUpgradeModal(true);

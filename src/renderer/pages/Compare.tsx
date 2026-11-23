@@ -11,7 +11,6 @@ import {
 } from '../../interface';
 import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
-import UpgradeModal from '../components/UpgradeModal';
 import {
   IconArrowRight,
   IconCheck,
@@ -73,7 +72,6 @@ function Compare() {
   const [input, setInput] = useState('');
   const [comparing, setComparing] = useState(false);
   const [globalError, setGlobalError] = useState('');
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Advanced Comparison Modes (PRD Module A)
   const [mode, setMode] = useState<
@@ -290,13 +288,16 @@ function Compare() {
     } catch (error) {
       const msg = (error as Error).message;
       setGlobalError(msg);
-      if (msg.includes('Free limit reached') || msg.includes('Paddle') || (error as any).status === 402) {
-        if (!userSettings?.has_own_key) {
-          setKeyNotice('Free limit reached for paid models. Insert your OpenRouter API key to continue comparing without limits.');
-          setShowKeyModal(true);
-        } else {
-          setShowUpgradeModal(true);
-        }
+      if (
+        msg.includes('Free limit reached') ||
+        msg.includes('BYOK') ||
+        msg.includes('OpenRouter key') ||
+        (error as any).status === 402
+      ) {
+        setKeyNotice(
+          'Free limit reached for paid models. Insert your OpenRouter API key to activate the BYOK Plan and continue comparing without limits.',
+        );
+        setShowKeyModal(true);
       }
     } finally {
       setComparing(false);
@@ -753,14 +754,20 @@ function Compare() {
           >
             <span>{globalError}</span>
             {(globalError.includes('Free limit') ||
-              globalError.includes('Upgrade') ||
+              globalError.includes('BYOK') ||
+              globalError.includes('OpenRouter key') ||
               globalError.includes('Paddle')) && (
               <button
                 type="button"
-                onClick={() => setShowUpgradeModal(true)}
+                onClick={() => {
+                  setKeyNotice(
+                    'Free limit reached for paid models. Insert your OpenRouter API key to activate the BYOK Plan and continue comparing without limits.',
+                  );
+                  setShowKeyModal(true);
+                }}
                 className="flex-shrink-0 bg-ember text-paper hover:bg-ink px-3 py-1 text-xs font-semibold font-sans transition-colors ml-3"
               >
-                Upgrade $0.99
+                Switch to BYOK
               </button>
             )}
           </div>
@@ -1201,14 +1208,6 @@ function Compare() {
           </div>
         </div>
       )}
-
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        onSuccess={() => {
-          setGlobalError('');
-        }}
-      />
     </div>
   );
 }

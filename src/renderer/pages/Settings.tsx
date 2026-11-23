@@ -1,14 +1,12 @@
 import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import services from '../../services/services';
-import { KeyCheck, PaymentConfig, UserSettings } from '../../interface';
+import { KeyCheck, UserSettings } from '../../interface';
 import { useAuth } from '../AuthContext';
 import { usePageMeta } from '../pageMeta';
-import { openPaddleCheckout } from '../paddle';
 import {
   IconArrowRight,
   IconCheck,
-  IconCreditCard,
   IconExternal,
   IconEye,
   IconEyeOff,
@@ -96,14 +94,8 @@ function Settings() {
   });
 
   const [settings, setSettings] = useState<UserSettings | null>(null);
-  const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(
-    null,
-  );
   const [loadError, setLoadError] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const [upgrading, setUpgrading] = useState(false);
-  const [upgradeError, setUpgradeError] = useState('');
 
   const [keyInput, setKeyInput] = useState('');
   const [revealed, setRevealed] = useState(false);
@@ -121,23 +113,14 @@ function Settings() {
 
     const load = async () => {
       try {
-        const [loadedSettings, loadedConfig] = await Promise.allSettled([
-          services.getSettings(),
-          services.getPaymentConfig(),
-        ]);
-
+        const loadedSettings = await services.getSettings();
         if (cancelled) return;
-
-        if (loadedSettings.status === 'fulfilled') {
-          setSettings(loadedSettings.value);
-          setLoadError('');
-        } else {
-          setLoadError(loadedSettings.reason.message);
-        }
-
-        if (loadedConfig.status === 'fulfilled') {
-          setPaymentConfig(loadedConfig.value);
-        }
+        setSettings(loadedSettings);
+        setLoadError('');
+        updateUser({
+          has_own_key: Boolean(loadedSettings.has_own_key),
+          plan: loadedSettings.has_own_key ? 'byok' : 'free',
+        });
       } catch (error) {
         if (!cancelled) setLoadError((error as Error).message);
       } finally {
@@ -150,46 +133,15 @@ function Settings() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [updateUser]);
 
   const applyResult = (saved: UserSettings) => {
     setSettings(saved);
     setKeyCheck(saved.key_check ?? null);
-  };
-
-  const handleUnlockUnlimited = async () => {
-    if (!user || upgrading) return;
-    setUpgrading(true);
-    setUpgradeError('');
-    try {
-      await openPaddleCheckout({
-        user,
-        config: paymentConfig,
-        onSuccess: async (updatedStatus) => {
-          const refreshedSettings = await services.getSettings();
-          applyResult(refreshedSettings);
-          updateUser({
-            is_unlimited: updatedStatus.is_unlimited,
-            paid_requests_count: updatedStatus.paid_requests_count,
-            remaining_paid_requests: updatedStatus.remaining_paid_requests,
-          });
-          setNotice(
-            'Payment confirmed! Unlimited Lifetime Plan is now active on your account.',
-          );
-          setUpgrading(false);
-        },
-        onError: (errMsg) => {
-          setUpgradeError(errMsg);
-          setUpgrading(false);
-        },
-        onClose: () => {
-          setUpgrading(false);
-        },
-      });
-    } catch (err) {
-      setUpgradeError((err as Error).message);
-      setUpgrading(false);
-    }
+    updateUser({
+      has_own_key: Boolean(saved.has_own_key),
+      plan: saved.has_own_key ? 'byok' : 'free',
+    });
   };
 
   const saveKey = async (event: FormEvent) => {
@@ -328,18 +280,9 @@ function Settings() {
 
         <Card
           title="Plan & Quota"
-          description="Track your free request quota for paid models and manage your lifetime unlimited access."
+          description="Track your free request quota for paid models and manage your BYOK plan."
         >
-          {upgradeError && (
-            <p
-              role="alert"
-              className="mt-3 border-2 border-ember bg-ember-soft p-3 text-xs text-ember font-mono"
-            >
-              {upgradeError}
-            </p>
-          )}
-
-          {settings?.is_unlimited ? (
+          {hasKey ? (
             <div className="mt-4 border-2 border-pine bg-pine-soft p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 border-2 border-pine bg-paper flex items-center justify-center text-pine flex-shrink-0">
@@ -348,32 +291,31 @@ function Settings() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm text-pine font-sans">
-                      Unlimited Lifetime Access
+                      BYOK Plan Active
                     </span>
                     <span className="bg-pine text-paper text-[10px] px-1.5 py-0.5 font-bold uppercase">
                       Active
                     </span>
                   </div>
                   <p className="text-xs text-pine/90 mt-0.5 font-sans">
-                    You have unlimited access to all 400+ paid and free AI
-                    models using the server key.
+                    You are on the BYOK (Bring Your Own Key) Plan. Requests are routed through your personal OpenRouter key with unlimited access at direct provider token rates.
                   </p>
                 </div>
               </div>
-              {settings.paddle_transaction_id && (
-                <div className="text-[10px] text-pine/80 border-t sm:border-t-0 sm:border-l border-pine/30 pt-2 sm:pt-0 sm:pl-3 truncate max-w-[200px]">
-                  <span>Txn: {settings.paddle_transaction_id}</span>
-                </div>
-              )}
             </div>
           ) : (
             <div className="mt-4 space-y-4">
               {/* Quota Progress Bar */}
               <div className="border-2 border-hairline-strong bg-paper p-4">
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="font-semibold text-ink">
-                    Paid Model Free Quota
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-ink">
+                      Paid Model Free Quota
+                    </span>
+                    <span className="bg-paper-sunken border border-hairline px-1.5 py-0.5 text-[10px] text-ink-soft uppercase font-bold">
+                      Free Plan
+                    </span>
+                  </div>
                   <span className="text-ink-soft">
                     {settings?.paid_requests_count ?? 0} /{' '}
                     {settings?.max_free_requests ?? 50} used (
@@ -420,40 +362,37 @@ function Settings() {
                   </div>
                   <p className="text-ink-soft leading-relaxed">
                     Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, etc. use the
-                    server API key up to 50 requests.
+                    complimentary server quota up to 50 requests.
                   </p>
                 </div>
               </div>
 
-              {/* Upgrade Banner */}
-              <div className="border-2 border-ink bg-paper-sunken p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              {/* Switch to BYOK Banner */}
+              <div className="border-2 border-hairline-strong bg-paper-sunken p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-sm font-semibold text-ink">
-                      Unlock Unlimited for $0.99
+                      Switch to BYOK Plan for Unlimited Requests
                     </h3>
-                    <span className="border border-rust bg-rust-soft text-rust-deep font-mono text-[10px] font-semibold px-1.5 py-0.2">
-                      Lifetime
+                    <span className="border border-rust bg-rust-soft text-rust-deep font-mono text-[10px] font-semibold px-1.5 py-0.5">
+                      BYOK
                     </span>
                   </div>
                   <p className="text-xs text-ink-soft mt-0.5">
-                    Pay once via Paddle to remove all paid model rate limits
-                    forever.
+                    Save your personal OpenRouter API key below to unlock unlimited requests for paid models with zero ChattyDesk markup.
                   </p>
                 </div>
 
                 <button
                   type="button"
-                  onClick={handleUnlockUnlimited}
-                  disabled={upgrading}
-                  className={`${primaryButton} flex-shrink-0 bg-ink hover:bg-rust text-paper`}
+                  onClick={() => {
+                    const input = document.getElementById('openrouter-key') as HTMLInputElement;
+                    input?.focus();
+                  }}
+                  className={`${quietButton} flex-shrink-0 hover:border-rust hover:text-rust-deep`}
                 >
-                  <IconCreditCard className="h-4 w-4" />
-                  <span>
-                    {upgrading
-                      ? 'Opening Paddle…'
-                      : 'Unlock for $0.99 with Paddle'}
-                  </span>
+                  <IconArrowRight className="h-4 w-4" />
+                  <span>Configure API Key</span>
                 </button>
               </div>
             </div>

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useAuth } from '../AuthContext';
-import { openPaddleCheckout } from '../paddle';
-import { IconCheck, IconCreditCard, IconInfinity, IconSparkles } from './icons';
+import services from '../../services/services';
+import { IconCheck, IconEye, IconEyeOff, IconInfinity, IconKey } from './icons';
 
 interface UpgradeModalProps {
   isOpen: boolean;
@@ -11,40 +11,39 @@ interface UpgradeModalProps {
 
 function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
   const { user, updateUser } = useAuth();
-  const [upgrading, setUpgrading] = useState(false);
+  const [keyInput, setKeyInput] = useState('');
+  const [revealed, setRevealed] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleCheckout = async () => {
-    if (!user || upgrading) return;
-    setUpgrading(true);
+  const handleSaveKey = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user || saving) return;
+    const key = keyInput.trim();
+    if (!key) {
+      setError('Please enter your OpenRouter API key.');
+      return;
+    }
+
+    setSaving(true);
     setError('');
 
     try {
-      await openPaddleCheckout({
-        user,
-        onSuccess: (status) => {
-          updateUser({
-            is_unlimited: status.is_unlimited,
-            paid_requests_count: status.paid_requests_count,
-            remaining_paid_requests: status.remaining_paid_requests,
-          });
-          setUpgrading(false);
-          onSuccess?.();
-          onClose();
-        },
-        onError: (err) => {
-          setError(err);
-          setUpgrading(false);
-        },
-        onClose: () => {
-          setUpgrading(false);
-        },
+      const saved = await services.saveSettings({ openrouterKey: key });
+      updateUser({
+        has_own_key: true,
+        plan: 'byok',
+        paid_requests_count: saved.paid_requests_count,
+        remaining_paid_requests: saved.remaining_paid_requests,
       });
+      setSaving(false);
+      onSuccess?.();
+      onClose();
     } catch (err) {
       setError((err as Error).message);
-      setUpgrading(false);
+      setSaving(false);
     }
   };
 
@@ -58,10 +57,10 @@ function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center border border-ink bg-rust text-paper">
-              <IconSparkles className="h-4 w-4" />
+              <IconKey className="h-4 w-4" />
             </span>
             <h2 className="font-display text-lg font-bold text-ink">
-              Unlock Unlimited Access
+              Switch to BYOK Plan
             </h2>
           </div>
           <button
@@ -75,8 +74,9 @@ function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
         </div>
 
         <p className="mt-3 text-xs sm:text-sm text-ink-soft leading-relaxed">
-          Upgrade to <strong>Lifetime Unlimited Access</strong> for a one-time
-          payment of <strong>$0.99</strong> via Paddle.
+          You have reached the free quota for paid models on the Free Plan.
+          Switch to the <strong>BYOK (Bring Your Own Key) Plan</strong> to
+          continue using paid models without ChattyDesk limits.
         </p>
 
         {error && (
@@ -85,54 +85,85 @@ function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
           </div>
         )}
 
-        <ul className="mt-4 space-y-2.5 border-t border-b border-hairline py-3 text-xs">
-          <li className="flex items-start gap-2 text-ink">
-            <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-            <span>
-              <strong>Unlimited requests</strong> to all 400+ paid models
-              (Claude 3.5 Sonnet, GPT-4o, etc.).
-            </span>
-          </li>
+        <ul className="mt-4 space-y-2 border-t border-b border-hairline py-3 text-xs">
           <li className="flex items-start gap-2 text-ink">
             <IconInfinity className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
             <span>
-              <strong>Free OpenRouter models</strong> (:free) are always 100%
-              free &amp; unlimited.
+              <strong>Free OpenRouter models</strong> (:free) remain 100% free &amp;
+              unlimited anytime on the Free Plan.
             </span>
           </li>
           <li className="flex items-start gap-2 text-ink">
-            <IconCreditCard className="h-4 w-4 text-rust flex-shrink-0 mt-0.5" />
+            <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
             <span>
-              <strong>$0.99 one-time payment</strong> via Paddle — lifetime
-              access, no subscription.
+              <strong>BYOK Plan:</strong> Unlimited requests for all 400+ paid models at
+              exact OpenRouter token rates with zero markup.
             </span>
           </li>
         </ul>
 
-        <p className="mt-3 text-center text-[11px] font-mono text-ink-soft">
-          Tip: You can also insert your own personal OpenRouter API key to compare paid models without limits.
-        </p>
+        <form onSubmit={handleSaveKey} className="mt-4 space-y-3">
+          <div>
+            <label
+              htmlFor="byok-api-key"
+              className="block text-[11px] font-mono font-semibold uppercase text-ink-faint mb-1"
+            >
+              Your OpenRouter API Key
+            </label>
+            <div className="relative">
+              <input
+                id="byok-api-key"
+                type={revealed ? 'text' : 'password'}
+                required
+                value={keyInput}
+                onChange={(e) => setKeyInput(e.target.value)}
+                placeholder="sk-or-v1-…"
+                className="w-full border-2 border-hairline-strong bg-paper p-2 text-xs font-mono text-ink placeholder:text-ink-faint focus:outline-none focus:border-rust pr-9"
+              />
+              <button
+                type="button"
+                onClick={() => setRevealed(!revealed)}
+                className="absolute right-2.5 top-2.5 text-ink-faint hover:text-ink"
+                title={revealed ? 'Hide' : 'Show'}
+              >
+                {revealed ? (
+                  <IconEyeOff className="h-3.5 w-3.5" />
+                ) : (
+                  <IconEye className="h-3.5 w-3.5" />
+                )}
+              </button>
+            </div>
+          </div>
 
-        <div className="mt-5 flex flex-col sm:flex-row items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-full sm:w-auto px-4 py-2 border-2 border-hairline-strong bg-paper hover:bg-paper-sunken text-xs font-medium text-ink transition-colors"
-          >
-            Maybe later
-          </button>
-          <button
-            type="button"
-            onClick={handleCheckout}
-            disabled={upgrading}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-ink hover:bg-rust text-paper text-xs font-semibold px-5 py-2 transition-colors shadow-[3px_3px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust disabled:opacity-50"
-          >
-            <IconCreditCard className="h-3.5 w-3.5" />
-            <span>
-              {upgrading ? 'Opening Checkout…' : 'Pay $0.99 with Paddle'}
-            </span>
-          </button>
-        </div>
+          <div className="flex items-center justify-between text-[11px] font-mono">
+            <a
+              href="https://openrouter.ai/keys"
+              target="_blank"
+              rel="noreferrer"
+              className="text-rust hover:underline"
+            >
+              Get OpenRouter key →
+            </a>
+            <span className="text-ink-faint">Stored client-side encrypted</span>
+          </div>
+
+          <div className="mt-5 flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full sm:w-auto px-4 py-2 border-2 border-hairline-strong bg-paper hover:bg-paper-sunken text-xs font-medium text-ink transition-colors"
+            >
+              Maybe later
+            </button>
+            <button
+              type="submit"
+              disabled={saving || !keyInput.trim()}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-ink hover:bg-rust text-paper text-xs font-semibold px-5 py-2 transition-colors shadow-[3px_3px_0_0_#C6BEA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rust disabled:opacity-50"
+            >
+              {saving ? 'Verifying…' : 'Save & Activate BYOK'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

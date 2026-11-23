@@ -500,27 +500,27 @@ function Landing() {
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
             <header className="max-w-2xl">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-faint">
-                02 — Simple, Transparent Pricing
+                02 — Simple, Transparent Plans
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-                Unlimited access for just $0.99
+                Free Plan &amp; BYOK Plan
               </h2>
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-ink-soft">
-                Start completely free, or unlock lifetime access to every paid
-                model with a single one-time payment via Paddle. No
-                subscriptions.
+                Start completely free with complimentary access, or bring your own
+                OpenRouter API key for unlimited inference with zero ChattyDesk markup.
+                No paid subscriptions or hidden fees.
               </p>
             </header>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {/* Free Tier Card */}
+            <div className="mt-12 grid gap-6 md:grid-cols-2 max-w-4xl">
+              {/* Free Plan Card */}
               <div className="border-2 border-ink bg-paper p-6 shadow-[4px_4px_0_0_#C6BEA8] flex flex-col justify-between">
                 <div>
                   <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
                     Starter
                   </span>
                   <h3 className="font-display text-2xl font-bold text-ink mt-1">
-                    Free Tier
+                    Free Plan
                   </h3>
                   <div className="mt-4 flex items-baseline gap-1">
                     <span className="font-display text-4xl font-bold text-ink">
@@ -553,6 +553,10 @@ function Landing() {
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
                       <span>Full conversation memory &amp; history sync</span>
                     </li>
+                    <li className="flex items-start gap-2 pt-2">
+                      <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
+                      <span>Multi-model comparison playground</span>
+                    </li>
                   </ul>
                 </div>
 
@@ -564,93 +568,39 @@ function Landing() {
                 </div>
               </div>
 
-              {/* Lifetime Unlimited Card */}
+              {/* BYOK Plan Card */}
               <div className="border-2 border-rust bg-paper-raised p-6 shadow-[6px_6px_0_0_#C2410C] flex flex-col justify-between relative">
                 <span className="absolute -top-3 right-6 bg-rust text-paper text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 border border-ink">
-                  Best Value · Lifetime
+                  Unlimited · Bring Your Own Key
                 </span>
 
                 <div>
                   <span className="font-mono text-[11px] uppercase tracking-wider text-rust font-semibold">
-                    Paddle Checkout
+                    Direct Key
                   </span>
                   <h3 className="font-display text-2xl font-bold text-ink mt-1">
-                    Unlimited Access
+                    BYOK Plan
                   </h3>
                   <div className="mt-4 flex items-baseline gap-1">
                     <span className="font-display text-4xl font-bold text-rust-deep">
-                      $0.99
-                    </span>
-                    <span className="text-xs text-ink-soft font-mono">
-                      / one-time payment
-                    </span>
-                  </div>
-                  <p className="mt-3 text-xs text-ink-soft leading-relaxed">
-                    Lifetime unlimited inference across all 400+ paid and free
-                    models.
-                  </p>
-
-                  <ul className="mt-6 space-y-2.5 text-xs text-ink divide-y divide-hairline">
-                    <li className="flex items-start gap-2 pt-2">
-                      <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>
-                        <strong>Unlimited requests</strong> for all paid
-                        frontier models
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2 pt-2">
-                      <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>
-                        Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro, and more
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2 pt-2">
-                      <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>
-                        Zero monthly subscriptions — pay once, use forever
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2 pt-2">
-                      <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
-                      <span>
-                        Multi-model comparison &amp; full context replay
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-8">
-                  <ChatCta
-                    label={
-                      signedIn ? 'Unlock in Settings' : 'Claim $0.99 Access'
-                    }
-                    className={primaryButton}
-                  />
-                </div>
-              </div>
-
-              {/* BYOK Card */}
-              <div className="border-2 border-ink bg-paper p-6 shadow-[4px_4px_0_0_#C6BEA8] flex flex-col justify-between">
-                <div>
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-ink-faint">
-                    Direct
-                  </span>
-                  <h3 className="font-display text-2xl font-bold text-ink mt-1">
-                    BYO OpenRouter Key
-                  </h3>
-                  <div className="mt-4 flex items-baseline gap-1">
-                    <span className="font-display text-4xl font-bold text-ink">
                       $0
                     </span>
-                    <span className="text-xs text-ink-faint font-mono">
+                    <span className="text-xs text-ink-soft font-mono">
                       / chattydesk fee
                     </span>
                   </div>
                   <p className="mt-3 text-xs text-ink-soft leading-relaxed">
-                    Bring your own OpenRouter key with client-side encryption.
+                    Bring your own OpenRouter key with client-side encryption for
+                    unlimited access.
                   </p>
 
                   <ul className="mt-6 space-y-2.5 text-xs text-ink divide-y divide-hairline">
+                    <li className="flex items-start gap-2 pt-2">
+                      <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Unlimited requests</strong> for all 400+ paid and free models
+                      </span>
+                    </li>
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
                       <span>
@@ -675,7 +625,7 @@ function Landing() {
                 <div className="mt-8">
                   <Link
                     to={signedIn ? '/settings' : '/register'}
-                    className={secondaryButton}
+                    className={primaryButton}
                   >
                     Configure Key
                   </Link>
