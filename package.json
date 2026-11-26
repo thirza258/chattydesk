@@ -1,5 +1,5 @@
 {
-  "name": "electron-react-boilerplate",
+  "name": "chattydesk",
   "description": "A foundation for scalable desktop apps",
   "keywords": [
     "electron",
@@ -12,13 +12,13 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/thirza258/chattydesk#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/thirza258/chattydesk/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/thirza258/chattydesk.git"
   },
   "license": "MIT",
   "author": {
@@ -227,12 +227,14 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "nsis",
+        "portable"
       ]
     },
     "linux": {
       "target": [
-        "AppImage"
+        "AppImage",
+        "deb"
       ],
       "category": "Development"
     },
@@ -246,8 +248,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "thirza258",
+      "repo": "chattydesk"
     }
   },
   "collective": {
@@ -272,5 +274,6 @@
       ".erb/dll/**"
     ],
     "logLevel": "quiet"
-  }
+  },
+  "version": "1.0.0"
 }

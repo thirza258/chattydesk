@@ -1,0 +1,160 @@
+name: Release
+
+# Builds and publishes Chattydesk desktop releases based on git release tags.
+# Triggers:
+#   - Tag push (v* or semantic version): sets version from tag and runs the Electron app generator.
+#   - workflow_dispatch: manual run with target runner selection and optional tag name.
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: 'JSON list of runner OSes, e.g. ["windows-latest", "macos-latest", "ubuntu-latest"]'
+        required: false
+        default: '["windows-latest", "macos-latest", "ubuntu-latest"]'
+      tag_name:
+        description: 'Release tag (e.g. v1.0.0; if left blank uses workflow ref)'
+        required: false
+        type: string
+        default: ''
+      draft:
+        description: 'Create draft release'
+        required: false
+        type: boolean
+        default: false
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs.targets || '["windows-latest", "macos-latest", "ubuntu-latest"]') }}
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js and NPM
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Set app version from release tag
+        shell: bash
+        run: |
+          TAG="${{ inputs.tag_name || github.ref_name }}"
+          TAG="${TAG#refs/tags/}"
+          VERSION="${TAG#v}"
+          if [ -n "$VERSION" ] && [ "$VERSION" != "main" ]; then
+            echo "Setting app version to $VERSION based on release tag $TAG"
+            npm version "$VERSION" --no-git-tag-version --allow-same-version
+            npm version "$VERSION" --prefix release/app --no-git-tag-version --allow-same-version
+          else
+            echo "No semantic tag found; keeping default version from package.json"
+          fi
+
+      - name: Run Electron app generator
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # For open-source builds without certificates, prevent keychain auto-discovery failures
+          CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.CSC_LINK != '' }}
+          # Optional code signing secrets (macOS / Windows)
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASS }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            echo "Running Windows executable generator (generate-exe.sh)..."
+            ./generate-exe.sh --target nsis,portable --skip-install
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            echo "Building main + renderer bundles and packaging macOS..."
+            npm run build
+            npx electron-builder build --mac --publish never
+          else
+            echo "Building main + renderer bundles and packaging Linux..."
+            npm run build
+            npx electron-builder build --linux --publish never
+          fi
+
+      - name: Generate SHA256 checksums
+        shell: bash
+        run: |
+          cd release/build
+          for file in *.{exe,dmg,zip,AppImage,deb,rpm,tar.gz}; do
+            if [ -f "$file" ]; then
+              sha256sum "$file" >> SHA256SUMS-${{ matrix.os }}.txt
+            fi
+          done
+          if [ -f SHA256SUMS-${{ matrix.os }}.txt ]; then
+            echo "Generated checksums for ${{ matrix.os }}:"
+            cat SHA256SUMS-${{ matrix.os }}.txt
+          fi
+
+      - name: Upload installer artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chattydesk-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            release/build/*.exe
+            release/build/*.dmg
+            release/build/*.zip
+            release/build/*.AppImage
+            release/build/*.deb
+            release/build/*.rpm
+            release/build/*.tar.gz
+            release/build/*.blockmap
+            release/build/latest*.yml
+            release/build/SHA256SUMS-*.txt
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && inputs.tag_name != '')
+        with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
+          name: Chattydesk ${{ inputs.tag_name || github.ref_name }}
+          draft: ${{ inputs.draft || false }}
+          prerelease: ${{ inputs.prerelease || false }}
+          generate_release_notes: true
+          files: |
+            release/build/*.exe
+            release/build/*.dmg
+            release/build/*.zip
+            release/build/*.AppImage
+            release/build/*.deb
+            release/build/*.rpm
+            release/build/*.tar.gz
+            release/build/*.blockmap
+            release/build/latest*.yml
+            release/build/SHA256SUMS-*.txt
