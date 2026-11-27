@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import services from '../../services/services';
-import {
-  AnalyticsOverview,
-  CostProjectionItem,
-} from '../../interface';
+import { AnalyticsOverview, CostProjectionItem } from '../../interface';
 import { usePageMeta } from '../pageMeta';
 import {
   IconBarChart,
@@ -39,8 +36,12 @@ export default function Analytics() {
   const [dailyRequests, setDailyRequests] = useState<number>(1000);
   const [inputTokens, setInputTokens] = useState<number>(500);
   const [outputTokens, setOutputTokens] = useState<number>(300);
-  const [selectedModels, setSelectedModels] = useState<string[]>(DEFAULT_POPULAR_MODELS.slice(0, 4));
-  const [costProjections, setCostProjections] = useState<CostProjectionItem[]>([]);
+  const [selectedModels, setSelectedModels] = useState<string[]>(
+    DEFAULT_POPULAR_MODELS.slice(0, 4),
+  );
+  const [costProjections, setCostProjections] = useState<CostProjectionItem[]>(
+    [],
+  );
   const [loadingCost, setLoadingCost] = useState(false);
 
   const loadAnalytics = async () => {
@@ -89,10 +90,8 @@ export default function Analytics() {
       if (selectedModels.length > 1) {
         setSelectedModels(selectedModels.filter((m) => m !== mId));
       }
-    } else {
-      if (selectedModels.length < 6) {
-        setSelectedModels([...selectedModels, mId]);
-      }
+    } else if (selectedModels.length < 6) {
+      setSelectedModels([...selectedModels, mId]);
     }
   };
 
@@ -140,8 +139,8 @@ export default function Analytics() {
             Performance & Cost Intelligence
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-ink-soft max-w-3xl leading-relaxed">
-            Analyze empirical latency percentiles across models, generation throughput, and model inference
-            costs at production scale.
+            Analyze empirical latency percentiles across models, generation
+            throughput, and model inference costs at production scale.
           </p>
         </div>
 
@@ -155,22 +154,36 @@ export default function Analytics() {
         {overview && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
             <div className="border-2 border-ink bg-paper-raised p-4">
-              <span className="text-[10px] uppercase text-ink-faint">Total Experiments</span>
-              <p className="mt-1 text-2xl font-bold text-ink">{overview.total_experiments}</p>
+              <span className="text-[10px] uppercase text-ink-faint">
+                Total Experiments
+              </span>
+              <p className="mt-1 text-2xl font-bold text-ink">
+                {overview.total_experiments}
+              </p>
             </div>
             <div className="border-2 border-ink bg-paper-raised p-4">
-              <span className="text-[10px] uppercase text-ink-faint">Total Executions</span>
+              <span className="text-[10px] uppercase text-ink-faint">
+                Total Executions
+              </span>
               <p className="mt-1 text-2xl font-bold text-rust">
                 {overview.total_benchmark_requests.toLocaleString()}
               </p>
             </div>
             <div className="border-2 border-ink bg-paper-raised p-4">
-              <span className="text-[10px] uppercase text-ink-faint">Models Evaluated</span>
-              <p className="mt-1 text-2xl font-bold text-ink">{overview.models_evaluated_count}</p>
+              <span className="text-[10px] uppercase text-ink-faint">
+                Models Evaluated
+              </span>
+              <p className="mt-1 text-2xl font-bold text-ink">
+                {overview.models_evaluated_count}
+              </p>
             </div>
             <div className="border-2 border-ink bg-paper-raised p-4">
-              <span className="text-[10px] uppercase text-ink-faint">Platform Success Rate</span>
-              <p className="mt-1 text-2xl font-bold text-pine">{overview.avg_success_rate}%</p>
+              <span className="text-[10px] uppercase text-ink-faint">
+                Platform Success Rate
+              </span>
+              <p className="mt-1 text-2xl font-bold text-pine">
+                {overview.avg_success_rate}%
+              </p>
             </div>
           </div>
         )}
@@ -185,7 +198,8 @@ export default function Analytics() {
               Production Workload Cost Projection
             </h2>
             <p className="mt-1 text-xs text-ink-soft font-mono">
-              Simulate actual monthly and annual inference costs across models based on your token volume.
+              Simulate actual monthly and annual inference costs across models
+              based on your token volume.
             </p>
           </div>
 
@@ -214,8 +228,12 @@ export default function Analytics() {
 
             <div className="border border-hairline bg-paper p-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold text-ink">Avg Input (Prompt) Tokens</span>
-                <span className="font-bold text-ink text-sm">{inputTokens} tokens</span>
+                <span className="font-semibold text-ink">
+                  Avg Input (Prompt) Tokens
+                </span>
+                <span className="font-bold text-ink text-sm">
+                  {inputTokens} tokens
+                </span>
               </div>
               <input
                 type="range"
@@ -227,14 +245,19 @@ export default function Analytics() {
                 className="w-full accent-ink"
               />
               <span className="text-[10px] text-ink-faint mt-1 block">
-                {((inputTokens * dailyRequests) / 1000).toFixed(0)}k prompt tokens/day
+                {((inputTokens * dailyRequests) / 1000).toFixed(0)}k prompt
+                tokens/day
               </span>
             </div>
 
             <div className="border border-hairline bg-paper p-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold text-ink">Avg Output (Completion) Tokens</span>
-                <span className="font-bold text-pine text-sm">{outputTokens} tokens</span>
+                <span className="font-semibold text-ink">
+                  Avg Output (Completion) Tokens
+                </span>
+                <span className="font-bold text-pine text-sm">
+                  {outputTokens} tokens
+                </span>
               </div>
               <input
                 type="range"
@@ -246,7 +269,8 @@ export default function Analytics() {
                 className="w-full accent-pine"
               />
               <span className="text-[10px] text-ink-faint mt-1 block">
-                {((outputTokens * dailyRequests) / 1000).toFixed(0)}k output tokens/day
+                {((outputTokens * dailyRequests) / 1000).toFixed(0)}k output
+                tokens/day
               </span>
             </div>
           </div>
@@ -289,20 +313,34 @@ export default function Analytics() {
                 <thead className="bg-paper-sunken border-b-2 border-ink uppercase text-[10px] text-ink-soft">
                   <tr>
                     <th className="p-3 border-r border-hairline">Model</th>
-                    <th className="p-3 border-r border-hairline">Prompt / 1M</th>
-                    <th className="p-3 border-r border-hairline">Completion / 1M</th>
-                    <th className="p-3 border-r border-hairline">Cost / 1k Requests</th>
+                    <th className="p-3 border-r border-hairline">
+                      Prompt / 1M
+                    </th>
+                    <th className="p-3 border-r border-hairline">
+                      Completion / 1M
+                    </th>
+                    <th className="p-3 border-r border-hairline">
+                      Cost / 1k Requests
+                    </th>
                     <th className="p-3 border-r border-hairline">Daily Cost</th>
-                    <th className="p-3 border-r border-hairline">Monthly Cost (30d)</th>
+                    <th className="p-3 border-r border-hairline">
+                      Monthly Cost (30d)
+                    </th>
                     <th className="p-3">Annual Cost</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-hairline">
                   {costProjections.map((p) => {
-                    const monthlySavings = maxMonthlyCost > p.monthly_cost ? maxMonthlyCost - p.monthly_cost : 0;
+                    const monthlySavings =
+                      maxMonthlyCost > p.monthly_cost
+                        ? maxMonthlyCost - p.monthly_cost
+                        : 0;
 
                     return (
-                      <tr key={p.model_id} className="hover:bg-paper-sunken transition-colors">
+                      <tr
+                        key={p.model_id}
+                        className="hover:bg-paper-sunken transition-colors"
+                      >
                         <td className="p-3 font-bold text-ink border-r border-hairline">
                           {p.model_id}
                         </td>
@@ -343,15 +381,19 @@ export default function Analytics() {
         {/* Observed Performance Metrics */}
         <div>
           <div className="border-b-2 border-ink pb-2 mb-4">
-            <h2 className="font-display text-xl font-bold">Observed Model Performance</h2>
+            <h2 className="font-display text-xl font-bold">
+              Observed Model Performance
+            </h2>
             <p className="text-xs text-ink-soft font-mono">
-              Empirical latency and generation speeds aggregated across all experiments.
+              Empirical latency and generation speeds aggregated across all
+              experiments.
             </p>
           </div>
 
           {performanceData.length === 0 ? (
             <div className="border border-dashed border-hairline p-8 text-center text-xs font-mono text-ink-soft bg-paper-sunken">
-              No aggregated performance data recorded yet. Run benchmark experiments to populate.
+              No aggregated performance data recorded yet. Run benchmark
+              experiments to populate.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -364,32 +406,50 @@ export default function Analytics() {
                     <span className="font-bold text-ink truncate max-w-[200px]">
                       {item.model_identifier}
                     </span>
-                    <span className="text-[10px] text-ink-faint">{item.sample_count} runs</span>
+                    <span className="text-[10px] text-ink-faint">
+                      {item.sample_count} runs
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
                     <div>
-                      <span className="text-ink-faint block text-[10px]">Latency P50</span>
+                      <span className="text-ink-faint block text-[10px]">
+                        Latency P50
+                      </span>
                       <span className="font-bold text-rust">
-                        {item.p50_latency_ms ? `${Math.round(item.p50_latency_ms)} ms` : '—'}
+                        {item.p50_latency_ms
+                          ? `${Math.round(item.p50_latency_ms)} ms`
+                          : '—'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px]">Latency P95</span>
+                      <span className="text-ink-faint block text-[10px]">
+                        Latency P95
+                      </span>
                       <span className="font-bold text-ink">
-                        {item.p95_latency_ms ? `${Math.round(item.p95_latency_ms)} ms` : '—'}
+                        {item.p95_latency_ms
+                          ? `${Math.round(item.p95_latency_ms)} ms`
+                          : '—'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px]">Avg Throughput</span>
+                      <span className="text-ink-faint block text-[10px]">
+                        Avg Throughput
+                      </span>
                       <span className="font-bold text-ink">
-                        {item.avg_throughput ? `${item.avg_throughput.toFixed(1)} t/s` : '—'}
+                        {item.avg_throughput
+                          ? `${item.avg_throughput.toFixed(1)} t/s`
+                          : '—'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px]">Success Rate</span>
+                      <span className="text-ink-faint block text-[10px]">
+                        Success Rate
+                      </span>
                       <span className="font-bold text-pine">
-                        {item.success_rate ? `${item.success_rate.toFixed(1)}%` : '100%'}
+                        {item.success_rate
+                          ? `${item.success_rate.toFixed(1)}%`
+                          : '100%'}
                       </span>
                     </div>
                   </div>

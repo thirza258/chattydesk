@@ -1,7 +1,9 @@
 /* eslint import/prefer-default-export: off */
 
 const safeProcessEnv =
-  typeof process !== 'undefined' && process && process.env ? process.env : ({} as Record<string, string | undefined>);
+  typeof process !== 'undefined' && process && process.env
+    ? process.env
+    : ({} as Record<string, string | undefined>);
 
 // Overridable at build time with API_BASE_URL, e.g.
 //   API_BASE_URL=/api/v1 npm run build:web
@@ -10,8 +12,7 @@ const safeProcessEnv =
 // every bundle — including the sandboxed Electron renderer, where `process`
 // does not exist.
 export const apiBaseURL =
-  safeProcessEnv.API_BASE_URL ||
-  'https://chatty.nevatal.id/api/v1';
+  safeProcessEnv.API_BASE_URL || 'https://chatty.nevatal.id/api/v1';
 
 /**
  * Where the hosted chat lives, for deployments that publish the landing page
@@ -57,4 +58,3 @@ export const ragReaderURL =
   safeProcessEnv.RAGREADER_URL ||
   (typeof window !== 'undefined' && (window as any).RAGREADER_URL) ||
   'https://rag.nevatal.id';
-

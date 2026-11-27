@@ -61,7 +61,11 @@ export default function EvaluationSuiteModal({
         <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
           <div>
             <p className="text-sm text-ink-soft leading-relaxed">
-              Modern AI systems require two distinct evaluation pillars: evaluating <strong>foundation models</strong> for raw speed, reasoning, and cost, and evaluating <strong>retrieval pipelines</strong> for context precision and document groundedness.
+              Modern AI systems require two distinct evaluation pillars:
+              evaluating <strong>foundation models</strong> for raw speed,
+              reasoning, and cost, and evaluating{' '}
+              <strong>retrieval pipelines</strong> for context precision and
+              document groundedness.
             </p>
           </div>
 
@@ -172,7 +176,8 @@ export default function EvaluationSuiteModal({
                 <strong className="block text-ink font-semibold mb-0.5 font-mono">
                   3. Verify RAG Triad
                 </strong>
-                Score retrieval accuracy and answer faithfulness with bootstrap CIs.
+                Score retrieval accuracy and answer faithfulness with bootstrap
+                CIs.
               </div>
             </div>
           </div>

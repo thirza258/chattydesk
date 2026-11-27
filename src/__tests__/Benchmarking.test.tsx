@@ -51,7 +51,8 @@ const mockDatasets = [
       id: 'v-1',
       version: 1,
       schema_version: '1.0',
-      checksum: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+      checksum:
+        'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
       test_case_count: 5,
       created_at: '2026-11-20T00:00:00Z',
     },
@@ -169,7 +170,9 @@ describe('AI Benchmark Lab Page', () => {
     expect(screen.getByText('1,540')).toBeInTheDocument(); // total test executions
     expect(screen.getByText('98.1%')).toBeInTheDocument(); // success rate
     expect(screen.getByText('General QA Suite')).toBeInTheDocument();
-    expect(screen.getByText('Python Coding Benchmark Run #1')).toBeInTheDocument();
+    expect(
+      screen.getByText('Python Coding Benchmark Run #1'),
+    ).toBeInTheDocument();
   });
 });
 
@@ -197,10 +200,14 @@ describe('Leaderboard Page', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('AI Performance Leaderboard')).toBeInTheDocument();
+      expect(
+        screen.getByText('AI Performance Leaderboard'),
+      ).toBeInTheDocument();
     });
 
-    expect(screen.getAllByText('anthropic/claude-3.5-sonnet').length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText('anthropic/claude-3.5-sonnet').length,
+    ).toBeGreaterThan(0);
     expect(screen.getAllByText('openai/gpt-4o').length).toBeGreaterThan(0);
     expect(screen.getByText('92.4')).toBeInTheDocument(); // composite score
     expect(screen.getByText('96.0%')).toBeInTheDocument(); // quality score
@@ -228,7 +235,9 @@ describe('Analytics & Cost Calculator Page', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Production Workload Cost Projection')).toBeInTheDocument();
+      expect(
+        screen.getByText('Production Workload Cost Projection'),
+      ).toBeInTheDocument();
     });
 
     expect(screen.getByText('Daily Requests')).toBeInTheDocument();

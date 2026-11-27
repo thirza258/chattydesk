@@ -492,10 +492,9 @@ const testUnlockPayment = async (unlimited = true): Promise<PaymentStatus> => {
 
 const listDatasets = async (category?: string): Promise<BenchmarkDataset[]> => {
   try {
-    const { data } = await api.get<Envelope<{ count: number; results: BenchmarkDataset[] }>>(
-      `${datasetsURL}/`,
-      { params: { ...(category ? { category } : {}) } },
-    );
+    const { data } = await api.get<
+      Envelope<{ count: number; results: BenchmarkDataset[] }>
+    >(`${datasetsURL}/`, { params: { ...(category ? { category } : {}) } });
     return data.data.results;
   } catch (error) {
     throw toApiError(error);
@@ -504,7 +503,9 @@ const listDatasets = async (category?: string): Promise<BenchmarkDataset[]> => {
 
 const getDataset = async (id: string): Promise<BenchmarkDataset> => {
   try {
-    const { data } = await api.get<Envelope<BenchmarkDataset>>(`${datasetsURL}/${id}/`);
+    const { data } = await api.get<Envelope<BenchmarkDataset>>(
+      `${datasetsURL}/${id}/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -555,12 +556,15 @@ const importDataset = async (payload: {
   }
 };
 
-const listBenchmarks = async (statusParam?: string): Promise<BenchmarkExperimentItem[]> => {
+const listBenchmarks = async (
+  statusParam?: string,
+): Promise<BenchmarkExperimentItem[]> => {
   try {
-    const { data } = await api.get<Envelope<{ count: number; results: BenchmarkExperimentItem[] }>>(
-      `${benchmarksURL}/`,
-      { params: { ...(statusParam ? { status: statusParam } : {}) } },
-    );
+    const { data } = await api.get<
+      Envelope<{ count: number; results: BenchmarkExperimentItem[] }>
+    >(`${benchmarksURL}/`, {
+      params: { ...(statusParam ? { status: statusParam } : {}) },
+    });
     return data.data.results;
   } catch (error) {
     throw toApiError(error);
@@ -576,11 +580,11 @@ const createBenchmark = async (payload: {
   auto_start?: boolean;
 }): Promise<{ experiment_id: string; status: string; status_url: string }> => {
   try {
-    const { data } = await api.post<Envelope<{ experiment_id: string; status: string; status_url: string }>>(
-      `${benchmarksURL}/`,
-      payload,
-      { headers: { 'Content-Type': 'application/json' } },
-    );
+    const { data } = await api.post<
+      Envelope<{ experiment_id: string; status: string; status_url: string }>
+    >(`${benchmarksURL}/`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+    });
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -589,18 +593,22 @@ const createBenchmark = async (payload: {
 
 const getBenchmark = async (id: string): Promise<BenchmarkExperimentDetail> => {
   try {
-    const { data } = await api.get<Envelope<BenchmarkExperimentDetail>>(`${benchmarksURL}/${id}/`);
+    const { data } = await api.get<Envelope<BenchmarkExperimentDetail>>(
+      `${benchmarksURL}/${id}/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
   }
 };
 
-const startBenchmark = async (id: string): Promise<{ experiment_id: string; status: string }> => {
+const startBenchmark = async (
+  id: string,
+): Promise<{ experiment_id: string; status: string }> => {
   try {
-    const { data } = await api.post<Envelope<{ experiment_id: string; status: string }>>(
-      `${benchmarksURL}/${id}/start/`,
-    );
+    const { data } = await api.post<
+      Envelope<{ experiment_id: string; status: string }>
+    >(`${benchmarksURL}/${id}/start/`);
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -617,7 +625,9 @@ const cancelBenchmark = async (id: string): Promise<void> => {
 
 const getBenchmarkProgress = async (id: string): Promise<BenchmarkProgress> => {
   try {
-    const { data } = await api.get<Envelope<BenchmarkProgress>>(`${benchmarksURL}/${id}/progress/`);
+    const { data } = await api.get<Envelope<BenchmarkProgress>>(
+      `${benchmarksURL}/${id}/progress/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -627,12 +637,17 @@ const getBenchmarkProgress = async (id: string): Promise<BenchmarkProgress> => {
 const getBenchmarkResults = async (
   id: string,
   filters: { model?: string; status?: string } = {},
-): Promise<{ experiment: BenchmarkExperimentDetail; executions: BenchmarkExecutionItem[] }> => {
+): Promise<{
+  experiment: BenchmarkExperimentDetail;
+  executions: BenchmarkExecutionItem[];
+}> => {
   try {
-    const { data } = await api.get<Envelope<{ experiment: BenchmarkExperimentDetail; executions: BenchmarkExecutionItem[] }>>(
-      `${benchmarksURL}/${id}/results/`,
-      { params: filters },
-    );
+    const { data } = await api.get<
+      Envelope<{
+        experiment: BenchmarkExperimentDetail;
+        executions: BenchmarkExecutionItem[];
+      }>
+    >(`${benchmarksURL}/${id}/results/`, { params: filters });
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -656,7 +671,9 @@ const submitHumanFeedback = async (payload: {
 
 const getAnalyticsOverview = async (): Promise<AnalyticsOverview> => {
   try {
-    const { data } = await api.get<Envelope<AnalyticsOverview>>(`${analyticsURL}/overview/`);
+    const { data } = await api.get<Envelope<AnalyticsOverview>>(
+      `${analyticsURL}/overview/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -665,24 +682,27 @@ const getAnalyticsOverview = async (): Promise<AnalyticsOverview> => {
 
 const getPerformanceAnalytics = async (): Promise<any[]> => {
   try {
-    const { data } = await api.get<Envelope<any[]>>(`${analyticsURL}/performance/`);
+    const { data } = await api.get<Envelope<any[]>>(
+      `${analyticsURL}/performance/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
   }
 };
 
-const getCostAnalytics = async (params: {
-  daily_requests?: number;
-  avg_input_tokens?: number;
-  avg_output_tokens?: number;
-  models?: string;
-} = {}): Promise<{ workload_params: any; projections: CostProjectionItem[] }> => {
+const getCostAnalytics = async (
+  params: {
+    daily_requests?: number;
+    avg_input_tokens?: number;
+    avg_output_tokens?: number;
+    models?: string;
+  } = {},
+): Promise<{ workload_params: any; projections: CostProjectionItem[] }> => {
   try {
-    const { data } = await api.get<Envelope<{ workload_params: any; projections: CostProjectionItem[] }>>(
-      `${analyticsURL}/cost/`,
-      { params },
-    );
+    const { data } = await api.get<
+      Envelope<{ workload_params: any; projections: CostProjectionItem[] }>
+    >(`${analyticsURL}/cost/`, { params });
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -691,50 +711,66 @@ const getCostAnalytics = async (params: {
 
 const getLeaderboard = async (
   category = 'overall',
-  weights?: { quality?: number; speed?: number; cost?: number; reliability?: number },
-): Promise<{ category: string; rankings: LeaderboardEntry[]; weights_used: any }> => {
+  weights?: {
+    quality?: number;
+    speed?: number;
+    cost?: number;
+    reliability?: number;
+  },
+): Promise<{
+  category: string;
+  rankings: LeaderboardEntry[];
+  weights_used: any;
+}> => {
   try {
     const params: Record<string, any> = { category };
     if (weights) {
       if (weights.quality !== undefined) params.w_quality = weights.quality;
       if (weights.speed !== undefined) params.w_speed = weights.speed;
       if (weights.cost !== undefined) params.w_cost = weights.cost;
-      if (weights.reliability !== undefined) params.w_reliability = weights.reliability;
+      if (weights.reliability !== undefined)
+        params.w_reliability = weights.reliability;
     }
-    const { data } = await api.get<Envelope<{ category: string; rankings: LeaderboardEntry[]; weights_used: any }>>(
-      `${leaderboardsURL}/`,
-      { params },
-    );
+    const { data } = await api.get<
+      Envelope<{
+        category: string;
+        rankings: LeaderboardEntry[];
+        weights_used: any;
+      }>
+    >(`${leaderboardsURL}/`, { params });
     return data.data;
   } catch (error) {
     throw toApiError(error);
   }
 };
 
-const getRecommendations = async (params: {
-  category?: string;
-  max_latency_ms?: number;
-  max_cost_per_1m?: number;
-  min_quality?: number;
-  free_only?: boolean;
-} = {}): Promise<{ category: string; recommendations: LeaderboardEntry[] }> => {
+const getRecommendations = async (
+  params: {
+    category?: string;
+    max_latency_ms?: number;
+    max_cost_per_1m?: number;
+    min_quality?: number;
+    free_only?: boolean;
+  } = {},
+): Promise<{ category: string; recommendations: LeaderboardEntry[] }> => {
   try {
-    const { data } = await api.get<Envelope<{ category: string; recommendations: LeaderboardEntry[] }>>(
-      `${leaderboardsURL}/recommend/`,
-      { params },
-    );
+    const { data } = await api.get<
+      Envelope<{ category: string; recommendations: LeaderboardEntry[] }>
+    >(`${leaderboardsURL}/recommend/`, { params });
     return data.data;
   } catch (error) {
     throw toApiError(error);
   }
 };
 
-const listComparisons = async (limit = 50, offset = 0): Promise<{ count: number; results: ComparisonSessionItem[] }> => {
+const listComparisons = async (
+  limit = 50,
+  offset = 0,
+): Promise<{ count: number; results: ComparisonSessionItem[] }> => {
   try {
-    const { data } = await api.get<Envelope<{ count: number; results: ComparisonSessionItem[] }>>(
-      `${comparisonsURL}/`,
-      { params: { limit, offset } },
-    );
+    const { data } = await api.get<
+      Envelope<{ count: number; results: ComparisonSessionItem[] }>
+    >(`${comparisonsURL}/`, { params: { limit, offset } });
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -743,7 +779,9 @@ const listComparisons = async (limit = 50, offset = 0): Promise<{ count: number;
 
 const getComparison = async (id: string): Promise<ComparisonSessionItem> => {
   try {
-    const { data } = await api.get<Envelope<ComparisonSessionItem>>(`${comparisonsURL}/${id}/`);
+    const { data } = await api.get<Envelope<ComparisonSessionItem>>(
+      `${comparisonsURL}/${id}/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -776,18 +814,19 @@ const saveComparison = async (payload: {
   }
 };
 
-const listRegisteredModels = async (params: {
-  search?: string;
-  provider?: string;
-  free?: boolean;
-  limit?: number;
-  offset?: number;
-} = {}): Promise<{ count: number; results: AIModelItem[] }> => {
+const listRegisteredModels = async (
+  params: {
+    search?: string;
+    provider?: string;
+    free?: boolean;
+    limit?: number;
+    offset?: number;
+  } = {},
+): Promise<{ count: number; results: AIModelItem[] }> => {
   try {
-    const { data } = await api.get<Envelope<{ count: number; results: AIModelItem[] }>>(
-      `${modelsURL}/`,
-      { params },
-    );
+    const { data } = await api.get<
+      Envelope<{ count: number; results: AIModelItem[] }>
+    >(`${modelsURL}/`, { params });
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -797,17 +836,23 @@ const listRegisteredModels = async (params: {
 const getModelDetail = async (modelId: string): Promise<AIModelItem> => {
   try {
     const encoded = encodeURIComponent(modelId);
-    const { data } = await api.get<Envelope<AIModelItem>>(`${modelsURL}/${encoded}/`);
+    const { data } = await api.get<Envelope<AIModelItem>>(
+      `${modelsURL}/${encoded}/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
   }
 };
 
-const getModelHistory = async (modelId: string): Promise<ModelMetadataSnapshotItem[]> => {
+const getModelHistory = async (
+  modelId: string,
+): Promise<ModelMetadataSnapshotItem[]> => {
   try {
     const encoded = encodeURIComponent(modelId);
-    const { data } = await api.get<Envelope<ModelMetadataSnapshotItem[]>>(`${modelsURL}/${encoded}/history/`);
+    const { data } = await api.get<Envelope<ModelMetadataSnapshotItem[]>>(
+      `${modelsURL}/${encoded}/history/`,
+    );
     return data.data;
   } catch (error) {
     throw toApiError(error);
@@ -816,7 +861,9 @@ const getModelHistory = async (modelId: string): Promise<ModelMetadataSnapshotIt
 
 const refreshModels = async (): Promise<{ count: number; synced: number }> => {
   try {
-    const { data } = await api.post<Envelope<{ count: number; synced: number }>>(`${modelsURL}/refresh/`);
+    const { data } = await api.post<
+      Envelope<{ count: number; synced: number }>
+    >(`${modelsURL}/refresh/`);
     return data.data;
   } catch (error) {
     throw toApiError(error);

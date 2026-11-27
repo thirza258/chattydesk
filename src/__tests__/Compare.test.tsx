@@ -291,7 +291,9 @@ describe('Compare page', () => {
     renderCompare();
     await waitFor(() => expect(mocked.listModels).toHaveBeenCalled());
 
-    const freeCheckbox = screen.getByRole('checkbox', { name: /free models only/i });
+    const freeCheckbox = screen.getByRole('checkbox', {
+      name: /free models only/i,
+    });
     expect(freeCheckbox).not.toBeChecked();
 
     fireEvent.click(freeCheckbox);
@@ -313,7 +315,9 @@ describe('Compare page', () => {
     renderCompare();
     await waitFor(() => expect(mocked.listModels).toHaveBeenCalled());
 
-    const keyButton = screen.getByRole('button', { name: /\+ openrouter key/i });
+    const keyButton = screen.getByRole('button', {
+      name: /\+ openrouter key/i,
+    });
     fireEvent.click(keyButton);
 
     expect(

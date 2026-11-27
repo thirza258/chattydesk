@@ -298,7 +298,9 @@ function Settings() {
                     </span>
                   </div>
                   <p className="text-xs text-pine/90 mt-0.5 font-sans">
-                    You are on the BYOK (Bring Your Own Key) Plan. Requests are routed through your personal OpenRouter key with unlimited access at direct provider token rates.
+                    You are on the BYOK (Bring Your Own Key) Plan. Requests are
+                    routed through your personal OpenRouter key with unlimited
+                    access at direct provider token rates.
                   </p>
                 </div>
               </div>
@@ -379,14 +381,18 @@ function Settings() {
                     </span>
                   </div>
                   <p className="text-xs text-ink-soft mt-0.5">
-                    Save your personal OpenRouter API key below to unlock unlimited requests for paid models with zero ChattyDesk markup.
+                    Save your personal OpenRouter API key below to unlock
+                    unlimited requests for paid models with zero ChattyDesk
+                    markup.
                   </p>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => {
-                    const input = document.getElementById('openrouter-key') as HTMLInputElement;
+                    const input = document.getElementById(
+                      'openrouter-key',
+                    ) as HTMLInputElement;
                     input?.focus();
                   }}
                   className={`${quietButton} flex-shrink-0 hover:border-rust hover:text-rust-deep`}

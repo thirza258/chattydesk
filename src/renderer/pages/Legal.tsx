@@ -11,7 +11,7 @@ const secondaryButton =
 export default function Legal() {
   const location = useLocation();
   const [tab, setTab] = useState<'privacy' | 'terms'>(
-    location.pathname.includes('terms') ? 'terms' : 'privacy'
+    location.pathname.includes('terms') ? 'terms' : 'privacy',
   );
 
   return (
@@ -40,10 +40,7 @@ export default function Legal() {
             >
               &larr; Back to Home
             </Link>
-            <Link
-              to="/chat"
-              className={primaryButton}
-            >
+            <Link to="/chat" className={primaryButton}>
               Open Chat
             </Link>
           </div>
@@ -60,7 +57,8 @@ export default function Legal() {
             Privacy Policy &amp; Terms of Service
           </h1>
           <p className="mt-3 text-sm text-ink-soft">
-            Clear, straightforward information on how data is handled on our self-hosted platform and our connection to OpenRouter.
+            Clear, straightforward information on how data is handled on our
+            self-hosted platform and our connection to OpenRouter.
           </p>
 
           <div className="mt-6 flex gap-3">
@@ -88,13 +86,16 @@ export default function Legal() {
                 1. 100% Self-Hosted &amp; Private Storage
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                ChattyDesk is an open-source, fully self-hosted unified AI workspace and desktop interface.
-                All chat histories, conversation branches, side-by-side model comparison logs, saved prompts,
-                and user preferences are stored strictly in your self-hosted database or local desktop filesystem.
+                ChattyDesk is an open-source, fully self-hosted unified AI
+                workspace and desktop interface. All chat histories,
+                conversation branches, side-by-side model comparison logs, saved
+                prompts, and user preferences are stored strictly in your
+                self-hosted database or local desktop filesystem.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                There are zero central telemetry servers, analytics collectors, or data monetization trackers.
-                We do not sell, rent, monetize, or harvest your personal information or chat logs.
+                There are zero central telemetry servers, analytics collectors,
+                or data monetization trackers. We do not sell, rent, monetize,
+                or harvest your personal information or chat logs.
               </p>
             </section>
 
@@ -103,14 +104,23 @@ export default function Legal() {
                 2. AI Processing via OpenRouter
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                ChattyDesk connects to generative AI model providers through <strong>OpenRouter</strong> to offer unified access to multi-model chat and comparison features.
+                ChattyDesk connects to generative AI model providers through{' '}
+                <strong>OpenRouter</strong> to offer unified access to
+                multi-model chat and comparison features.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                When you initiate a chat or execute an automated comparison prompt:
+                When you initiate a chat or execute an automated comparison
+                prompt:
               </p>
               <ul className="mt-2 list-disc pl-5 text-sm text-ink-soft space-y-1">
-                <li>Only the prompt text and preceding contextual turns of the selected conversation are sent to OpenRouter for inference.</li>
-                <li>Your local databases, unrelated chats, and host server files remain untouched and isolated.</li>
+                <li>
+                  Only the prompt text and preceding contextual turns of the
+                  selected conversation are sent to OpenRouter for inference.
+                </li>
+                <li>
+                  Your local databases, unrelated chats, and host server files
+                  remain untouched and isolated.
+                </li>
               </ul>
               <div className="mt-5 border border-hairline-strong bg-paper-sunken p-4">
                 <p className="font-mono text-xs uppercase font-semibold text-ink">
@@ -123,7 +133,8 @@ export default function Legal() {
                     rel="noreferrer noopener"
                     className="inline-flex items-center gap-1 text-rust hover:underline"
                   >
-                    OpenRouter Privacy Policy <IconExternal className="h-3 w-3" />
+                    OpenRouter Privacy Policy{' '}
+                    <IconExternal className="h-3 w-3" />
                   </a>
                   <a
                     href="https://openrouter.ai/terms"
@@ -131,7 +142,8 @@ export default function Legal() {
                     rel="noreferrer noopener"
                     className="inline-flex items-center gap-1 text-rust hover:underline"
                   >
-                    OpenRouter Terms of Service <IconExternal className="h-3 w-3" />
+                    OpenRouter Terms of Service{' '}
+                    <IconExternal className="h-3 w-3" />
                   </a>
                 </div>
               </div>
@@ -142,7 +154,10 @@ export default function Legal() {
                 3. User Autonomy &amp; Data Deletion
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                You retain complete control of your data. Deleting conversations, messages, or purging account data through the settings view or database controls immediately and permanently removes that information from storage.
+                You retain complete control of your data. Deleting
+                conversations, messages, or purging account data through the
+                settings view or database controls immediately and permanently
+                removes that information from storage.
               </p>
             </section>
 
@@ -151,7 +166,8 @@ export default function Legal() {
                 4. Privacy Contact
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                For questions regarding data protection, self-hosting policies, or privacy inquiries, contact us at:{' '}
+                For questions regarding data protection, self-hosting policies,
+                or privacy inquiries, contact us at:{' '}
                 <a
                   href="mailto:nevatalapp@gmail.com"
                   className="font-semibold text-rust hover:underline"
@@ -168,7 +184,9 @@ export default function Legal() {
                 1. Acceptance of Terms
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                By installing, accessing, or running ChattyDesk, you agree to these Terms of Service. If you do not agree, you should discontinue use.
+                By installing, accessing, or running ChattyDesk, you agree to
+                these Terms of Service. If you do not agree, you should
+                discontinue use.
               </p>
             </section>
 
@@ -177,7 +195,12 @@ export default function Legal() {
                 2. AI Model Output Disclaimer
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                ChattyDesk provides an interface for interacting with third-party foundation models. Model outputs are generated automatically by external AI models and may occasionally produce inaccurate, misleading, or unexpected results. Outputs should be independently reviewed and verified before reliance in critical, medical, legal, or financial contexts.
+                ChattyDesk provides an interface for interacting with
+                third-party foundation models. Model outputs are generated
+                automatically by external AI models and may occasionally produce
+                inaccurate, misleading, or unexpected results. Outputs should be
+                independently reviewed and verified before reliance in critical,
+                medical, legal, or financial contexts.
               </p>
             </section>
 
@@ -186,7 +209,9 @@ export default function Legal() {
                 3. Third-Party Service Compliance (OpenRouter)
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                You agree to comply with the usage policies and safety guidelines established by upstream model providers accessible via OpenRouter:
+                You agree to comply with the usage policies and safety
+                guidelines established by upstream model providers accessible
+                via OpenRouter:
               </p>
               <div className="mt-3 flex flex-wrap gap-4 text-xs font-semibold">
                 <a
@@ -195,7 +220,8 @@ export default function Legal() {
                   rel="noreferrer noopener"
                   className="inline-flex items-center gap-1 text-rust hover:underline"
                 >
-                  OpenRouter Terms of Service <IconExternal className="h-3 w-3" />
+                  OpenRouter Terms of Service{' '}
+                  <IconExternal className="h-3 w-3" />
                 </a>
                 <a
                   href="https://openrouter.ai/privacy"
@@ -213,7 +239,10 @@ export default function Legal() {
                 4. Software License &amp; Limitation of Liability
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                ChattyDesk is provided &ldquo;as is&rdquo;, without warranty of any kind, express or implied. Under no circumstances shall the authors or maintainers be held liable for any damages arising out of the use or inability to use this software.
+                ChattyDesk is provided &ldquo;as is&rdquo;, without warranty of
+                any kind, express or implied. Under no circumstances shall the
+                authors or maintainers be held liable for any damages arising
+                out of the use or inability to use this software.
               </p>
             </section>
 
@@ -243,7 +272,9 @@ export default function Legal() {
               <IconLogo className="h-4 w-4" />
               <p>ChattyDesk · Self-Hosted Multi-Model AI Client</p>
             </div>
-            <p className="text-[11px]">This project is under nevatal.id for educational purposes.</p>
+            <p className="text-[11px]">
+              This project is under nevatal.id for educational purposes.
+            </p>
           </div>
           <p>Contact: nevatalapp@gmail.com</p>
         </div>

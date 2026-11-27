@@ -89,7 +89,8 @@ export default function Models() {
 
   const filteredModels = useMemo(() => {
     return models.filter((m) => {
-      if (selectedProvider !== 'all' && m.provider_id !== selectedProvider) return false;
+      if (selectedProvider !== 'all' && m.provider_id !== selectedProvider)
+        return false;
       if (freeOnly && !m.is_free) return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -148,7 +149,8 @@ export default function Models() {
             AI Model Registry
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-ink-soft max-w-3xl leading-relaxed">
-            Search 400+ models, view specification metadata, pricing per 1M tokens, and historical version snapshots.
+            Search 400+ models, view specification metadata, pricing per 1M
+            tokens, and historical version snapshots.
           </p>
         </div>
 
@@ -206,7 +208,9 @@ export default function Models() {
           </div>
         ) : filteredModels.length === 0 ? (
           <div className="border-2 border-dashed border-hairline-strong p-12 text-center bg-paper-sunken">
-            <h3 className="font-display text-base font-bold text-ink">No Models Found</h3>
+            <h3 className="font-display text-base font-bold text-ink">
+              No Models Found
+            </h3>
             <p className="mt-1 text-xs text-ink-soft font-mono">
               Try adjusting your search query or provider filter.
             </p>
@@ -216,11 +220,17 @@ export default function Models() {
             <table className="w-full text-left font-mono text-xs border-collapse">
               <thead className="bg-paper-sunken border-b-2 border-ink uppercase text-[10px] text-ink-soft">
                 <tr>
-                  <th className="p-3 border-r border-hairline">Model Identifier</th>
+                  <th className="p-3 border-r border-hairline">
+                    Model Identifier
+                  </th>
                   <th className="p-3 border-r border-hairline">Provider</th>
-                  <th className="p-3 border-r border-hairline">Context Length</th>
+                  <th className="p-3 border-r border-hairline">
+                    Context Length
+                  </th>
                   <th className="p-3 border-r border-hairline">Prompt / 1M</th>
-                  <th className="p-3 border-r border-hairline">Completion / 1M</th>
+                  <th className="p-3 border-r border-hairline">
+                    Completion / 1M
+                  </th>
                   <th className="p-3 border-r border-hairline">Type</th>
                   <th className="p-3 text-right">Actions</th>
                 </tr>
@@ -231,11 +241,16 @@ export default function Models() {
                     ? (parseFloat(m.input_price_per_token) * 1000000).toFixed(2)
                     : '0.00';
                   const completionPrice = m.output_price_per_token
-                    ? (parseFloat(m.output_price_per_token) * 1000000).toFixed(2)
+                    ? (parseFloat(m.output_price_per_token) * 1000000).toFixed(
+                        2,
+                      )
                     : '0.00';
 
                   return (
-                    <tr key={m.id} className="hover:bg-paper-sunken transition-colors">
+                    <tr
+                      key={m.id}
+                      className="hover:bg-paper-sunken transition-colors"
+                    >
                       <td className="p-3 font-bold text-ink border-r border-hairline">
                         <div>
                           <span>{m.display_name || m.model_identifier}</span>
@@ -289,7 +304,9 @@ export default function Models() {
                           <button
                             type="button"
                             onClick={() =>
-                              navigate(`/compare?m1=${encodeURIComponent(m.model_identifier)}`)
+                              navigate(
+                                `/compare?m1=${encodeURIComponent(m.model_identifier)}`,
+                              )
                             }
                             className="text-xs text-ink-soft hover:text-rust font-semibold"
                           >
@@ -329,7 +346,10 @@ export default function Models() {
                 </h4>
               </div>
               <p className="text-xs text-ink-soft max-w-2xl leading-relaxed">
-                Found the right model in the registry? Test how well it handles long documents, PDF citations, and retrieval pipelines on <strong>RagReader</strong>, our companion workbench for RAG evaluation.
+                Found the right model in the registry? Test how well it handles
+                long documents, PDF citations, and retrieval pipelines on{' '}
+                <strong>RagReader</strong>, our companion workbench for RAG
+                evaluation.
               </p>
             </div>
             <a
@@ -369,22 +389,31 @@ export default function Models() {
 
             <div className="p-5 font-mono text-xs space-y-4 max-h-[70vh] overflow-y-auto">
               <p className="text-ink-soft">
-                Historical snapshots recorded whenever upstream pricing, context length, or parameters changed.
+                Historical snapshots recorded whenever upstream pricing, context
+                length, or parameters changed.
               </p>
 
               {loadingHistory ? (
-                <div className="py-8 text-center text-ink-faint">Loading snapshots…</div>
+                <div className="py-8 text-center text-ink-faint">
+                  Loading snapshots…
+                </div>
               ) : snapshots.length === 0 ? (
                 <div className="border border-dashed border-hairline p-6 text-center text-ink-soft bg-paper-sunken">
-                  Current specification is initial snapshot. No historical regressions detected.
+                  Current specification is initial snapshot. No historical
+                  regressions detected.
                 </div>
               ) : (
                 <div className="space-y-3">
                   {snapshots.map((snap) => (
-                    <div key={snap.id} className="border border-hairline bg-paper-raised p-3 space-y-2">
+                    <div
+                      key={snap.id}
+                      className="border border-hairline bg-paper-raised p-3 space-y-2"
+                    >
                       <div className="flex justify-between items-center text-[10px] text-ink-faint">
                         <span>Hash: {snap.snapshot_hash.slice(0, 12)}…</span>
-                        <span>{new Date(snap.recorded_at).toLocaleString()}</span>
+                        <span>
+                          {new Date(snap.recorded_at).toLocaleString()}
+                        </span>
                       </div>
                       <pre className="p-2 bg-paper border border-hairline text-[11px] overflow-x-auto text-ink">
                         {JSON.stringify(snap.metadata_json, null, 2)}

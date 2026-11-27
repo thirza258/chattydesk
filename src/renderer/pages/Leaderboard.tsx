@@ -55,10 +55,14 @@ export default function Leaderboard() {
 
   // Recommendation Advisor State
   const [advisorCategory, setAdvisorCategory] = useState('coding');
-  const [advisorLatency, setAdvisorLatency] = useState<number | undefined>(undefined);
+  const [advisorLatency, setAdvisorLatency] = useState<number | undefined>(
+    undefined,
+  );
   const [advisorCost, setAdvisorCost] = useState<number | undefined>(undefined);
   const [advisorFreeOnly, setAdvisorFreeOnly] = useState(false);
-  const [recommendations, setRecommendations] = useState<LeaderboardEntry[]>([]);
+  const [recommendations, setRecommendations] = useState<LeaderboardEntry[]>(
+    [],
+  );
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
   const fetchLeaderboard = async () => {
@@ -157,8 +161,9 @@ export default function Leaderboard() {
             AI Performance Leaderboard
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-ink-soft max-w-3xl leading-relaxed">
-            Composite rankings derived from empirical benchmark runs. Customize your evaluation priorities
-            with dynamic weights for quality, generation speed, inference cost, and reliability.
+            Composite rankings derived from empirical benchmark runs. Customize
+            your evaluation priorities with dynamic weights for quality,
+            generation speed, inference cost, and reliability.
           </p>
         </div>
 
@@ -187,17 +192,22 @@ export default function Leaderboard() {
               <div className="flex items-center gap-2">
                 <IconSliders className="h-4 w-4 text-rust" />
                 <h3 className="font-display text-base font-bold text-ink">
-                  Composite Scoring Formula: S = w_q Q + w_s S_p + w_c C_e + w_r R
+                  Composite Scoring Formula: S = w_q Q + w_s S_p + w_c C_e + w_r
+                  R
                 </h3>
               </div>
               <p className="text-[11px] text-ink-soft mt-0.5">
-                Adjust sliders to dynamically re-rank models based on your application&apos;s specific latency, quality, and cost constraints.
+                Adjust sliders to dynamically re-rank models based on your
+                application&apos;s specific latency, quality, and cost
+                constraints.
               </p>
             </div>
 
             {/* Presets */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] uppercase text-ink-faint mr-1">Presets:</span>
+              <span className="text-[10px] uppercase text-ink-faint mr-1">
+                Presets:
+              </span>
               {PRESETS.map((p) => (
                 <button
                   key={p.name}
@@ -215,7 +225,9 @@ export default function Leaderboard() {
             <div>
               <div className="flex justify-between mb-1">
                 <span className="text-ink font-semibold">Quality (w_q)</span>
-                <span className="font-bold text-pine">{Math.round(wQuality * 100)}%</span>
+                <span className="font-bold text-pine">
+                  {Math.round(wQuality * 100)}%
+                </span>
               </div>
               <input
                 type="range"
@@ -231,7 +243,9 @@ export default function Leaderboard() {
             <div>
               <div className="flex justify-between mb-1">
                 <span className="text-ink font-semibold">Speed (w_s)</span>
-                <span className="font-bold text-rust">{Math.round(wSpeed * 100)}%</span>
+                <span className="font-bold text-rust">
+                  {Math.round(wSpeed * 100)}%
+                </span>
               </div>
               <input
                 type="range"
@@ -246,8 +260,12 @@ export default function Leaderboard() {
 
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-ink font-semibold">Cost Efficiency (w_c)</span>
-                <span className="font-bold text-ink">{Math.round(wCost * 100)}%</span>
+                <span className="text-ink font-semibold">
+                  Cost Efficiency (w_c)
+                </span>
+                <span className="font-bold text-ink">
+                  {Math.round(wCost * 100)}%
+                </span>
               </div>
               <input
                 type="range"
@@ -262,8 +280,12 @@ export default function Leaderboard() {
 
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-ink font-semibold">Reliability (w_r)</span>
-                <span className="font-bold text-amber-600">{Math.round(wReliability * 100)}%</span>
+                <span className="text-ink font-semibold">
+                  Reliability (w_r)
+                </span>
+                <span className="font-bold text-amber-600">
+                  {Math.round(wReliability * 100)}%
+                </span>
               </div>
               <input
                 type="range"
@@ -289,12 +311,20 @@ export default function Leaderboard() {
           <table className="w-full text-left font-mono text-xs border-collapse">
             <thead className="bg-paper-sunken border-b-2 border-ink uppercase text-[10px] text-ink-soft">
               <tr>
-                <th className="p-3 border-r border-hairline w-14 text-center">Rank</th>
-                <th className="p-3 border-r border-hairline">Model & Provider</th>
-                <th className="p-3 border-r border-hairline">Composite Score</th>
+                <th className="p-3 border-r border-hairline w-14 text-center">
+                  Rank
+                </th>
+                <th className="p-3 border-r border-hairline">
+                  Model & Provider
+                </th>
+                <th className="p-3 border-r border-hairline">
+                  Composite Score
+                </th>
                 <th className="p-3 border-r border-hairline">Quality Score</th>
                 <th className="p-3 border-r border-hairline">Speed Score</th>
-                <th className="p-3 border-r border-hairline">Cost / 1M Tokens</th>
+                <th className="p-3 border-r border-hairline">
+                  Cost / 1M Tokens
+                </th>
                 <th className="p-3 border-r border-hairline">Reliability</th>
                 <th className="p-3 border-r border-hairline">Samples</th>
                 <th className="p-3 text-right">Actions</th>
@@ -310,7 +340,8 @@ export default function Leaderboard() {
               ) : rankings.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="p-8 text-center text-ink-faint">
-                    No leaderboard data available for this category yet. Run experiments to populate.
+                    No leaderboard data available for this category yet. Run
+                    experiments to populate.
                   </td>
                 </tr>
               ) : (
@@ -320,14 +351,19 @@ export default function Leaderboard() {
                     idx === 0
                       ? 'text-amber-600 font-black'
                       : idx === 1
-                      ? 'text-slate-600 font-bold'
-                      : idx === 2
-                      ? 'text-amber-800 font-bold'
-                      : 'text-ink';
+                        ? 'text-slate-600 font-bold'
+                        : idx === 2
+                          ? 'text-amber-800 font-bold'
+                          : 'text-ink';
 
                   return (
-                    <tr key={r.model_identifier} className="hover:bg-paper-sunken transition-colors">
-                      <td className={`p-3 text-center border-r border-hairline text-sm ${rankColor}`}>
+                    <tr
+                      key={r.model_identifier}
+                      className="hover:bg-paper-sunken transition-colors"
+                    >
+                      <td
+                        className={`p-3 text-center border-r border-hairline text-sm ${rankColor}`}
+                      >
                         #{idx + 1}
                       </td>
                       <td className="p-3 font-bold text-ink border-r border-hairline">
@@ -351,7 +387,9 @@ export default function Leaderboard() {
                           <div className="w-20 h-2 bg-hairline rounded-full overflow-hidden">
                             <div
                               className="h-full bg-rust"
-                              style={{ width: `${Math.min(r.composite_score || 0, 100)}%` }}
+                              style={{
+                                width: `${Math.min(r.composite_score || 0, 100)}%`,
+                              }}
                             />
                           </div>
                         </div>
@@ -375,7 +413,11 @@ export default function Leaderboard() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             type="button"
-                            onClick={() => navigate(`/compare?m1=${encodeURIComponent(r.model_identifier)}`)}
+                            onClick={() =>
+                              navigate(
+                                `/compare?m1=${encodeURIComponent(r.model_identifier)}`,
+                              )
+                            }
                             className="text-ink-soft hover:text-ink text-[11px]"
                             title="Compare in Playground"
                           >
@@ -383,7 +425,11 @@ export default function Leaderboard() {
                           </button>
                           <button
                             type="button"
-                            onClick={() => navigate(`/benchmarks/new?model=${encodeURIComponent(r.model_identifier)}`)}
+                            onClick={() =>
+                              navigate(
+                                `/benchmarks/new?model=${encodeURIComponent(r.model_identifier)}`,
+                              )
+                            }
                             className="bg-ink hover:bg-rust text-paper px-2 py-0.5 text-[11px] font-semibold transition-colors"
                           >
                             Benchmark
@@ -408,13 +454,16 @@ export default function Leaderboard() {
               Find the Best Model for Your Workload
             </h2>
             <p className="mt-1 text-xs text-ink-soft font-mono">
-              Filter by specific task requirements, latency tolerances, and budget limits.
+              Filter by specific task requirements, latency tolerances, and
+              budget limits.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs mb-6">
             <div>
-              <label className="block text-ink-soft mb-1 font-semibold">Task Category</label>
+              <label className="block text-ink-soft mb-1 font-semibold">
+                Task Category
+              </label>
               <select
                 value={advisorCategory}
                 onChange={(e) => setAdvisorCategory(e.target.value)}
@@ -430,11 +479,19 @@ export default function Leaderboard() {
             </div>
 
             <div>
-              <label className="block text-ink-soft mb-1 font-semibold">Max Latency Budget</label>
+              <label className="block text-ink-soft mb-1 font-semibold">
+                Max Latency Budget
+              </label>
               <select
-                value={advisorLatency === undefined ? 'any' : String(advisorLatency)}
+                value={
+                  advisorLatency === undefined ? 'any' : String(advisorLatency)
+                }
                 onChange={(e) =>
-                  setAdvisorLatency(e.target.value === 'any' ? undefined : Number(e.target.value))
+                  setAdvisorLatency(
+                    e.target.value === 'any'
+                      ? undefined
+                      : Number(e.target.value),
+                  )
                 }
                 className="w-full border-2 border-ink bg-paper p-2 text-ink focus:outline-none focus:border-rust"
               >
@@ -446,11 +503,17 @@ export default function Leaderboard() {
             </div>
 
             <div>
-              <label className="block text-ink-soft mb-1 font-semibold">Max Cost / 1M Tokens</label>
+              <label className="block text-ink-soft mb-1 font-semibold">
+                Max Cost / 1M Tokens
+              </label>
               <select
                 value={advisorCost === undefined ? 'any' : String(advisorCost)}
                 onChange={(e) =>
-                  setAdvisorCost(e.target.value === 'any' ? undefined : Number(e.target.value))
+                  setAdvisorCost(
+                    e.target.value === 'any'
+                      ? undefined
+                      : Number(e.target.value),
+                  )
                 }
                 className="w-full border-2 border-ink bg-paper p-2 text-ink focus:outline-none focus:border-rust"
               >
@@ -481,7 +544,8 @@ export default function Leaderboard() {
             </div>
           ) : recommendations.length === 0 ? (
             <div className="border border-dashed border-hairline p-6 text-center text-xs font-mono text-ink-soft bg-paper-sunken">
-              No matching models meet these criteria. Try relaxing your latency or budget budget.
+              No matching models meet these criteria. Try relaxing your latency
+              or budget budget.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -493,7 +557,9 @@ export default function Leaderboard() {
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[10px] uppercase font-bold text-rust">
-                        {idx === 0 ? 'Top Recommendation' : `Option #${idx + 1}`}
+                        {idx === 0
+                          ? 'Top Recommendation'
+                          : `Option #${idx + 1}`}
                       </span>
                       <span className="font-bold text-pine">
                         {rec.quality_score?.toFixed(1)}% score
@@ -512,11 +578,15 @@ export default function Leaderboard() {
                     <div className="space-y-1 text-[11px] border-t border-hairline pt-2 text-ink-soft">
                       <div className="flex justify-between">
                         <span>Cost / 1M tokens:</span>
-                        <span className="font-bold text-ink">${(rec.cost_per_1m || 0).toFixed(2)}</span>
+                        <span className="font-bold text-ink">
+                          ${(rec.cost_per_1m || 0).toFixed(2)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Speed rating:</span>
-                        <span className="font-bold text-rust">{rec.speed_score?.toFixed(1)}</span>
+                        <span className="font-bold text-rust">
+                          {rec.speed_score?.toFixed(1)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -524,14 +594,22 @@ export default function Leaderboard() {
                   <div className="mt-4 pt-3 border-t border-hairline flex items-center justify-between">
                     <button
                       type="button"
-                      onClick={() => navigate(`/compare?m1=${encodeURIComponent(rec.model_identifier)}`)}
+                      onClick={() =>
+                        navigate(
+                          `/compare?m1=${encodeURIComponent(rec.model_identifier)}`,
+                        )
+                      }
                       className="text-xs font-semibold text-ink hover:text-rust"
                     >
                       Compare →
                     </button>
                     <button
                       type="button"
-                      onClick={() => navigate(`/benchmarks/new?model=${encodeURIComponent(rec.model_identifier)}`)}
+                      onClick={() =>
+                        navigate(
+                          `/benchmarks/new?model=${encodeURIComponent(rec.model_identifier)}`,
+                        )
+                      }
                       className="bg-rust hover:bg-rust-deep text-paper px-2.5 py-1 text-xs font-semibold transition-colors"
                     >
                       Run Test
@@ -556,7 +634,10 @@ export default function Leaderboard() {
                 </h4>
               </div>
               <p className="text-xs text-ink-soft max-w-2xl leading-relaxed">
-                Leaderboards reveal raw model intelligence and speed. Once you've selected high-performing models, evaluate their context faithfulness, citation adherence, and consensus voting on real documents in our companion workbench <strong>RagReader</strong>.
+                Leaderboards reveal raw model intelligence and speed. Once
+                you've selected high-performing models, evaluate their context
+                faithfulness, citation adherence, and consensus voting on real
+                documents in our companion workbench <strong>RagReader</strong>.
               </p>
             </div>
             <a

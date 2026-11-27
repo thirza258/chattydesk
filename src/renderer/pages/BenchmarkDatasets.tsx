@@ -43,7 +43,9 @@ export default function BenchmarkDatasets() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Preview Modal
-  const [previewDataset, setPreviewDataset] = useState<BenchmarkDataset | null>(null);
+  const [previewDataset, setPreviewDataset] = useState<BenchmarkDataset | null>(
+    null,
+  );
   const [previewCases, setPreviewCases] = useState<BenchmarkTestCase[]>([]);
   const [loadingCases, setLoadingCases] = useState(false);
   const [copiedChecksum, setCopiedChecksum] = useState(false);
@@ -116,7 +118,8 @@ export default function BenchmarkDatasets() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete dataset "${name}"?`)) return;
+    if (!window.confirm(`Are you sure you want to delete dataset "${name}"?`))
+      return;
     try {
       await services.deleteDataset(id);
       setDatasets((prev) => prev.filter((d) => d.id !== id));
@@ -127,12 +130,14 @@ export default function BenchmarkDatasets() {
   };
 
   const handleExportJSONL = (ds: BenchmarkDataset) => {
-    const cases: BenchmarkTestCase[] = ds.latest_version?.test_cases || ds.test_cases || [];
+    const cases: BenchmarkTestCase[] =
+      ds.latest_version?.test_cases || ds.test_cases || [];
     const lines = cases.map((c: BenchmarkTestCase) =>
       JSON.stringify({
         prompt: c.prompt || c.input_json?.prompt,
         expected_answer: c.expected_answer || c.expected_output_json?.answer,
-        evaluation_method: c.evaluation_method || c.evaluation_config_json?.method,
+        evaluation_method:
+          c.evaluation_method || c.evaluation_config_json?.method,
         metadata: c.metadata,
       }),
     );
@@ -150,7 +155,8 @@ export default function BenchmarkDatasets() {
 
   const filteredDatasets = useMemo(() => {
     return datasets.filter((ds) => {
-      if (selectedCategory !== 'all' && ds.category !== selectedCategory) return false;
+      if (selectedCategory !== 'all' && ds.category !== selectedCategory)
+        return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const nameMatch = ds.name.toLowerCase().includes(q);
@@ -205,7 +211,8 @@ export default function BenchmarkDatasets() {
               Benchmark Datasets & Suites
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-ink-soft">
-              Standardized, immutable test suites with SHA-256 integrity verification.
+              Standardized, immutable test suites with SHA-256 integrity
+              verification.
             </p>
           </div>
 
@@ -264,7 +271,9 @@ export default function BenchmarkDatasets() {
         ) : filteredDatasets.length === 0 ? (
           <div className="border-2 border-dashed border-hairline-strong p-12 text-center bg-paper-sunken">
             <IconDatabase className="h-10 w-10 mx-auto text-ink-faint mb-3" />
-            <h3 className="font-display text-base font-bold text-ink">No Datasets Found</h3>
+            <h3 className="font-display text-base font-bold text-ink">
+              No Datasets Found
+            </h3>
             <p className="mt-1 text-xs text-ink-soft font-mono">
               Try adjusting your category filter or search query.
             </p>
@@ -295,7 +304,9 @@ export default function BenchmarkDatasets() {
                       </div>
                     </div>
 
-                    <h3 className="font-display text-base font-bold text-ink mb-1.5">{ds.name}</h3>
+                    <h3 className="font-display text-base font-bold text-ink mb-1.5">
+                      {ds.name}
+                    </h3>
                     <p className="text-xs text-ink-soft line-clamp-2 leading-relaxed">
                       {ds.description || 'Curated evaluation suite.'}
                     </p>
@@ -303,7 +314,10 @@ export default function BenchmarkDatasets() {
                     <div className="mt-3 flex items-center gap-4 text-xs font-mono text-ink-faint">
                       <span>{testCaseCount} test cases</span>
                       {ds.latest_version?.checksum && (
-                        <span className="truncate max-w-[120px]" title={ds.latest_version.checksum}>
+                        <span
+                          className="truncate max-w-[120px]"
+                          title={ds.latest_version.checksum}
+                        >
                           SHA: {ds.latest_version.checksum.slice(0, 8)}…
                         </span>
                       )}
@@ -370,7 +384,9 @@ export default function BenchmarkDatasets() {
                   <span>·</span>
                   <span>v{previewDataset.latest_version?.version || 1}</span>
                 </div>
-                <h2 className="font-display text-xl font-bold text-ink">{previewDataset.name}</h2>
+                <h2 className="font-display text-xl font-bold text-ink">
+                  {previewDataset.name}
+                </h2>
               </div>
               <button
                 type="button"
@@ -384,7 +400,9 @@ export default function BenchmarkDatasets() {
             {/* Modal Body */}
             <div className="p-5 overflow-y-auto space-y-4 font-mono text-xs flex-1">
               {previewDataset.description && (
-                <p className="text-ink-soft leading-relaxed">{previewDataset.description}</p>
+                <p className="text-ink-soft leading-relaxed">
+                  {previewDataset.description}
+                </p>
               )}
 
               {/* Checksum Badge */}
@@ -401,7 +419,9 @@ export default function BenchmarkDatasets() {
                   <button
                     type="button"
                     onClick={() => {
-                      navigator.clipboard.writeText(previewDataset.latest_version?.checksum || '');
+                      navigator.clipboard.writeText(
+                        previewDataset.latest_version?.checksum || '',
+                      );
                       setCopiedChecksum(true);
                       setTimeout(() => setCopiedChecksum(false), 2000);
                     }}
@@ -419,7 +439,9 @@ export default function BenchmarkDatasets() {
                 </h3>
 
                 {loadingCases ? (
-                  <div className="py-6 text-center text-ink-faint">Loading test cases…</div>
+                  <div className="py-6 text-center text-ink-faint">
+                    Loading test cases…
+                  </div>
                 ) : previewCases.length === 0 ? (
                   <div className="p-4 border border-dashed border-hairline text-center text-ink-faint">
                     No test cases available in this dataset version.
@@ -428,20 +450,31 @@ export default function BenchmarkDatasets() {
                   <div className="space-y-3">
                     {previewCases.map((tc, idx) => {
                       const prompt = tc.prompt || tc.input_json?.prompt || '';
-                      const expected = tc.expected_answer || tc.expected_output_json?.answer;
-                      const evalMethod = tc.evaluation_method || tc.evaluation_config_json?.method || 'exact_match';
+                      const expected =
+                        tc.expected_answer || tc.expected_output_json?.answer;
+                      const evalMethod =
+                        tc.evaluation_method ||
+                        tc.evaluation_config_json?.method ||
+                        'exact_match';
 
                       return (
-                        <div key={tc.id || idx} className="border border-hairline bg-paper-raised p-3 space-y-2">
+                        <div
+                          key={tc.id || idx}
+                          className="border border-hairline bg-paper-raised p-3 space-y-2"
+                        >
                           <div className="flex items-center justify-between text-[10px] text-ink-faint">
-                            <span className="font-bold text-ink">Case #{idx + 1}</span>
+                            <span className="font-bold text-ink">
+                              Case #{idx + 1}
+                            </span>
                             <span className="uppercase text-rust font-semibold">
                               Eval: {evalMethod}
                             </span>
                           </div>
 
                           <div>
-                            <span className="text-[10px] uppercase text-ink-faint block">Prompt:</span>
+                            <span className="text-[10px] uppercase text-ink-faint block">
+                              Prompt:
+                            </span>
                             <pre className="text-xs whitespace-pre-wrap font-mono text-ink mt-0.5 bg-paper p-2 border border-hairline">
                               {prompt}
                             </pre>
@@ -498,7 +531,9 @@ export default function BenchmarkDatasets() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4">
           <div className="w-full max-w-2xl bg-paper border-2 border-ink flex flex-col shadow-2xl">
             <div className="p-4 border-b-2 border-ink flex items-center justify-between bg-paper-raised">
-              <h2 className="font-display text-lg font-bold text-ink">Import Custom Dataset (JSONL)</h2>
+              <h2 className="font-display text-lg font-bold text-ink">
+                Import Custom Dataset (JSONL)
+              </h2>
               <button
                 type="button"
                 onClick={() => setShowImportModal(false)}
@@ -508,7 +543,10 @@ export default function BenchmarkDatasets() {
               </button>
             </div>
 
-            <form onSubmit={handleImport} className="p-5 space-y-4 font-mono text-xs">
+            <form
+              onSubmit={handleImport}
+              className="p-5 space-y-4 font-mono text-xs"
+            >
               {importError && (
                 <div className="p-2.5 bg-ember-soft border border-ember text-ember">
                   {importError}
@@ -517,7 +555,9 @@ export default function BenchmarkDatasets() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-ink-soft mb-1 font-semibold">Dataset Name *</label>
+                  <label className="block text-ink-soft mb-1 font-semibold">
+                    Dataset Name *
+                  </label>
                   <input
                     type="text"
                     required
@@ -529,7 +569,9 @@ export default function BenchmarkDatasets() {
                 </div>
 
                 <div>
-                  <label className="block text-ink-soft mb-1 font-semibold">Category</label>
+                  <label className="block text-ink-soft mb-1 font-semibold">
+                    Category
+                  </label>
                   <select
                     value={importCategory}
                     onChange={(e) => setImportCategory(e.target.value)}
@@ -547,7 +589,9 @@ export default function BenchmarkDatasets() {
               </div>
 
               <div>
-                <label className="block text-ink-soft mb-1 font-semibold">Description</label>
+                <label className="block text-ink-soft mb-1 font-semibold">
+                  Description
+                </label>
                 <input
                   type="text"
                   placeholder="Brief description of the test suite and evaluation criteria"
@@ -559,7 +603,9 @@ export default function BenchmarkDatasets() {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-ink-soft font-semibold">JSONL Content * (One JSON per line)</label>
+                  <label className="text-ink-soft font-semibold">
+                    JSONL Content * (One JSON per line)
+                  </label>
                   <button
                     type="button"
                     onClick={() => {
@@ -583,8 +629,10 @@ export default function BenchmarkDatasets() {
                   className="w-full border-2 border-ink bg-paper p-2 font-mono text-xs text-ink focus:outline-none focus:border-rust leading-relaxed"
                 />
                 <p className="text-[10px] text-ink-faint mt-1">
-                  Each line must be a valid JSON object containing <code>prompt</code>, and optionally{' '}
-                  <code>expected_answer</code> and <code>evaluation_method</code>.
+                  Each line must be a valid JSON object containing{' '}
+                  <code>prompt</code>, and optionally{' '}
+                  <code>expected_answer</code> and{' '}
+                  <code>evaluation_method</code>.
                 </p>
               </div>
 

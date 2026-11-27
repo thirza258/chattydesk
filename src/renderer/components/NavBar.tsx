@@ -37,7 +37,7 @@ function NavBar({
 }: NavBarProps) {
   const { user, signOut } = useAuth();
   const location = useLocation();
-  const pathname = location.pathname;
+  const { pathname } = location;
   const [suiteModalOpen, setSuiteModalOpen] = useState(false);
 
   const navItemClass = (path: string) => {

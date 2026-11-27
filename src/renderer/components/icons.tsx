@@ -385,5 +385,3 @@ export function IconClose({ className }: IconProps) {
     </Svg>
   );
 }
-
-

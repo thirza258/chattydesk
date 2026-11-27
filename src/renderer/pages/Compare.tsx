@@ -1,4 +1,10 @@
-import { KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ragReaderURL } from '../../constant';
@@ -132,9 +138,12 @@ function Compare() {
     };
 
     loadCatalogue();
-    services.getSettings().then((settings) => {
-      if (!cancelled && settings) setUserSettings(settings);
-    }).catch(() => null);
+    services
+      .getSettings()
+      .then((settings) => {
+        if (!cancelled && settings) setUserSettings(settings);
+      })
+      .catch(() => null);
 
     return () => {
       cancelled = true;
@@ -215,7 +224,11 @@ function Compare() {
   const fillWithFreeModels = () => {
     const freeList = models.filter((m) => m.is_free);
     if (freeList.length >= 2) {
-      setSlots(freeList.slice(0, Math.min(slots.length, freeList.length)).map((m) => m.id));
+      setSlots(
+        freeList
+          .slice(0, Math.min(slots.length, freeList.length))
+          .map((m) => m.id),
+      );
       setFreeOnly(true);
     }
   };
@@ -228,10 +241,15 @@ function Compare() {
     setKeyError('');
     setKeyNotice('');
     try {
-      const updated = await services.saveSettings({ openrouterKey: key, preferOwnKey: true });
+      const updated = await services.saveSettings({
+        openrouterKey: key,
+        preferOwnKey: true,
+      });
       setUserSettings(updated);
       setKeyInput('');
-      setKeyNotice('Your OpenRouter API key is active! Paid model comparisons will now use your key.');
+      setKeyNotice(
+        'Your OpenRouter API key is active! Paid model comparisons will now use your key.',
+      );
       setGlobalError('');
     } catch (err) {
       setKeyError((err as Error).message);
@@ -241,13 +259,23 @@ function Compare() {
   };
 
   const handleRemoveKey = async () => {
-    if (!window.confirm('Are you sure you want to remove your saved OpenRouter API key?')) return;
+    if (
+      !window.confirm(
+        'Are you sure you want to remove your saved OpenRouter API key?',
+      )
+    )
+      return;
     setSavingKey(true);
     setKeyError('');
     try {
-      const updated = await services.saveSettings({ openrouterKey: '', preferOwnKey: false });
+      const updated = await services.saveSettings({
+        openrouterKey: '',
+        preferOwnKey: false,
+      });
       setUserSettings(updated);
-      setKeyNotice('Key removed. Paid model comparisons will fall back to server trial quota.');
+      setKeyNotice(
+        'Key removed. Paid model comparisons will fall back to server trial quota.',
+      );
     } catch (err) {
       setKeyError((err as Error).message);
     } finally {
@@ -271,7 +299,9 @@ function Compare() {
     setSavedSuccess(false);
 
     try {
-      const hasCustomOptions = Boolean(systemPrompt.trim() || temperature !== undefined || mode !== 'standard');
+      const hasCustomOptions = Boolean(
+        systemPrompt.trim() || temperature !== undefined || mode !== 'standard',
+      );
       const response = await (hasCustomOptions
         ? services.compareModels(prompt, slots, {
             systemPrompt: systemPrompt.trim() || undefined,
@@ -380,9 +410,10 @@ function Compare() {
       r.usage?.total_tokens || 0,
       `"${(r.error || '').replace(/"/g, '""')}"`,
     ]);
-    const csvContent = [headers.join(','), ...rows.map((e) => e.join(','))].join(
-      '\n',
-    );
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((e) => e.join(',')),
+    ].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -487,7 +518,9 @@ function Compare() {
                 type="button"
                 onClick={() => setMode('standard')}
                 className={`px-2 py-0.5 transition-colors ${
-                  mode === 'standard' ? 'bg-ink text-paper font-semibold' : 'text-ink-soft hover:text-ink'
+                  mode === 'standard'
+                    ? 'bg-ink text-paper font-semibold'
+                    : 'text-ink-soft hover:text-ink'
                 }`}
               >
                 Standard
@@ -554,7 +587,9 @@ function Compare() {
                   onChange={(e) => toggleFreeOnly(e.target.checked)}
                   className="accent-pine h-3.5 w-3.5"
                 />
-                <span className={freeOnly ? 'font-bold text-pine' : 'text-ink-soft'}>
+                <span
+                  className={freeOnly ? 'font-bold text-pine' : 'text-ink-soft'}
+                >
                   Free models only
                 </span>
               </label>
@@ -582,8 +617,8 @@ function Compare() {
                 userSettings?.has_own_key
                   ? 'border-pine bg-pine-soft text-pine hover:bg-pine/20'
                   : hasPaidModelSelected
-                  ? 'border-rust bg-rust-soft text-rust font-bold animate-pulse'
-                  : 'border-hairline-strong bg-paper text-ink hover:border-ink'
+                    ? 'border-rust bg-rust-soft text-rust font-bold animate-pulse'
+                    : 'border-hairline-strong bg-paper text-ink hover:border-ink'
               }`}
               title={
                 userSettings?.has_own_key
@@ -671,7 +706,8 @@ function Compare() {
             </div>
             <div>
               <label className="block text-ink-faint mb-1">
-                TEMPERATURE: {temperature !== undefined ? temperature : 'Default'}
+                TEMPERATURE:{' '}
+                {temperature !== undefined ? temperature : 'Default'}
               </label>
               <input
                 type="range"
@@ -825,7 +861,9 @@ function Compare() {
 
             <div
               className={`grid ${
-                layout === 'stacked' ? 'grid-cols-1' : gridColsClass(slots.length)
+                layout === 'stacked'
+                  ? 'grid-cols-1'
+                  : gridColsClass(slots.length)
               } divide-y sm:divide-y-0 sm:divide-x divide-hairline border-2 border-ink bg-paper-raised flex-1`}
             >
               {slots.map((modelId, index) => (
@@ -862,16 +900,21 @@ function Compare() {
                 <span className="font-mono text-[10px] uppercase tracking-wider text-ink-faint block">
                   Prompt
                 </span>
-                <p className="mt-1 text-sm font-medium text-ink">{promptEcho}</p>
+                <p className="mt-1 text-sm font-medium text-ink">
+                  {promptEcho}
+                </p>
               </div>
               <span className="font-mono text-xs text-rust font-semibold">
-                {results.filter((r) => !r.error).length}/{results.length} answered
+                {results.filter((r) => !r.error).length}/{results.length}{' '}
+                answered
               </span>
             </div>
 
             <div
               className={`grid ${
-                layout === 'stacked' ? 'grid-cols-1' : gridColsClass(results.length)
+                layout === 'stacked'
+                  ? 'grid-cols-1'
+                  : gridColsClass(results.length)
               } divide-y sm:divide-y-0 sm:divide-x divide-hairline border-2 border-ink bg-paper-raised flex-1`}
             >
               {results.map((res, index) => {
@@ -956,7 +999,10 @@ function Compare() {
                 <span className="font-bold uppercase text-[10px] px-1.5 py-0.5 bg-amber-200 border border-amber-400">
                   Paid Models Selected
                 </span>
-                <span>Comparing paid models requires an OpenRouter API key (or free trial quota).</span>
+                <span>
+                  Comparing paid models requires an OpenRouter API key (or free
+                  trial quota).
+                </span>
               </div>
               <button
                 type="button"
@@ -1065,7 +1111,9 @@ function Compare() {
                       <div className="mt-1 flex items-center gap-2 text-[10px] font-mono text-ink-faint">
                         <span>{session.models.length} models</span>
                         <span>·</span>
-                        <span>{new Date(session.created_at).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(session.created_at).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
                     <button
@@ -1119,15 +1167,18 @@ function Compare() {
             </div>
 
             <p className="mt-3 text-xs text-ink-soft leading-relaxed font-sans">
-              Insert your personal OpenRouter key to compare paid models directly without limits.
-              Stored keys are encrypted securely on the server with Fernet cryptography.
+              Insert your personal OpenRouter key to compare paid models
+              directly without limits. Stored keys are encrypted securely on the
+              server with Fernet cryptography.
             </p>
 
             {userSettings?.has_own_key && (
               <div className="mt-3 p-2.5 bg-pine-soft border border-pine text-pine text-xs flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <IconCheck className="h-4 w-4 flex-shrink-0" />
-                  <span>Key Active: <strong>…{userSettings.key_hint}</strong></span>
+                  <span>
+                    Key Active: <strong>…{userSettings.key_hint}</strong>
+                  </span>
                 </div>
                 <button
                   type="button"
@@ -1155,7 +1206,9 @@ function Compare() {
             <form onSubmit={handleSaveKey} className="mt-4 space-y-3">
               <div>
                 <label className="block text-[10px] text-ink-faint uppercase font-semibold mb-1">
-                  {userSettings?.has_own_key ? 'Replace Key' : 'API Key (sk-or-v1-…)'}
+                  {userSettings?.has_own_key
+                    ? 'Replace Key'
+                    : 'API Key (sk-or-v1-…)'}
                 </label>
                 <div className="relative">
                   <input
@@ -1172,7 +1225,11 @@ function Compare() {
                     className="absolute right-2 top-2.5 text-ink-faint hover:text-ink"
                     title={keyRevealed ? 'Hide' : 'Show'}
                   >
-                    {keyRevealed ? <IconEyeOff className="h-3.5 w-3.5" /> : <IconEye className="h-3.5 w-3.5" />}
+                    {keyRevealed ? (
+                      <IconEyeOff className="h-3.5 w-3.5" />
+                    ) : (
+                      <IconEye className="h-3.5 w-3.5" />
+                    )}
                   </button>
                 </div>
               </div>

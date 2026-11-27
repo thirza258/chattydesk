@@ -94,6 +94,16 @@ jobs:
           WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
         run: |
+          # Clean up empty code-signing variables so electron-builder safely skips signing
+          [ -z "$CSC_LINK" ] && unset CSC_LINK
+          [ -z "$CSC_KEY_PASSWORD" ] && unset CSC_KEY_PASSWORD
+          [ -z "$WIN_CSC_LINK" ] && unset WIN_CSC_LINK
+          [ -z "$WIN_CSC_KEY_PASSWORD" ] && unset WIN_CSC_KEY_PASSWORD
+          [ -z "$APPLE_ID" ] && unset APPLE_ID
+          [ -z "$APPLE_ID_PASS" ] && unset APPLE_ID_PASS
+          [ -z "$APPLE_APP_SPECIFIC_PASSWORD" ] && unset APPLE_APP_SPECIFIC_PASSWORD
+          [ -z "$APPLE_TEAM_ID" ] && unset APPLE_TEAM_ID
+
           if [ "$RUNNER_OS" = "Windows" ]; then
             echo "Running Windows executable generator (generate-exe.sh)..."
             ./generate-exe.sh --target nsis,portable --skip-install
@@ -111,9 +121,14 @@ jobs:
         shell: bash
         run: |
           cd release/build
-          for file in *.{exe,dmg,zip,AppImage,deb,rpm,tar.gz}; do
+          shopt -s nullglob
+          for file in *.exe *.dmg *.zip *.AppImage *.deb *.rpm *.tar.gz; do
             if [ -f "$file" ]; then
-              sha256sum "$file" >> SHA256SUMS-${{ matrix.os }}.txt
+              if command -v sha256sum >/dev/null 2>&1; then
+                sha256sum "$file" >> SHA256SUMS-${{ matrix.os }}.txt
+              else
+                shasum -a 256 "$file" >> SHA256SUMS-${{ matrix.os }}.txt
+              fi
             fi
           done
           if [ -f SHA256SUMS-${{ matrix.os }}.txt ]; then

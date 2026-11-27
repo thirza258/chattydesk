@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import services from '../../services/services';
 import { BenchmarkDataset, Model } from '../../interface';
@@ -115,9 +115,7 @@ function BenchmarkWizard() {
         return false;
       }
       if (!q) return true;
-      return (
-        m.id.toLowerCase().includes(q) || m.name.toLowerCase().includes(q)
-      );
+      return m.id.toLowerCase().includes(q) || m.name.toLowerCase().includes(q);
     });
   }, [models, modelSearch, selectedProvider, freeOnly]);
 
@@ -222,7 +220,9 @@ function BenchmarkWizard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
               <div>
-                <label className="block text-ink-faint mb-1">EXPERIMENT NAME</label>
+                <label className="block text-ink-faint mb-1">
+                  EXPERIMENT NAME
+                </label>
                 <input
                   type="text"
                   required
@@ -266,9 +266,7 @@ function BenchmarkWizard() {
                     type="button"
                     onClick={() => {
                       setSelectedDatasetId(ds.id);
-                      setSelectedDatasetVersionId(
-                        ds.latest_version?.id || '',
-                      );
+                      setSelectedDatasetVersionId(ds.latest_version?.id || '');
                     }}
                     className={`text-left p-3 border-2 transition-all ${
                       isSelected
@@ -280,7 +278,9 @@ function BenchmarkWizard() {
                       <span className="uppercase text-rust font-medium">
                         {ds.category.replace('_', ' ')}
                       </span>
-                      <span>{ds.latest_version?.test_case_count || 5} cases</span>
+                      <span>
+                        {ds.latest_version?.test_case_count || 5} cases
+                      </span>
                     </div>
                     <p className="font-semibold text-xs text-ink">{ds.name}</p>
                     <p className="text-[11px] text-ink-soft line-clamp-2 mt-1">
@@ -310,7 +310,11 @@ function BenchmarkWizard() {
                     onChange={(e) => setFreeOnly(e.target.checked)}
                     className="accent-pine h-3.5 w-3.5"
                   />
-                  <span className={freeOnly ? 'font-bold text-pine' : 'text-ink-soft'}>
+                  <span
+                    className={
+                      freeOnly ? 'font-bold text-pine' : 'text-ink-soft'
+                    }
+                  >
                     Free models only
                   </span>
                 </label>
@@ -465,7 +469,9 @@ function BenchmarkWizard() {
                   onChange={(e) => setMaxTokens(parseInt(e.target.value, 10))}
                   className="w-full accent-rust"
                 />
-                <span className="text-[10px] text-ink-faint">Completion ceiling</span>
+                <span className="text-[10px] text-ink-faint">
+                  Completion ceiling
+                </span>
               </div>
             </div>
           </div>
@@ -487,11 +493,15 @@ function BenchmarkWizard() {
 
             <button
               type="submit"
-              disabled={submitting || selectedModels.length < 2 || !selectedDatasetId}
+              disabled={
+                submitting || selectedModels.length < 2 || !selectedDatasetId
+              }
               className="inline-flex items-center gap-2 bg-rust hover:bg-rust-deep disabled:bg-hairline-strong text-paper text-sm font-semibold px-6 py-3 transition-colors shadow-tactile-sm"
             >
               <IconPlay className="h-4 w-4" />
-              <span>{submitting ? 'Launching Experiment…' : 'Start Experiment'}</span>
+              <span>
+                {submitting ? 'Launching Experiment…' : 'Start Experiment'}
+              </span>
             </button>
           </div>
         </form>

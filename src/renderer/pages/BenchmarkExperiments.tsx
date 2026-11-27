@@ -47,11 +47,22 @@ export default function BenchmarkExperiments() {
   const filteredExperiments = useMemo(() => {
     return experiments.filter((exp) => {
       if (statusFilter === 'running') {
-        if (!['queued', 'validating', 'running', 'evaluating', 'aggregating'].includes(exp.status)) {
+        if (
+          ![
+            'queued',
+            'validating',
+            'running',
+            'evaluating',
+            'aggregating',
+          ].includes(exp.status)
+        ) {
           return false;
         }
       } else if (statusFilter === 'completed') {
-        if (exp.status !== 'completed' && exp.status !== 'partially_completed') {
+        if (
+          exp.status !== 'completed' &&
+          exp.status !== 'partially_completed'
+        ) {
           return false;
         }
       } else if (statusFilter === 'failed') {
@@ -161,7 +172,8 @@ export default function BenchmarkExperiments() {
               Benchmark Experiments
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-ink-soft">
-              All executed and queued evaluation runs, duration, and test status.
+              All executed and queued evaluation runs, duration, and test
+              status.
             </p>
           </div>
 
@@ -223,9 +235,13 @@ export default function BenchmarkExperiments() {
         ) : filteredExperiments.length === 0 ? (
           <div className="border-2 border-dashed border-hairline-strong p-12 text-center bg-paper-sunken">
             <IconFlask className="h-10 w-10 mx-auto text-ink-faint mb-3" />
-            <h3 className="font-display text-base font-bold text-ink">No Experiments Found</h3>
+            <h3 className="font-display text-base font-bold text-ink">
+              No Experiments Found
+            </h3>
             <p className="mt-1 text-xs text-ink-soft font-mono">
-              {searchQuery ? 'Try clearing your search query.' : 'Launch your first multi-model benchmark.'}
+              {searchQuery
+                ? 'Try clearing your search query.'
+                : 'Launch your first multi-model benchmark.'}
             </p>
             <Link
               to="/benchmarks/new"
@@ -240,9 +256,15 @@ export default function BenchmarkExperiments() {
             <table className="w-full text-left font-mono text-xs border-collapse">
               <thead className="bg-paper-sunken border-b-2 border-ink uppercase text-[10px] text-ink-soft">
                 <tr>
-                  <th className="p-3 border-r border-hairline">Experiment Name</th>
-                  <th className="p-3 border-r border-hairline">Dataset Suite</th>
-                  <th className="p-3 border-r border-hairline">Models Evaluated</th>
+                  <th className="p-3 border-r border-hairline">
+                    Experiment Name
+                  </th>
+                  <th className="p-3 border-r border-hairline">
+                    Dataset Suite
+                  </th>
+                  <th className="p-3 border-r border-hairline">
+                    Models Evaluated
+                  </th>
                   <th className="p-3 border-r border-hairline">Status</th>
                   <th className="p-3 border-r border-hairline">Progress</th>
                   <th className="p-3 border-r border-hairline">Created</th>
@@ -253,11 +275,16 @@ export default function BenchmarkExperiments() {
                 {filteredExperiments.map((exp) => {
                   const pct =
                     exp.total_cases > 0
-                      ? Math.round((exp.completed_cases / exp.total_cases) * 100)
+                      ? Math.round(
+                          (exp.completed_cases / exp.total_cases) * 100,
+                        )
                       : 0;
 
                   return (
-                    <tr key={exp.id} className="hover:bg-paper-sunken transition-colors">
+                    <tr
+                      key={exp.id}
+                      className="hover:bg-paper-sunken transition-colors"
+                    >
                       <td className="p-3 font-semibold text-ink border-r border-hairline">
                         <Link
                           to={`/benchmarks/experiments/${exp.id}`}
@@ -267,7 +294,8 @@ export default function BenchmarkExperiments() {
                         </Link>
                       </td>
                       <td className="p-3 text-ink-soft border-r border-hairline">
-                        {exp.dataset_name || 'Standard QA'} (v{exp.dataset_version_num || 1})
+                        {exp.dataset_name || 'Standard QA'} (v
+                        {exp.dataset_version_num || 1})
                       </td>
                       <td className="p-3 text-ink-soft border-r border-hairline">
                         <div className="flex flex-wrap gap-1 max-w-xs">
@@ -282,7 +310,9 @@ export default function BenchmarkExperiments() {
                           ))}
                         </div>
                       </td>
-                      <td className="p-3 border-r border-hairline">{renderStatusBadge(exp.status)}</td>
+                      <td className="p-3 border-r border-hairline">
+                        {renderStatusBadge(exp.status)}
+                      </td>
                       <td className="p-3 border-r border-hairline">
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] w-12 text-ink-soft">
@@ -294,12 +324,17 @@ export default function BenchmarkExperiments() {
                               style={{ width: `${pct}%` }}
                             />
                           </div>
-                          <span className="text-[10px] text-ink-faint">{pct}%</span>
+                          <span className="text-[10px] text-ink-faint">
+                            {pct}%
+                          </span>
                         </div>
                       </td>
                       <td className="p-3 text-ink-soft border-r border-hairline text-[11px]">
                         {new Date(exp.created_at).toLocaleDateString()}{' '}
-                        {new Date(exp.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(exp.created_at).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </td>
                       <td className="p-3 text-right">
                         <Link

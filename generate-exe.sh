@@ -117,6 +117,12 @@ build_native() {
   command -v node >/dev/null 2>&1 || die "node is not installed"
   command -v npm  >/dev/null 2>&1 || die "npm is not installed"
 
+  # Clean up empty code-signing variables so electron-builder safely skips signing
+  [ -z "${CSC_LINK:-}" ] && unset CSC_LINK
+  [ -z "${CSC_KEY_PASSWORD:-}" ] && unset CSC_KEY_PASSWORD
+  [ -z "${WIN_CSC_LINK:-}" ] && unset WIN_CSC_LINK
+  [ -z "${WIN_CSC_KEY_PASSWORD:-}" ] && unset WIN_CSC_KEY_PASSWORD
+
   local os
   os="$(uname -s 2>/dev/null || echo unknown)"
   case "$os" in

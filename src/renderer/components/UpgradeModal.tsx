@@ -89,15 +89,15 @@ function UpgradeModal({ isOpen, onClose, onSuccess }: UpgradeModalProps) {
           <li className="flex items-start gap-2 text-ink">
             <IconInfinity className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
             <span>
-              <strong>Free OpenRouter models</strong> (:free) remain 100% free &amp;
-              unlimited anytime on the Free Plan.
+              <strong>Free OpenRouter models</strong> (:free) remain 100% free
+              &amp; unlimited anytime on the Free Plan.
             </span>
           </li>
           <li className="flex items-start gap-2 text-ink">
             <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
             <span>
-              <strong>BYOK Plan:</strong> Unlimited requests for all 400+ paid models at
-              exact OpenRouter token rates with zero markup.
+              <strong>BYOK Plan:</strong> Unlimited requests for all 400+ paid
+              models at exact OpenRouter token rates with zero markup.
             </span>
           </li>
         </ul>

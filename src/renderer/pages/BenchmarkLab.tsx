@@ -162,8 +162,8 @@ function BenchmarkLab() {
             <p className="mt-3 text-sm text-ink-soft leading-relaxed">
               Run repeatable, controlled evaluation experiments across hundreds
               of AI models using standardized test cases. Measure response
-              accuracy, latency distributions (P50/P95), throughput (tokens/sec),
-              and actual inference cost.
+              accuracy, latency distributions (P50/P95), throughput
+              (tokens/sec), and actual inference cost.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -238,7 +238,8 @@ function BenchmarkLab() {
                 Standard Benchmark Suites
               </h2>
               <p className="text-xs text-ink-soft">
-                Curated suites with deterministic ground truths and evaluation criteria
+                Curated suites with deterministic ground truths and evaluation
+                criteria
               </p>
             </div>
             <Link
@@ -382,7 +383,8 @@ function BenchmarkLab() {
                               style={{
                                 width: `${
                                   exp.total_cases > 0
-                                    ? ((exp.completed_cases + exp.failed_cases) /
+                                    ? ((exp.completed_cases +
+                                        exp.failed_cases) /
                                         exp.total_cases) *
                                       100
                                     : 0
@@ -427,7 +429,12 @@ function BenchmarkLab() {
                 Evaluating Document Retrieval, RAG & Domain Grounding?
               </h3>
               <p className="text-xs sm:text-sm text-ink-soft max-w-2xl leading-relaxed">
-                ChattyDesk evaluates foundation model speed, reasoning, and token economics. For end-to-end document retrieval pipelines (Dense, BM25 Sparse, Hybrid + Cross-Encoder reranking) and RAG Triad faithfulness scoring on your actual PDF and markdown documents, switch to our sister workbench <strong>RagReader</strong>.
+                ChattyDesk evaluates foundation model speed, reasoning, and
+                token economics. For end-to-end document retrieval pipelines
+                (Dense, BM25 Sparse, Hybrid + Cross-Encoder reranking) and RAG
+                Triad faithfulness scoring on your actual PDF and markdown
+                documents, switch to our sister workbench{' '}
+                <strong>RagReader</strong>.
               </p>
             </div>
             <a

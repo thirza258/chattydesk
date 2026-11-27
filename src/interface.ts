@@ -552,4 +552,3 @@ export interface ModelMetadataSnapshotItem {
   observed_changes?: Record<string, any>;
   recorded_at: string;
 }
-

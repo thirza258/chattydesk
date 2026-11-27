@@ -39,7 +39,8 @@ export default function BenchmarkDetail() {
   });
 
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
-  const [experiment, setExperiment] = useState<BenchmarkExperimentDetail | null>(null);
+  const [experiment, setExperiment] =
+    useState<BenchmarkExperimentDetail | null>(null);
   const [executions, setExecutions] = useState<BenchmarkExecutionItem[]>([]);
   const [progress, setProgress] = useState<BenchmarkProgress | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,11 +58,16 @@ export default function BenchmarkDetail() {
 
   // Human feedback state: execution_id -> { rating, notes, preferred, submitted }
   const [feedbackState, setFeedbackState] = useState<
-    Record<string, { rating: number; notes: string; preferred: boolean; submitted?: boolean }>
+    Record<
+      string,
+      { rating: number; notes: string; preferred: boolean; submitted?: boolean }
+    >
   >({});
 
   const isTerminalStatus = (status?: string) =>
-    ['completed', 'partially_completed', 'failed', 'cancelled'].includes(status || '');
+    ['completed', 'partially_completed', 'failed', 'cancelled'].includes(
+      status || '',
+    );
 
   const loadData = async (isPoll = false) => {
     if (!id) return;
@@ -69,7 +75,9 @@ export default function BenchmarkDetail() {
       if (!isPoll) setRefreshing(true);
       const [expDetail, resData] = await Promise.all([
         services.getBenchmark(id),
-        services.getBenchmarkResults(id).catch(() => ({ experiment: null as any, executions: [] })),
+        services
+          .getBenchmarkResults(id)
+          .catch(() => ({ experiment: null as any, executions: [] })),
       ]);
       setExperiment(expDetail);
       if (resData && resData.executions) {
@@ -109,7 +117,12 @@ export default function BenchmarkDetail() {
 
   const handleCancel = async () => {
     if (!id || cancelling) return;
-    if (!window.confirm('Are you sure you want to cancel this benchmark experiment?')) return;
+    if (
+      !window.confirm(
+        'Are you sure you want to cancel this benchmark experiment?',
+      )
+    )
+      return;
     try {
       setCancelling(true);
       await services.cancelBenchmark(id);
@@ -131,7 +144,11 @@ export default function BenchmarkDetail() {
   };
 
   const handleFeedbackSubmit = async (executionId: string) => {
-    const fb = feedbackState[executionId] || { rating: 5, notes: '', preferred: false };
+    const fb = feedbackState[executionId] || {
+      rating: 5,
+      notes: '',
+      preferred: false,
+    };
     try {
       await services.submitHumanFeedback({
         execution_id: executionId,
@@ -205,16 +222,24 @@ export default function BenchmarkDetail() {
 
     for (const s of experiment.summaries) {
       const q = s.metrics.overall_quality_score || 0;
-      if (q > bestQuality.val) bestQuality = { model: s.model_identifier, val: q };
+      if (q > bestQuality.val)
+        bestQuality = { model: s.model_identifier, val: q };
 
-      const lat = s.metrics.latency_ms?.p50 ?? s.metrics.latency_ms?.mean ?? Infinity;
-      if (lat > 0 && lat < lowestLatency.val) lowestLatency = { model: s.model_identifier, val: lat };
+      const lat =
+        s.metrics.latency_ms?.p50 ?? s.metrics.latency_ms?.mean ?? Infinity;
+      if (lat > 0 && lat < lowestLatency.val)
+        lowestLatency = { model: s.model_identifier, val: lat };
 
-      const tps = s.metrics.tokens_per_second?.p50 ?? s.metrics.tokens_per_second?.mean ?? 0;
-      if (tps > highestThroughput.val) highestThroughput = { model: s.model_identifier, val: tps };
+      const tps =
+        s.metrics.tokens_per_second?.p50 ??
+        s.metrics.tokens_per_second?.mean ??
+        0;
+      if (tps > highestThroughput.val)
+        highestThroughput = { model: s.model_identifier, val: tps };
 
       const cost = s.metrics.avg_cost_per_request_usd ?? Infinity;
-      if (cost >= 0 && cost < lowestCost.val) lowestCost = { model: s.model_identifier, val: cost };
+      if (cost >= 0 && cost < lowestCost.val)
+        lowestCost = { model: s.model_identifier, val: cost };
     }
 
     return { bestQuality, lowestLatency, highestThroughput, lowestCost };
@@ -223,8 +248,13 @@ export default function BenchmarkDetail() {
   // Filtered test cases for drill-down
   const filteredCases = useMemo(() => {
     return executions.filter((item) => {
-      if (caseModelFilter !== 'all' && item.model_identifier !== caseModelFilter) return false;
-      if (caseStatusFilter !== 'all' && item.status !== caseStatusFilter) return false;
+      if (
+        caseModelFilter !== 'all' &&
+        item.model_identifier !== caseModelFilter
+      )
+        return false;
+      if (caseStatusFilter !== 'all' && item.status !== caseStatusFilter)
+        return false;
       if (caseSearch.trim()) {
         const query = caseSearch.toLowerCase();
         const promptMatch = item.prompt?.toLowerCase().includes(query);
@@ -251,8 +281,12 @@ export default function BenchmarkDetail() {
     return (
       <div className="min-h-dvh flex flex-col bg-paper text-ink p-6">
         <div className="max-w-xl mx-auto mt-12 border-2 border-ember bg-ember-soft p-6">
-          <h2 className="font-display text-lg font-bold text-ember">Experiment Not Found</h2>
-          <p className="mt-2 text-xs font-mono text-ember">{error || 'Could not load benchmark experiment.'}</p>
+          <h2 className="font-display text-lg font-bold text-ember">
+            Experiment Not Found
+          </h2>
+          <p className="mt-2 text-xs font-mono text-ember">
+            {error || 'Could not load benchmark experiment.'}
+          </p>
           <Link
             to="/benchmarks"
             className="mt-4 inline-flex items-center gap-1 text-xs font-mono font-semibold text-ink underline"
@@ -265,7 +299,8 @@ export default function BenchmarkDetail() {
   }
 
   const activeStatus = progress?.status || experiment.status;
-  const completedCases = progress?.completed_cases ?? experiment.completed_cases;
+  const completedCases =
+    progress?.completed_cases ?? experiment.completed_cases;
   const totalCases = progress?.total_cases ?? experiment.total_cases;
   const progressPct =
     progress?.progress_percentage ??
@@ -336,18 +371,31 @@ export default function BenchmarkDetail() {
               {renderStatusBadge(activeStatus)}
               <span className="text-ink-faint">·</span>
               <span className="text-ink-soft">
-                Suite: <strong>{experiment.dataset_name || experiment.dataset?.name || 'Benchmark Suite'}</strong> (v{experiment.dataset_version_num || experiment.dataset?.version || 1})
+                Suite:{' '}
+                <strong>
+                  {experiment.dataset_name ||
+                    experiment.dataset?.name ||
+                    'Benchmark Suite'}
+                </strong>{' '}
+                (v
+                {experiment.dataset_version_num ||
+                  experiment.dataset?.version ||
+                  1}
+                )
               </span>
               <span className="text-ink-faint">·</span>
               <span className="text-ink-soft">
-                {experiment.models.length} {experiment.models.length === 1 ? 'model' : 'models'} evaluated
+                {experiment.models.length}{' '}
+                {experiment.models.length === 1 ? 'model' : 'models'} evaluated
               </span>
             </div>
             <h1 className="font-display text-2xl sm:text-3xl font-medium tracking-tight">
               {experiment.name}
             </h1>
             {experiment.description && (
-              <p className="mt-1 text-xs sm:text-sm text-ink-soft max-w-2xl">{experiment.description}</p>
+              <p className="mt-1 text-xs sm:text-sm text-ink-soft max-w-2xl">
+                {experiment.description}
+              </p>
             )}
           </div>
 
@@ -365,9 +413,13 @@ export default function BenchmarkDetail() {
                 />
               </div>
               <div className="mt-1 flex justify-between text-[10px] text-ink-soft">
-                <span>{completedCases}/{totalCases} cases</span>
+                <span>
+                  {completedCases}/{totalCases} cases
+                </span>
                 {experiment.failed_cases > 0 && (
-                  <span className="text-ember font-semibold">{experiment.failed_cases} errors</span>
+                  <span className="text-ember font-semibold">
+                    {experiment.failed_cases} errors
+                  </span>
                 )}
               </div>
             </div>
@@ -375,18 +427,33 @@ export default function BenchmarkDetail() {
             <div className="border border-hairline bg-paper p-3 text-[11px] space-y-1">
               <div>
                 <span className="text-ink-faint">Created: </span>
-                <span className="text-ink">{new Date(experiment.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <span className="text-ink">
+                  {new Date(experiment.created_at).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
               </div>
               {experiment.started_at && (
                 <div>
                   <span className="text-ink-faint">Started: </span>
-                  <span className="text-ink">{new Date(experiment.started_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="text-ink">
+                    {new Date(experiment.started_at).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </span>
                 </div>
               )}
               {experiment.completed_at && (
                 <div>
                   <span className="text-ink-faint">Finished: </span>
-                  <span className="text-ink">{new Date(experiment.completed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="text-ink">
+                    {new Date(experiment.completed_at).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </span>
                 </div>
               )}
             </div>
@@ -493,7 +560,9 @@ export default function BenchmarkDetail() {
 
             {/* Model Summary Cards */}
             <div>
-              <h2 className="font-display text-lg font-bold mb-3">Model Benchmark Summaries</h2>
+              <h2 className="font-display text-lg font-bold mb-3">
+                Model Benchmark Summaries
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(experiment.summaries || []).map((summary) => {
                   const m = summary.metrics;
@@ -523,7 +592,9 @@ export default function BenchmarkDetail() {
                           <div className="w-full h-2 bg-hairline rounded-full overflow-hidden">
                             <div
                               className="h-full bg-pine"
-                              style={{ width: `${Math.min(m.overall_quality_score || 0, 100)}%` }}
+                              style={{
+                                width: `${Math.min(m.overall_quality_score || 0, 100)}%`,
+                              }}
                             />
                           </div>
                         </div>
@@ -531,47 +602,67 @@ export default function BenchmarkDetail() {
                         {/* Metrics grid */}
                         <div className="grid grid-cols-2 gap-2 text-xs font-mono border-t border-hairline pt-3">
                           <div>
-                            <span className="text-[10px] text-ink-faint block">Latency P50</span>
-                            <span className="font-semibold text-ink">
-                              {m.latency_ms?.p50 ? `${Math.round(m.latency_ms.p50)} ms` : 'N/A'}
+                            <span className="text-[10px] text-ink-faint block">
+                              Latency P50
                             </span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-ink-faint block">Latency P95</span>
                             <span className="font-semibold text-ink">
-                              {m.latency_ms?.p95 ? `${Math.round(m.latency_ms.p95)} ms` : 'N/A'}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-ink-faint block">Throughput</span>
-                            <span className="font-semibold text-rust">
-                              {m.tokens_per_second?.p50
-                                ? `${m.tokens_per_second.p50.toFixed(1)} t/s`
-                                : m.tokens_per_second?.mean
-                                ? `${m.tokens_per_second.mean.toFixed(1)} t/s`
+                              {m.latency_ms?.p50
+                                ? `${Math.round(m.latency_ms.p50)} ms`
                                 : 'N/A'}
                             </span>
                           </div>
                           <div>
-                            <span className="text-[10px] text-ink-faint block">Success Rate</span>
+                            <span className="text-[10px] text-ink-faint block">
+                              Latency P95
+                            </span>
+                            <span className="font-semibold text-ink">
+                              {m.latency_ms?.p95
+                                ? `${Math.round(m.latency_ms.p95)} ms`
+                                : 'N/A'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-ink-faint block">
+                              Throughput
+                            </span>
+                            <span className="font-semibold text-rust">
+                              {m.tokens_per_second?.p50
+                                ? `${m.tokens_per_second.p50.toFixed(1)} t/s`
+                                : m.tokens_per_second?.mean
+                                  ? `${m.tokens_per_second.mean.toFixed(1)} t/s`
+                                  : 'N/A'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-ink-faint block">
+                              Success Rate
+                            </span>
                             <span
                               className={`font-semibold ${
-                                m.success_rate >= 95 ? 'text-pine' : 'text-ember'
+                                m.success_rate >= 95
+                                  ? 'text-pine'
+                                  : 'text-ember'
                               }`}
                             >
                               {m.success_rate?.toFixed(1)}%
                             </span>
                           </div>
                           <div>
-                            <span className="text-[10px] text-ink-faint block">Total Tokens</span>
+                            <span className="text-[10px] text-ink-faint block">
+                              Total Tokens
+                            </span>
                             <span className="font-semibold text-ink">
                               {(m.total_tokens || 0).toLocaleString()}
                             </span>
                           </div>
                           <div>
-                            <span className="text-[10px] text-ink-faint block">Avg Cost/Req</span>
+                            <span className="text-[10px] text-ink-faint block">
+                              Avg Cost/Req
+                            </span>
                             <span className="font-semibold text-ink">
-                              ${m.avg_cost_per_request_usd?.toFixed(4) || '0.0000'}
+                              $
+                              {m.avg_cost_per_request_usd?.toFixed(4) ||
+                                '0.0000'}
                             </span>
                           </div>
                         </div>
@@ -604,9 +695,12 @@ export default function BenchmarkDetail() {
         {activeTab === 'comparison' && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-xl font-bold">Side-by-Side Model Comparison</h2>
+              <h2 className="font-display text-xl font-bold">
+                Side-by-Side Model Comparison
+              </h2>
               <p className="text-xs text-ink-soft">
-                Multi-metric comparison matrix with performance, throughput, reliability, and cost tradeoffs.
+                Multi-metric comparison matrix with performance, throughput,
+                reliability, and cost tradeoffs.
               </p>
             </div>
 
@@ -615,12 +709,22 @@ export default function BenchmarkDetail() {
                 <thead className="bg-paper-sunken border-b-2 border-ink uppercase text-[10px] text-ink-soft">
                   <tr>
                     <th className="p-3 border-r border-hairline">Model</th>
-                    <th className="p-3 border-r border-hairline">Quality Score</th>
-                    <th className="p-3 border-r border-hairline">Latency P50</th>
-                    <th className="p-3 border-r border-hairline">Latency P95</th>
+                    <th className="p-3 border-r border-hairline">
+                      Quality Score
+                    </th>
+                    <th className="p-3 border-r border-hairline">
+                      Latency P50
+                    </th>
+                    <th className="p-3 border-r border-hairline">
+                      Latency P95
+                    </th>
                     <th className="p-3 border-r border-hairline">Throughput</th>
-                    <th className="p-3 border-r border-hairline">Success Rate</th>
-                    <th className="p-3 border-r border-hairline">Total Tokens</th>
+                    <th className="p-3 border-r border-hairline">
+                      Success Rate
+                    </th>
+                    <th className="p-3 border-r border-hairline">
+                      Total Tokens
+                    </th>
                     <th className="p-3 border-r border-hairline">Total Cost</th>
                     <th className="p-3">Cost / 1M</th>
                   </tr>
@@ -628,13 +732,21 @@ export default function BenchmarkDetail() {
                 <tbody className="divide-y divide-hairline">
                   {(experiment.summaries || []).map((s) => {
                     const m = s.metrics;
-                    const isTopQuality = bestMetrics?.bestQuality.model === s.model_identifier;
-                    const isLowestLat = bestMetrics?.lowestLatency.model === s.model_identifier;
-                    const isHighestTPS = bestMetrics?.highestThroughput.model === s.model_identifier;
-                    const isLowestCost = bestMetrics?.lowestCost.model === s.model_identifier;
+                    const isTopQuality =
+                      bestMetrics?.bestQuality.model === s.model_identifier;
+                    const isLowestLat =
+                      bestMetrics?.lowestLatency.model === s.model_identifier;
+                    const isHighestTPS =
+                      bestMetrics?.highestThroughput.model ===
+                      s.model_identifier;
+                    const isLowestCost =
+                      bestMetrics?.lowestCost.model === s.model_identifier;
 
                     return (
-                      <tr key={s.model_identifier} className="hover:bg-paper-sunken">
+                      <tr
+                        key={s.model_identifier}
+                        className="hover:bg-paper-sunken"
+                      >
                         <td className="p-3 font-bold text-ink border-r border-hairline">
                           <div className="flex items-center gap-2">
                             <span>{s.model_identifier}</span>
@@ -645,21 +757,31 @@ export default function BenchmarkDetail() {
                             )}
                           </div>
                         </td>
-                        <td className={`p-3 border-r border-hairline font-bold ${isTopQuality ? 'text-pine' : 'text-ink'}`}>
+                        <td
+                          className={`p-3 border-r border-hairline font-bold ${isTopQuality ? 'text-pine' : 'text-ink'}`}
+                        >
                           {m.overall_quality_score?.toFixed(1) || '0.0'}%
                         </td>
-                        <td className={`p-3 border-r border-hairline ${isLowestLat ? 'text-rust font-bold' : 'text-ink'}`}>
-                          {m.latency_ms?.p50 ? `${Math.round(m.latency_ms.p50)} ms` : 'N/A'}
+                        <td
+                          className={`p-3 border-r border-hairline ${isLowestLat ? 'text-rust font-bold' : 'text-ink'}`}
+                        >
+                          {m.latency_ms?.p50
+                            ? `${Math.round(m.latency_ms.p50)} ms`
+                            : 'N/A'}
                         </td>
                         <td className="p-3 border-r border-hairline text-ink">
-                          {m.latency_ms?.p95 ? `${Math.round(m.latency_ms.p95)} ms` : 'N/A'}
+                          {m.latency_ms?.p95
+                            ? `${Math.round(m.latency_ms.p95)} ms`
+                            : 'N/A'}
                         </td>
-                        <td className={`p-3 border-r border-hairline font-bold ${isHighestTPS ? 'text-rust' : 'text-ink'}`}>
+                        <td
+                          className={`p-3 border-r border-hairline font-bold ${isHighestTPS ? 'text-rust' : 'text-ink'}`}
+                        >
                           {m.tokens_per_second?.p50
                             ? `${m.tokens_per_second.p50.toFixed(1)} t/s`
                             : m.tokens_per_second?.mean
-                            ? `${m.tokens_per_second.mean.toFixed(1)} t/s`
-                            : 'N/A'}
+                              ? `${m.tokens_per_second.mean.toFixed(1)} t/s`
+                              : 'N/A'}
                         </td>
                         <td className="p-3 border-r border-hairline">
                           <span
@@ -673,7 +795,9 @@ export default function BenchmarkDetail() {
                         <td className="p-3 border-r border-hairline text-ink">
                           {(m.total_tokens || 0).toLocaleString()}
                         </td>
-                        <td className={`p-3 border-r border-hairline ${isLowestCost ? 'text-pine font-bold' : 'text-ink'}`}>
+                        <td
+                          className={`p-3 border-r border-hairline ${isLowestCost ? 'text-pine font-bold' : 'text-ink'}`}
+                        >
                           ${m.total_cost_usd?.toFixed(4) || '0.0000'}
                         </td>
                         <td className="p-3 text-ink">
@@ -692,16 +816,21 @@ export default function BenchmarkDetail() {
         {activeTab === 'performance' && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-xl font-bold">Latency Distributions & Throughput</h2>
+              <h2 className="font-display text-xl font-bold">
+                Latency Distributions & Throughput
+              </h2>
               <p className="text-xs text-ink-soft">
-                Detailed timing percentiles (P50, P90, P95, P99) and generation throughput.
+                Detailed timing percentiles (P50, P90, P95, P99) and generation
+                throughput.
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Latency Percentiles Card */}
               <div className="border-2 border-ink bg-paper-raised p-5">
-                <h3 className="font-display text-base font-bold mb-3">Latency Percentiles (ms)</h3>
+                <h3 className="font-display text-base font-bold mb-3">
+                  Latency Percentiles (ms)
+                </h3>
                 <div className="space-y-4">
                   {(experiment.summaries || []).map((s) => {
                     const lat = s.metrics.latency_ms || ({} as any);
@@ -712,10 +841,15 @@ export default function BenchmarkDetail() {
                     const maxVal = Math.max(p99, p95, p50, 1000);
 
                     return (
-                      <div key={s.model_identifier} className="border-t border-hairline pt-3 font-mono text-xs">
+                      <div
+                        key={s.model_identifier}
+                        className="border-t border-hairline pt-3 font-mono text-xs"
+                      >
                         <div className="flex justify-between items-center mb-1.5 font-bold">
                           <span>{s.model_identifier}</span>
-                          <span className="text-rust">P50: {Math.round(p50)} ms</span>
+                          <span className="text-rust">
+                            P50: {Math.round(p50)} ms
+                          </span>
                         </div>
                         {/* Bar comparison */}
                         <div className="space-y-1.5 text-[11px]">
@@ -724,30 +858,42 @@ export default function BenchmarkDetail() {
                             <div className="flex-1 h-3 bg-hairline rounded-sm overflow-hidden">
                               <div
                                 className="h-full bg-pine"
-                                style={{ width: `${Math.min((p50 / maxVal) * 100, 100)}%` }}
+                                style={{
+                                  width: `${Math.min((p50 / maxVal) * 100, 100)}%`,
+                                }}
                               />
                             </div>
-                            <span className="w-16 text-right font-semibold">{Math.round(p50)} ms</span>
+                            <span className="w-16 text-right font-semibold">
+                              {Math.round(p50)} ms
+                            </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="w-8 text-ink-faint">P90</span>
                             <div className="flex-1 h-3 bg-hairline rounded-sm overflow-hidden">
                               <div
                                 className="h-full bg-amber-500"
-                                style={{ width: `${Math.min((p90 / maxVal) * 100, 100)}%` }}
+                                style={{
+                                  width: `${Math.min((p90 / maxVal) * 100, 100)}%`,
+                                }}
                               />
                             </div>
-                            <span className="w-16 text-right font-semibold">{Math.round(p90)} ms</span>
+                            <span className="w-16 text-right font-semibold">
+                              {Math.round(p90)} ms
+                            </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="w-8 text-ink-faint">P95</span>
                             <div className="flex-1 h-3 bg-hairline rounded-sm overflow-hidden">
                               <div
                                 className="h-full bg-rust"
-                                style={{ width: `${Math.min((p95 / maxVal) * 100, 100)}%` }}
+                                style={{
+                                  width: `${Math.min((p95 / maxVal) * 100, 100)}%`,
+                                }}
                               />
                             </div>
-                            <span className="w-16 text-right font-semibold">{Math.round(p95)} ms</span>
+                            <span className="w-16 text-right font-semibold">
+                              {Math.round(p95)} ms
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -758,25 +904,43 @@ export default function BenchmarkDetail() {
 
               {/* Throughput Bar Chart */}
               <div className="border-2 border-ink bg-paper-raised p-5">
-                <h3 className="font-display text-base font-bold mb-3">Generation Speed (Tokens / Second)</h3>
+                <h3 className="font-display text-base font-bold mb-3">
+                  Generation Speed (Tokens / Second)
+                </h3>
                 <div className="space-y-4">
                   {(experiment.summaries || []).map((s) => {
-                    const tps = s.metrics.tokens_per_second?.p50 || s.metrics.tokens_per_second?.mean || 0;
+                    const tps =
+                      s.metrics.tokens_per_second?.p50 ||
+                      s.metrics.tokens_per_second?.mean ||
+                      0;
                     return (
-                      <div key={s.model_identifier} className="border-t border-hairline pt-3 font-mono text-xs">
+                      <div
+                        key={s.model_identifier}
+                        className="border-t border-hairline pt-3 font-mono text-xs"
+                      >
                         <div className="flex justify-between items-center mb-1 font-bold">
                           <span>{s.model_identifier}</span>
-                          <span className="text-rust">{tps.toFixed(1)} tok/s</span>
+                          <span className="text-rust">
+                            {tps.toFixed(1)} tok/s
+                          </span>
                         </div>
                         <div className="w-full h-4 bg-hairline rounded-sm overflow-hidden">
                           <div
                             className="h-full bg-rust"
-                            style={{ width: `${Math.min((tps / 150) * 100, 100)}%` }}
+                            style={{
+                              width: `${Math.min((tps / 150) * 100, 100)}%`,
+                            }}
                           />
                         </div>
                         <div className="mt-1 flex justify-between text-[10px] text-ink-faint">
-                          <span>Min: {s.metrics.tokens_per_second?.min?.toFixed(1) || 0}</span>
-                          <span>Max: {s.metrics.tokens_per_second?.max?.toFixed(1) || 0}</span>
+                          <span>
+                            Min:{' '}
+                            {s.metrics.tokens_per_second?.min?.toFixed(1) || 0}
+                          </span>
+                          <span>
+                            Max:{' '}
+                            {s.metrics.tokens_per_second?.max?.toFixed(1) || 0}
+                          </span>
                         </div>
                       </div>
                     );
@@ -791,9 +955,12 @@ export default function BenchmarkDetail() {
         {activeTab === 'quality' && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-xl font-bold">Evaluation Metrics & Accuracy</h2>
+              <h2 className="font-display text-xl font-bold">
+                Evaluation Metrics & Accuracy
+              </h2>
               <p className="text-xs text-ink-soft">
-                Breakdown of deterministic matches, Token-F1, ROUGE scores, and LLM-as-a-judge rubric scoring.
+                Breakdown of deterministic matches, Token-F1, ROUGE scores, and
+                LLM-as-a-judge rubric scoring.
               </p>
             </div>
 
@@ -803,22 +970,31 @@ export default function BenchmarkDetail() {
                 const metricEntries = Object.entries(metricsObj);
 
                 return (
-                  <div key={s.model_identifier} className="border-2 border-ink bg-paper-raised p-5">
+                  <div
+                    key={s.model_identifier}
+                    className="border-2 border-ink bg-paper-raised p-5"
+                  >
                     <div className="flex items-center justify-between mb-3 border-b border-hairline pb-2">
                       <h3 className="font-mono text-sm font-bold text-ink">
                         {s.model_identifier}
                       </h3>
                       <span className="text-xs font-mono font-bold text-pine">
-                        Overall Score: {s.metrics.overall_quality_score?.toFixed(1)}%
+                        Overall Score:{' '}
+                        {s.metrics.overall_quality_score?.toFixed(1)}%
                       </span>
                     </div>
 
                     {metricEntries.length === 0 ? (
-                      <p className="text-xs font-mono text-ink-faint">No detailed metrics recorded.</p>
+                      <p className="text-xs font-mono text-ink-faint">
+                        No detailed metrics recorded.
+                      </p>
                     ) : (
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 font-mono text-xs">
                         {metricEntries.map(([mName, mData]) => (
-                          <div key={mName} className="border border-hairline bg-paper p-3">
+                          <div
+                            key={mName}
+                            className="border border-hairline bg-paper p-3"
+                          >
                             <span className="text-[10px] uppercase text-ink-faint font-semibold block">
                               {mName.replace('_', ' ')}
                             </span>
@@ -848,9 +1024,12 @@ export default function BenchmarkDetail() {
         {activeTab === 'cases' && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-xl font-bold">Individual Test Cases Drill-Down</h2>
+              <h2 className="font-display text-xl font-bold">
+                Individual Test Cases Drill-Down
+              </h2>
               <p className="text-xs text-ink-soft">
-                Inspect prompts, model answers, rubric evaluations, latency, and record human feedback.
+                Inspect prompts, model answers, rubric evaluations, latency, and
+                record human feedback.
               </p>
             </div>
 
@@ -910,7 +1089,11 @@ export default function BenchmarkDetail() {
               <div className="space-y-3">
                 {filteredCases.map((item) => {
                   const isExpanded = expandedCaseId === item.id;
-                  const fb = feedbackState[item.id] || { rating: 5, notes: '', preferred: false };
+                  const fb = feedbackState[item.id] || {
+                    rating: 5,
+                    notes: '',
+                    preferred: false,
+                  };
 
                   return (
                     <div
@@ -920,7 +1103,9 @@ export default function BenchmarkDetail() {
                       {/* Accordion Header */}
                       <button
                         type="button"
-                        onClick={() => setExpandedCaseId(isExpanded ? null : item.id)}
+                        onClick={() =>
+                          setExpandedCaseId(isExpanded ? null : item.id)
+                        }
                         className="w-full text-left p-4 flex items-center justify-between gap-4 hover:bg-paper-sunken transition-colors font-mono text-xs"
                       >
                         <div className="flex items-center gap-3 min-w-0">
@@ -933,15 +1118,23 @@ export default function BenchmarkDetail() {
                           >
                             {item.status}
                           </span>
-                          <span className="font-bold text-ink">{item.model_identifier}</span>
+                          <span className="font-bold text-ink">
+                            {item.model_identifier}
+                          </span>
                           <span className="text-ink-soft truncate max-w-md">
                             {item.prompt || 'Prompt'}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-4 shrink-0 text-ink-soft">
-                          <span>{item.duration_ms ? `${item.duration_ms} ms` : '—'}</span>
-                          <span>{item.tokens_per_second ? `${item.tokens_per_second.toFixed(1)} t/s` : '—'}</span>
+                          <span>
+                            {item.duration_ms ? `${item.duration_ms} ms` : '—'}
+                          </span>
+                          <span>
+                            {item.tokens_per_second
+                              ? `${item.tokens_per_second.toFixed(1)} t/s`
+                              : '—'}
+                          </span>
                           <span>{isExpanded ? '▲' : '▼'}</span>
                         </div>
                       </button>
@@ -964,7 +1157,8 @@ export default function BenchmarkDetail() {
                                 Expected Answer
                               </span>
                               <pre className="text-xs whitespace-pre-wrap font-mono text-ink-soft leading-relaxed">
-                                {item.expected_answer || 'No explicit reference answer specified.'}
+                                {item.expected_answer ||
+                                  'No explicit reference answer specified.'}
                               </pre>
                             </div>
                           </div>
@@ -977,7 +1171,10 @@ export default function BenchmarkDetail() {
                               </span>
                               <div className="text-[10px] text-ink-soft flex items-center gap-3">
                                 <span>Tokens: {item.total_tokens || 0}</span>
-                                <span>Cost: ${Number(item.estimated_cost || 0).toFixed(4)}</span>
+                                <span>
+                                  Cost: $
+                                  {Number(item.estimated_cost || 0).toFixed(4)}
+                                </span>
                               </div>
                             </div>
                             {item.error_message ? (
@@ -1040,7 +1237,9 @@ export default function BenchmarkDetail() {
                             </span>
                             <div className="flex flex-wrap items-center gap-4 mb-2">
                               <div className="flex items-center gap-1">
-                                <span className="text-xs text-ink-soft mr-1">Rating:</span>
+                                <span className="text-xs text-ink-soft mr-1">
+                                  Rating:
+                                </span>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                   <button
                                     key={star}
@@ -1069,7 +1268,10 @@ export default function BenchmarkDetail() {
                                   onChange={(e) =>
                                     setFeedbackState((prev) => ({
                                       ...prev,
-                                      [item.id]: { ...fb, preferred: e.target.checked },
+                                      [item.id]: {
+                                        ...fb,
+                                        preferred: e.target.checked,
+                                      },
                                     }))
                                   }
                                   className="accent-rust"
@@ -1114,31 +1316,53 @@ export default function BenchmarkDetail() {
         {activeTab === 'reproducibility' && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-xl font-bold">Reproducibility & Verification</h2>
+              <h2 className="font-display text-xl font-bold">
+                Reproducibility & Verification
+              </h2>
               <p className="text-xs text-ink-soft">
-                Full cryptographic dataset checksum and experiment hyperparameters required for independent replication.
+                Full cryptographic dataset checksum and experiment
+                hyperparameters required for independent replication.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Dataset Metadata Card */}
               <div className="border-2 border-ink bg-paper-raised p-5 font-mono text-xs space-y-3">
-                <h3 className="font-display text-base font-bold text-ink">Benchmark Dataset</h3>
+                <h3 className="font-display text-base font-bold text-ink">
+                  Benchmark Dataset
+                </h3>
                 <div className="space-y-2 border-t border-hairline pt-3">
                   <div>
-                    <span className="text-ink-faint block text-[10px] uppercase">Dataset Name</span>
-                    <span className="font-bold text-ink">{experiment.dataset?.name || experiment.dataset_name}</span>
+                    <span className="text-ink-faint block text-[10px] uppercase">
+                      Dataset Name
+                    </span>
+                    <span className="font-bold text-ink">
+                      {experiment.dataset?.name || experiment.dataset_name}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-ink-faint block text-[10px] uppercase">Category</span>
-                    <span className="text-ink">{experiment.dataset?.category || experiment.dataset_category}</span>
+                    <span className="text-ink-faint block text-[10px] uppercase">
+                      Category
+                    </span>
+                    <span className="text-ink">
+                      {experiment.dataset?.category ||
+                        experiment.dataset_category}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-ink-faint block text-[10px] uppercase">Version</span>
-                    <span className="text-ink">v{experiment.dataset?.version || experiment.dataset_version_num}</span>
+                    <span className="text-ink-faint block text-[10px] uppercase">
+                      Version
+                    </span>
+                    <span className="text-ink">
+                      v
+                      {experiment.dataset?.version ||
+                        experiment.dataset_version_num}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-ink-faint block text-[10px] uppercase">SHA-256 Checksum</span>
+                    <span className="text-ink-faint block text-[10px] uppercase">
+                      SHA-256 Checksum
+                    </span>
                     <div className="mt-1 flex items-center gap-2">
                       <code className="bg-paper p-1.5 border border-hairline text-[11px] text-rust break-all">
                         {experiment.dataset?.checksum || '729f8f2b…'}
@@ -1146,7 +1370,9 @@ export default function BenchmarkDetail() {
                       <button
                         type="button"
                         onClick={() => {
-                          navigator.clipboard.writeText(experiment.dataset?.checksum || '');
+                          navigator.clipboard.writeText(
+                            experiment.dataset?.checksum || '',
+                          );
                           setCopiedChecksum(true);
                           setTimeout(() => setCopiedChecksum(false), 2000);
                         }}
@@ -1161,34 +1387,60 @@ export default function BenchmarkDetail() {
 
               {/* Execution Hyperparameters */}
               <div className="border-2 border-ink bg-paper-raised p-5 font-mono text-xs space-y-3">
-                <h3 className="font-display text-base font-bold text-ink">Execution Parameters</h3>
+                <h3 className="font-display text-base font-bold text-ink">
+                  Execution Parameters
+                </h3>
                 <div className="space-y-2 border-t border-hairline pt-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <span className="text-ink-faint block text-[10px] uppercase">Repetitions</span>
-                      <span className="font-bold text-ink">{experiment.configuration_json?.repetitions || 1}</span>
+                      <span className="text-ink-faint block text-[10px] uppercase">
+                        Repetitions
+                      </span>
+                      <span className="font-bold text-ink">
+                        {experiment.configuration_json?.repetitions || 1}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px] uppercase">Concurrency</span>
-                      <span className="font-bold text-ink">{experiment.configuration_json?.concurrency || 2}</span>
+                      <span className="text-ink-faint block text-[10px] uppercase">
+                        Concurrency
+                      </span>
+                      <span className="font-bold text-ink">
+                        {experiment.configuration_json?.concurrency || 2}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px] uppercase">Temperature</span>
-                      <span className="font-bold text-ink">{experiment.configuration_json?.temperature ?? 0.0}</span>
+                      <span className="text-ink-faint block text-[10px] uppercase">
+                        Temperature
+                      </span>
+                      <span className="font-bold text-ink">
+                        {experiment.configuration_json?.temperature ?? 0.0}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px] uppercase">Max Tokens</span>
-                      <span className="font-bold text-ink">{experiment.configuration_json?.max_tokens || 1024}</span>
+                      <span className="text-ink-faint block text-[10px] uppercase">
+                        Max Tokens
+                      </span>
+                      <span className="font-bold text-ink">
+                        {experiment.configuration_json?.max_tokens || 1024}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-ink-faint block text-[10px] uppercase">Timeout</span>
-                      <span className="font-bold text-ink">{experiment.configuration_json?.timeout || 60}s</span>
+                      <span className="text-ink-faint block text-[10px] uppercase">
+                        Timeout
+                      </span>
+                      <span className="font-bold text-ink">
+                        {experiment.configuration_json?.timeout || 60}s
+                      </span>
                     </div>
                   </div>
                   {experiment.configuration_json?.system_prompt && (
                     <div>
-                      <span className="text-ink-faint block text-[10px] uppercase">System Prompt</span>
-                      <p className="mt-1 text-ink-soft italic">{experiment.configuration_json.system_prompt}</p>
+                      <span className="text-ink-faint block text-[10px] uppercase">
+                        System Prompt
+                      </span>
+                      <p className="mt-1 text-ink-soft italic">
+                        {experiment.configuration_json.system_prompt}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -1198,11 +1450,15 @@ export default function BenchmarkDetail() {
             {/* Exportable Experiment Configuration JSON */}
             <div className="border-2 border-ink bg-paper-raised p-5 font-mono text-xs">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-bold text-ink">Exportable Reproduction Specification</span>
+                <span className="font-bold text-ink">
+                  Exportable Reproduction Specification
+                </span>
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard.writeText(JSON.stringify(experiment, null, 2));
+                    navigator.clipboard.writeText(
+                      JSON.stringify(experiment, null, 2),
+                    );
                     setCopiedConfig(true);
                     setTimeout(() => setCopiedConfig(false), 2000);
                   }}

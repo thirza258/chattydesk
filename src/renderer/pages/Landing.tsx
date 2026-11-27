@@ -483,7 +483,10 @@ function Landing() {
                     </h3>
                   </div>
                   <p className="mt-1 text-xs sm:text-sm leading-relaxed text-ink-soft">
-                    Part of the AI Evaluation Suite. While ChattyDesk benchmarks foundational models, RagReader tests document chunking, dense/sparse retrieval pipelines, and the RAG Triad on your actual files.
+                    Part of the AI Evaluation Suite. While ChattyDesk benchmarks
+                    foundational models, RagReader tests document chunking,
+                    dense/sparse retrieval pipelines, and the RAG Triad on your
+                    actual files.
                   </p>
                 </div>
               </div>
@@ -506,9 +509,9 @@ function Landing() {
                 Free Plan &amp; BYOK Plan
               </h2>
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-ink-soft">
-                Start completely free with complimentary access, or bring your own
-                OpenRouter API key for unlimited inference with zero ChattyDesk markup.
-                No paid subscriptions or hidden fees.
+                Start completely free with complimentary access, or bring your
+                own OpenRouter API key for unlimited inference with zero
+                ChattyDesk markup. No paid subscriptions or hidden fees.
               </p>
             </header>
 
@@ -590,15 +593,16 @@ function Landing() {
                     </span>
                   </div>
                   <p className="mt-3 text-xs text-ink-soft leading-relaxed">
-                    Bring your own OpenRouter key with client-side encryption for
-                    unlimited access.
+                    Bring your own OpenRouter key with client-side encryption
+                    for unlimited access.
                   </p>
 
                   <ul className="mt-6 space-y-2.5 text-xs text-ink divide-y divide-hairline">
                     <li className="flex items-start gap-2 pt-2">
                       <IconCheck className="h-4 w-4 text-pine flex-shrink-0 mt-0.5" />
                       <span>
-                        <strong>Unlimited requests</strong> for all 400+ paid and free models
+                        <strong>Unlimited requests</strong> for all 400+ paid
+                        and free models
                       </span>
                     </li>
                     <li className="flex items-start gap-2 pt-2">
@@ -737,7 +741,9 @@ function Landing() {
               <IconLogo className="h-4 w-4" />
               <p>ChattyDesk · Unified AI Model Desktop Client</p>
             </div>
-            <p className="text-[11px] text-ink-faint">This project is under nevatal.id for educational purposes.</p>
+            <p className="text-[11px] text-ink-faint">
+              This project is under nevatal.id for educational purposes.
+            </p>
           </div>
 
           <nav className="flex flex-wrap items-center gap-x-6 gap-y-3">
